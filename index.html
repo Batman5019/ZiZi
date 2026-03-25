@@ -3,1711 +3,1002 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>汉字乐园 Chinese Character Adventure!</title>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<title>🐼 HanziHero</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --sky: #FFF7ED;
-    --primary: #FF6B35;
-    --secondary: #FFD166;
-    --green: #06D6A0;
-    --blue: #118AB2;
-    --purple: #845EC2;
-    --pink: #FF9EBB;
-    --red: #EF233C;
-    --card-bg: #FFFFFF;
-    --shadow: 0 6px 0px rgba(0,0,0,0.15);
-    --shadow-hover: 0 10px 0px rgba(0,0,0,0.12);
-  }
+:root {
+  --primary:#FF6B35; --secondary:#FFD166; --green:#06D6A0; --blue:#118AB2;
+  --purple:#845EC2; --red:#EF233C; --bg:#FFF7ED;
+  --shadow:0 5px 0 rgba(0,0,0,0.13);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Baloo 2',cursive;background:var(--bg);min-height:100vh;overflow-x:hidden}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+.cloud{position:fixed;background:white;border-radius:50px;opacity:.5;pointer-events:none;z-index:0}
+.cloud::before,.cloud::after{content:'';position:absolute;background:white;border-radius:50%}
+.c1{width:120px;height:38px;top:7%;left:-10px;animation:cmove 22s linear infinite}
+.c1::before{width:58px;height:58px;top:-28px;left:14px}
+.c1::after{width:38px;height:38px;top:-16px;left:54px}
+.c2{width:150px;height:46px;top:22%;left:72%;animation:cmove 30s linear infinite 6s}
+.c2::before{width:76px;height:76px;top:-38px;left:18px}
+.c2::after{width:50px;height:50px;top:-22px;left:76px}
+@keyframes cmove{from{transform:translateX(120vw)}to{transform:translateX(-320px)}}
 
-  body {
-    font-family: 'Baloo 2', cursive;
-    background: var(--sky);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+header{position:relative;z-index:10;text-align:center;padding:18px 20px 14px;
+  background:linear-gradient(180deg,#FFD166,#FFBA08);border-bottom:5px solid #E8A000;
+  box-shadow:0 4px 0 rgba(0,0,0,.1)}
+header h1{font-size:clamp(1.6rem,5vw,2.6rem);color:#7B2D00;text-shadow:2px 2px 0 rgba(255,255,255,.4)}
+.hdr-stats{display:flex;justify-content:center;gap:16px;margin-top:6px;font-size:.9rem;font-weight:700;color:#8B4000;flex-wrap:wrap}
 
-  /* CLOUDS */
-  .cloud {
-    position: fixed;
-    background: white;
-    border-radius: 50px;
-    opacity: 0.6;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .cloud::before, .cloud::after {
-    content: '';
-    position: absolute;
-    background: white;
-    border-radius: 50%;
-  }
-  .cloud-1 { width: 120px; height: 40px; top: 8%; left: -20px; animation: cloudMove 20s linear infinite; }
-  .cloud-1::before { width: 60px; height: 60px; top: -30px; left: 15px; }
-  .cloud-1::after { width: 40px; height: 40px; top: -18px; left: 55px; }
-  .cloud-2 { width: 160px; height: 50px; top: 20%; left: 70%; animation: cloudMove 28s linear infinite 5s; }
-  .cloud-2::before { width: 80px; height: 80px; top: -40px; left: 20px; }
-  .cloud-2::after { width: 55px; height: 55px; top: -25px; left: 80px; }
-  .cloud-3 { width: 100px; height: 35px; top: 55%; left: 85%; animation: cloudMove 22s linear infinite 10s; }
-  .cloud-3::before { width: 50px; height: 50px; top: -25px; left: 10px; }
-  .cloud-3::after { width: 35px; height: 35px; top: -15px; left: 50px; }
+.tabs{display:flex;justify-content:center;gap:6px;padding:14px 12px 0;position:relative;z-index:10;flex-wrap:wrap}
+.tab{background:white;border:3px solid #ddd;border-radius:18px 18px 0 0;padding:9px 18px;
+  font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;color:#888}
+.tab.active{border-color:var(--primary);border-bottom-color:white;color:var(--primary);transform:translateY(3px)}
+.tab:hover:not(.active){background:#FFF0E8}
 
-  @keyframes cloudMove {
-    from { transform: translateX(120vw); }
-    to { transform: translateX(-300px); }
-  }
+.content{position:relative;z-index:5;max-width:860px;margin:0 auto;padding:20px 16px 70px}
+.pane{display:none}.pane.active{display:block}
 
-  /* STARS */
-  .star {
-    position: fixed;
-    font-size: 24px;
-    pointer-events: none;
-    z-index: 0;
-    animation: twinkle 3s ease-in-out infinite;
-  }
-  @keyframes twinkle { 0%,100%{opacity:0.3;transform:scale(1)} 50%{opacity:1;transform:scale(1.2)} }
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px}
+.ch-card{background:white;border-radius:18px;padding:18px 14px;text-align:center;cursor:pointer;
+  border:3px solid transparent;box-shadow:var(--shadow);transition:all .2s;position:relative}
+.ch-card:hover{transform:translateY(-4px)}
+.ch-label{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.ch-chars{font-family:'Noto Sans SC',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:2px;line-height:1.7;color:#333;margin-bottom:6px}
+.ch-prog{display:flex;align-items:center;gap:6px}
+.prog-bar{flex:1;height:9px;background:#eee;border-radius:9px;overflow:hidden}
+.prog-fill{height:100%;border-radius:9px;background:linear-gradient(90deg,var(--green),#34D399);transition:width .4s}
+.ch0{border-color:#FF6B35;background:linear-gradient(135deg,#FFF5F0,white)}.ch0 .ch-label{color:#FF6B35}
+.ch1{border-color:#D4A000;background:linear-gradient(135deg,#FFFBF0,white)}.ch1 .ch-label{color:#D4A000}
+.ch2{border-color:#06D6A0;background:linear-gradient(135deg,#F0FFF9,white)}.ch2 .ch-label{color:#06D6A0}
+.ch3{border-color:#118AB2;background:linear-gradient(135deg,#F0F9FF,white)}.ch3 .ch-label{color:#118AB2}
+.ch4{border-color:#845EC2;background:linear-gradient(135deg,#F8F0FF,white)}.ch4 .ch-label{color:#845EC2}
 
-  /* HEADER */
-  header {
-    position: relative;
-    z-index: 10;
-    text-align: center;
-    padding: 24px 20px 16px;
-    background: linear-gradient(180deg, #FFD166 0%, #FFBA08 100%);
-    border-bottom: 5px solid #F0A500;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.1);
-  }
-  header h1 {
-    font-size: clamp(1.8rem, 5vw, 3rem);
-    color: #7B2D00;
-    text-shadow: 3px 3px 0 rgba(255,255,255,0.4);
-    line-height: 1.1;
-  }
-  header p {
-    font-size: 1rem;
-    color: #8B4000;
-    margin-top: 4px;
-  }
+.learn-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.back-btn{background:white;border:3px solid #ddd;border-radius:50%;width:42px;height:42px;font-size:1.1rem;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);transition:all .2s;flex-shrink:0}
+.back-btn:hover{border-color:var(--primary);transform:scale(1.08)}
 
-  /* STARS DISPLAY */
-  .stars-display {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 8px;
-    font-size: 1.1rem;
-    color: #7B2D00;
-    font-weight: 700;
-  }
+.char-nav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.cnav{font-family:'Noto Sans SC',sans-serif;font-size:1.25rem;font-weight:700;
+  width:50px;height:50px;border-radius:13px;border:3px solid #ddd;background:white;
+  cursor:pointer;transition:all .2s;box-shadow:0 3px 0 #ddd;display:flex;align-items:center;justify-content:center;position:relative}
+.cnav:hover{transform:translateY(-2px)}
+.cnav.active{border-color:var(--primary);background:#FFF0E8;box-shadow:0 3px 0 var(--primary)}
+.cnav.mastered::after{content:'⭐';position:absolute;top:-8px;right:-8px;font-size:12px}
+.cnav.partial::after{content:'~';position:absolute;top:-6px;right:-6px;background:var(--secondary);
+  color:#7B2D00;border-radius:50%;width:17px;height:17px;font-size:9px;display:flex;align-items:center;justify-content:center;font-family:sans-serif;font-weight:700}
 
-  /* NAVIGATION TABS */
-  .main-tabs {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    padding: 16px 12px 0;
-    position: relative;
-    z-index: 10;
-    flex-wrap: wrap;
-  }
-  .main-tab {
-    background: white;
-    border: 3px solid #E0D0C0;
-    border-radius: 20px 20px 0 0;
-    padding: 10px 20px;
-    font-family: 'Baloo 2', cursive;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: #666;
-  }
-  .main-tab.active {
-    background: white;
-    border-color: var(--primary);
-    border-bottom-color: white;
-    color: var(--primary);
-    transform: translateY(3px);
-  }
-  .main-tab:hover:not(.active) { background: #FFF0E8; }
+.card{background:white;border-radius:24px;padding:22px;box-shadow:var(--shadow);border:3px solid var(--secondary);margin-bottom:16px}
+.card-title{font-size:1rem;font-weight:800;color:#555;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 
-  /* CONTENT AREA */
-  .content {
-    position: relative;
-    z-index: 5;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px 16px 60px;
-  }
+.big-char-wrap{text-align:center;padding:8px 0 14px}
+.big-char{font-family:'Noto Sans SC',sans-serif;font-size:clamp(4.5rem,16vw,6.5rem);font-weight:900;
+  line-height:1;color:#1A1A2E;cursor:pointer;transition:transform .15s;display:inline-block}
+.big-char:hover{transform:scale(1.06)}
+.char-pills{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+.pill{background:#FFF0E8;border:2px solid var(--secondary);border-radius:16px;padding:5px 14px;
+  font-size:.95rem;font-weight:700;color:#8B4000}
+.pill.py{font-size:1.2rem;color:var(--primary)}
+.char-tip{text-align:center;margin-top:8px;color:#aaa;font-size:.85rem;font-style:italic}
 
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
+.steps-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.sbadge{display:flex;align-items:center;gap:6px;background:white;border:2px solid #ddd;
+  border-radius:20px;padding:6px 14px;font-size:.85rem;font-weight:700;color:#aaa}
+.sbadge.done{border-color:var(--green);background:#ECFDF5;color:#065F46}
+.sbadge.now{border-color:var(--primary);background:#FFF0E8;color:var(--primary)}
+.sbadge .sn{width:22px;height:22px;border-radius:50%;background:#ddd;display:flex;
+  align-items:center;justify-content:center;font-size:.75rem;font-weight:800;flex-shrink:0}
+.sbadge.done .sn{background:var(--green);color:white}
+.sbadge.now .sn{background:var(--primary);color:white}
 
-  /* CHAPTER SELECT */
-  .chapter-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 16px;
-    margin-top: 8px;
-  }
+.writer-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+.writer-box{border:3px solid #ddd;border-radius:18px;background:white;overflow:hidden}
+.writer-box.quiz{border-color:var(--purple)}
+.wrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.wbtn{background:white;border:3px solid #ddd;border-radius:12px;padding:9px 16px;
+  font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;
+  box-shadow:0 3px 0 #ccc}
+.wbtn:hover{transform:translateY(-1px)}
+.wbtn.blue{background:var(--blue);color:white;border-color:var(--blue);box-shadow:0 3px 0 #0A6B8A}
+.wbtn.red{background:var(--red);color:white;border-color:var(--red);box-shadow:0 3px 0 #A0001C}
 
-  .chapter-card {
-    background: white;
-    border-radius: 20px;
-    padding: 20px 16px;
-    text-align: center;
-    cursor: pointer;
-    border: 3px solid transparent;
-    box-shadow: var(--shadow);
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-  .chapter-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
-  .chapter-card.locked { opacity: 0.5; cursor: not-allowed; }
-  .chapter-card .ch-num {
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    opacity: 0.7;
-    margin-bottom: 6px;
-  }
-  .chapter-card .ch-chars {
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    line-height: 1.6;
-    color: #333;
-    margin-bottom: 8px;
-  }
-  .chapter-card .ch-stars { font-size: 1.1rem; }
-  .chapter-card .ch-badge {
-    position: absolute;
-    top: 8px; right: 8px;
-    font-size: 1.2rem;
-  }
+.sstatus{text-align:center;font-size:.95rem;font-weight:700;padding:10px 14px;
+  border-radius:12px;margin-top:8px;min-height:44px;display:flex;align-items:center;justify-content:center;gap:6px}
+.sstatus.hint{background:#FFF8E8;color:#8B4000;border:2px solid var(--secondary)}
+.sstatus.ok{background:#ECFDF5;color:#065F46;border:2px solid var(--green)}
+.sstatus.bad{background:#FFF5F5;color:#991B1B;border:2px solid var(--red)}
+.sstatus.done{background:#F0F9FF;color:#0369A1;border:2px solid var(--blue)}
+.qprog{font-size:.85rem;color:#888;text-align:center;margin-top:4px}
 
-  /* CHAPTER COLORS */
-  .ch-0 { border-color: #FF6B35; background: linear-gradient(135deg, #FFF5F0, white); }
-  .ch-0 .ch-num { color: #FF6B35; }
-  .ch-1 { border-color: #FFD166; background: linear-gradient(135deg, #FFFBF0, white); }
-  .ch-1 .ch-num { color: #D4A000; }
-  .ch-2 { border-color: #06D6A0; background: linear-gradient(135deg, #F0FFF9, white); }
-  .ch-2 .ch-num { color: #06D6A0; }
-  .ch-3 { border-color: #118AB2; background: linear-gradient(135deg, #F0F9FF, white); }
-  .ch-3 .ch-num { color: #118AB2; }
-  .ch-4 { border-color: #845EC2; background: linear-gradient(135deg, #F8F0FF, white); }
-  .ch-4 .ch-num { color: #845EC2; }
+.hear-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.hbtn{background:var(--blue);color:white;border:none;border-radius:14px;padding:11px 20px;
+  font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;cursor:pointer;
+  box-shadow:0 4px 0 #0A6B8A;transition:all .15s;display:flex;align-items:center;gap:6px}
+.hbtn:active{transform:translateY(2px);box-shadow:0 2px 0 #0A6B8A}
+.hbtn.slow{background:#5E9E60;box-shadow:0 4px 0 #3D7B3F}
 
-  /* LEARN PAGE */
-  .learn-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .back-btn {
-    background: white;
-    border: 3px solid #ddd;
-    border-radius: 50%;
-    width: 44px; height: 44px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: var(--shadow);
-    transition: all 0.2s;
-    flex-shrink: 0;
-  }
-  .back-btn:hover { transform: scale(1.1); border-color: var(--primary); }
+.pron-box{background:#FFF0F8;border-radius:18px;padding:18px;border:2px solid #FBCFE8;margin-top:12px}
+.rbtn{width:100%;background:var(--red);color:white;border:none;border-radius:16px;padding:14px;
+  font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;cursor:pointer;
+  box-shadow:0 5px 0 #A0001C;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.rbtn:active{transform:translateY(3px);box-shadow:0 2px 0 #A0001C}
+.rbtn.rec{background:#444;box-shadow:0 5px 0 #111;animation:pulse .8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.rresult{margin-top:12px;padding:13px;border-radius:12px;font-size:.95rem;font-weight:700;text-align:center;line-height:1.5}
+.rresult.pass{background:#ECFDF5;color:#065F46;border:2px solid var(--green)}
+.rresult.fail{background:#FFF5F5;color:#991B1B;border:2px solid var(--red)}
+.rresult.wait{background:#f5f5f5;color:#555;border:2px solid #ddd}
 
-  .char-nav {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-  }
-  .char-nav-btn {
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    width: 52px; height: 52px;
-    border-radius: 14px;
-    border: 3px solid #ddd;
-    background: white;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 3px 0 #ddd;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-  }
-  .char-nav-btn:hover { transform: translateY(-2px); }
-  .char-nav-btn.active { border-color: var(--primary); background: #FFF0E8; box-shadow: 0 3px 0 var(--primary); }
-  .char-nav-btn.learned::after {
-    content: '✓';
-    position: absolute;
-    top: -6px; right: -6px;
-    background: var(--green);
-    color: white;
-    border-radius: 50%;
-    width: 18px; height: 18px;
-    font-size: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: sans-serif;
-    font-weight: 700;
-  }
+.lock-gate{background:#f5f5f5;border-radius:16px;padding:20px;text-align:center;border:3px dashed #ddd}
+.master-badge{border-radius:18px;padding:14px;text-align:center;font-weight:800;font-size:1.05rem;
+  margin-top:12px;box-shadow:0 4px 0;animation:shine 2s ease-in-out infinite}
+@keyframes shine{0%,100%{filter:brightness(1)}50%{filter:brightness(1.12)}}
 
-  /* CHARACTER CARD */
-  .char-card {
-    background: white;
-    border-radius: 28px;
-    padding: 28px;
-    box-shadow: var(--shadow);
-    border: 3px solid #FFD166;
-    margin-bottom: 20px;
-  }
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.gcard{background:white;border-radius:22px;padding:22px 18px;text-align:center;cursor:pointer;
+  border:3px solid #ddd;box-shadow:var(--shadow);transition:all .2s}
+.gcard:hover{transform:translateY(-4px)}
+.gicon{font-size:2.6rem;margin-bottom:8px}
+.gname{font-size:1.05rem;font-weight:800;color:#333;margin-bottom:3px}
+.gdesc{font-size:.82rem;color:#999}
 
-  .char-display {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  .big-char {
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: clamp(5rem, 20vw, 8rem);
-    font-weight: 900;
-    line-height: 1;
-    color: #1A1A2E;
-    display: block;
-    text-shadow: 4px 4px 0 rgba(255,107,53,0.15);
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .big-char:hover { transform: scale(1.05); }
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;
+  align-items:center;justify-content:center;padding:14px}
+.modal.open{display:flex}
+.mbox{background:white;border-radius:26px;padding:26px;max-width:540px;width:100%;
+  max-height:92vh;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.mclose{position:absolute;top:14px;right:14px;background:#f0f0f0;border:none;
+  border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;font-weight:700;
+  display:flex;align-items:center;justify-content:center}
+.mclose:hover{background:#fdd}
 
-  .char-info {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
-  .info-pill {
-    background: #FFF0E8;
-    border: 2px solid #FFD166;
-    border-radius: 20px;
-    padding: 6px 16px;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #8B4000;
-  }
-  .pinyin { font-size: 1.3rem; color: var(--primary); }
+.gtitle{font-size:1.4rem;font-weight:800;color:#333;margin-bottom:4px}
+.gscore{font-size:.95rem;color:#888;margin-bottom:18px}
+.gchar{font-family:'Noto Sans SC',sans-serif;font-size:4.5rem;font-weight:900;
+  text-align:center;color:#1A1A2E;margin-bottom:6px;cursor:pointer}
+.gopts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.gopt{background:#F8F8F8;border:3px solid #ddd;border-radius:14px;padding:13px 8px;
+  font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;color:#333;
+  font-family:'Baloo 2',cursive}
+.gopt:hover{border-color:var(--blue);background:#EFF9FF}
+.gopt.ok{border-color:var(--green);background:#ECFDF5;color:#065F46;animation:popIn .3s ease}
+.gopt.bad{border-color:var(--red);background:#FFF5F5;color:#991B1B;animation:shake .3s ease}
+.fgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.fopt{font-family:'Noto Sans SC',sans-serif;font-size:2rem;font-weight:900;
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  background:#F8F8F8;border:3px solid #ddd;border-radius:13px;cursor:pointer;transition:all .2s}
+.fopt:hover{border-color:var(--purple);background:#F8F0FF;transform:scale(1.05)}
+.fopt.ok{border-color:var(--green);background:#ECFDF5;animation:popIn .3s ease}
+.fopt.bad{border-color:var(--red);background:#FFF5F5;animation:shake .3s ease}
+.gres{text-align:center;padding:16px;border-radius:16px;margin-top:12px;font-size:1rem;font-weight:700}
+.gres.pass{background:#ECFDF5;color:#065F46;border:3px solid var(--green)}
+.gres.fail{background:#FFF5F5;color:#991B1B;border:3px solid var(--red)}
+.gres .be{font-size:2.6rem;display:block;margin-bottom:6px}
+.nbtn{width:100%;background:var(--primary);color:white;border:none;border-radius:14px;
+  padding:13px;font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;cursor:pointer;
+  box-shadow:0 4px 0 #C04A1E;transition:all .15s;margin-top:10px}
+.nbtn:active{transform:translateY(2px);box-shadow:0 2px 0 #C04A1E}
 
-  .char-meaning {
-    text-align: center;
-    font-size: 1.1rem;
-    color: #555;
-    margin-top: 8px;
-    line-height: 1.4;
-  }
-  .char-meaning .emoji { font-size: 2rem; display: block; margin-bottom: 4px; }
+@keyframes popIn{0%{transform:scale(.9)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 
-  /* PRONUNCIATION SECTION */
-  .section-title {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: #333;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+.psec{background:white;border-radius:18px;padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
+.pstitle{font-size:1rem;font-weight:800;color:#333;margin-bottom:10px}
+.cdots{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.cdot{font-family:'Noto Sans SC',sans-serif;font-size:.85rem;font-weight:700;
+  width:40px;height:40px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:#f0f0f0;color:#bbb;border:2px solid #ddd;gap:1px}
+.cdot small{font-family:'Baloo 2',cursive;font-size:.5rem;line-height:1;color:#aaa}
+.cdot.wonly{border-color:#845EC2;background:#F8F0FF;color:#845EC2}
+.cdot.sonly{border-color:var(--secondary);background:#FFFBEB;color:#8B4000}
+.cdot.both{border-color:var(--green);background:#ECFDF5;color:#065F46}
 
-  .pronounce-section {
-    background: #F0F9FF;
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 16px;
-    border: 2px solid #BAE6FD;
-  }
+.cel{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.65);
+  align-items:center;justify-content:center}
+.cel.show{display:flex}
+.celbox{background:white;border-radius:28px;padding:36px 28px;text-align:center;max-width:340px;
+  animation:bounceIn .5s ease;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+@keyframes bounceIn{0%{transform:scale(.4)}70%{transform:scale(1.08)}100%{transform:scale(1)}}
+.cele{font-size:3.5rem;margin-bottom:10px}
+.celt{font-size:1.4rem;font-weight:900;color:#333;margin-bottom:6px}
+.cels{font-size:.95rem;color:#888;margin-bottom:18px}
+.cp{position:fixed;pointer-events:none;z-index:201;animation:cfall 2s ease forwards;border-radius:2px}
+@keyframes cfall{0%{transform:translateY(-80px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 
-  .audio-controls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-  }
-  .hear-btn {
-    background: var(--blue);
-    color: white;
-    border: none;
-    border-radius: 16px;
-    padding: 12px 22px;
-    font-family: 'Baloo 2', cursive;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 0 #0A6B8A;
-    transition: all 0.15s;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .hear-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #0A6B8A; }
-  .hear-btn.slow { background: #5E9E60; box-shadow: 0 4px 0 #3D7B3F; }
+#toast{display:none;position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+  background:#333;color:white;padding:10px 20px;border-radius:20px;font-size:.9rem;
+  z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.3);text-align:center;max-width:300px;font-weight:700}
 
-  .record-section {
-    margin-top: 12px;
-  }
-  .record-btn {
-    background: var(--red);
-    color: white;
-    border: none;
-    border-radius: 16px;
-    padding: 12px 22px;
-    font-family: 'Baloo 2', cursive;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 0 #A0001C;
-    transition: all 0.15s;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .record-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #A0001C; }
-  .record-btn.recording {
-    background: #666;
-    animation: pulse 1s ease-in-out infinite;
-    box-shadow: 0 4px 0 #333;
-  }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+.div{height:2px;background:linear-gradient(90deg,transparent,#FFD166,transparent);margin:14px 0}
 
-  .record-status {
-    margin-top: 8px;
-    font-size: 0.9rem;
-    color: #666;
-    min-height: 24px;
-  }
-
-  /* STROKE SECTION */
-  .stroke-section {
-    background: #F0FFF9;
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 16px;
-    border: 2px solid #A7F3D0;
-  }
-
-  .stroke-display {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-  }
-  .stroke-step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-  .stroke-char {
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 2.2rem;
-    font-weight: 900;
-    width: 60px; height: 60px;
-    display: flex; align-items: center; justify-content: center;
-    background: white;
-    border-radius: 12px;
-    border: 2px solid #ddd;
-    position: relative;
-  }
-  .stroke-char.highlight { border-color: var(--green); background: #ECFDF5; }
-  .stroke-num {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #888;
-  }
-
-  .stroke-arrow { font-size: 1.2rem; color: #aaa; align-self: center; }
-
-  .writing-tips {
-    background: #FFFBEB;
-    border-radius: 12px;
-    padding: 12px 16px;
-    border-left: 4px solid var(--secondary);
-    font-size: 0.9rem;
-    color: #666;
-    line-height: 1.5;
-  }
-
-  /* DRAWING CANVAS */
-  .draw-section {
-    background: #FFF8FF;
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 16px;
-    border: 2px solid #E9D5FF;
-  }
-  .canvas-container {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-  .draw-canvas-wrap {
-    position: relative;
-  }
-  canvas {
-    border-radius: 16px;
-    border: 3px dashed #C084FC;
-    background: white;
-    cursor: crosshair;
-    touch-action: none;
-    display: block;
-  }
-  .canvas-ghost {
-    position: absolute;
-    top: 0; left: 0;
-    opacity: 0.08;
-    pointer-events: none;
-    font-family: 'Noto Sans SC', sans-serif;
-    font-weight: 900;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 13px;
-  }
-  .canvas-btns {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .canvas-btn {
-    background: white;
-    border: 3px solid #ddd;
-    border-radius: 12px;
-    padding: 10px 16px;
-    font-family: 'Baloo 2', cursive;
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 3px 0 #ddd;
-  }
-  .canvas-btn:hover { border-color: var(--purple); color: var(--purple); }
-  .canvas-btn.clear { border-color: var(--red); color: var(--red); }
-
-  /* MARK LEARNED BTN */
-  .mark-learned-btn {
-    width: 100%;
-    background: var(--green);
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 16px;
-    font-family: 'Baloo 2', cursive;
-    font-size: 1.2rem;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 5px 0 #04A07A;
-    transition: all 0.15s;
-    margin-top: 8px;
-  }
-  .mark-learned-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #04A07A; }
-  .mark-learned-btn.done { background: #A8A8A8; box-shadow: 0 5px 0 #787878; }
-
-  /* GAMES TAB */
-  .games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-    margin-top: 8px;
-  }
-  .game-card {
-    background: white;
-    border-radius: 24px;
-    padding: 24px 20px;
-    text-align: center;
-    cursor: pointer;
-    border: 3px solid #ddd;
-    box-shadow: var(--shadow);
-    transition: all 0.2s;
-  }
-  .game-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
-  .game-card .game-icon { font-size: 2.8rem; margin-bottom: 10px; }
-  .game-card .game-name { font-size: 1.1rem; font-weight: 800; color: #333; margin-bottom: 4px; }
-  .game-card .game-desc { font-size: 0.85rem; color: #888; }
-
-  /* GAME MODAL */
-  .game-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-  }
-  .game-modal.open { display: flex; }
-  .game-box {
-    background: white;
-    border-radius: 28px;
-    padding: 28px;
-    max-width: 560px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  }
-  .game-close {
-    position: absolute;
-    top: 16px; right: 16px;
-    background: #f0f0f0;
-    border: none;
-    border-radius: 50%;
-    width: 36px; height: 36px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700;
-  }
-  .game-close:hover { background: #ffdddd; }
-
-  .game-title {
-    font-size: 1.5rem;
-    font-weight: 800;
-    margin-bottom: 6px;
-    color: #333;
-  }
-  .game-score { font-size: 1rem; color: #888; margin-bottom: 20px; }
-
-  /* MATCH GAME */
-  .match-q {
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 4rem;
-    font-weight: 900;
-    text-align: center;
-    margin-bottom: 8px;
-    color: #1A1A2E;
-  }
-  .match-hint {
-    text-align: center;
-    font-size: 1rem;
-    color: #888;
-    margin-bottom: 20px;
-  }
-  .match-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .match-opt {
-    background: #F8F8F8;
-    border: 3px solid #ddd;
-    border-radius: 16px;
-    padding: 14px 10px;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    color: #333;
-  }
-  .match-opt:hover { border-color: var(--blue); background: #EFF9FF; }
-  .match-opt.correct { border-color: var(--green); background: #ECFDF5; color: #065F46; animation: popIn 0.3s ease; }
-  .match-opt.wrong { border-color: var(--red); background: #FFF5F5; color: #991B1B; animation: shake 0.3s ease; }
-
-  @keyframes popIn { 0%{transform:scale(0.9)} 60%{transform:scale(1.08)} 100%{transform:scale(1)} }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
-
-  /* FIND GAME */
-  .find-clue {
-    font-size: 1.3rem;
-    text-align: center;
-    margin-bottom: 20px;
-    color: #555;
-    background: #FFF8E8;
-    padding: 12px;
-    border-radius: 14px;
-    border: 2px dashed var(--secondary);
-  }
-  .find-clue strong { color: var(--primary); font-size: 1.5rem; }
-  .find-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-  }
-  .find-opt {
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 2rem;
-    font-weight: 900;
-    aspect-ratio: 1;
-    display: flex; align-items: center; justify-content: center;
-    background: #F8F8F8;
-    border: 3px solid #ddd;
-    border-radius: 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .find-opt:hover { border-color: var(--purple); background: #F8F0FF; transform: scale(1.05); }
-  .find-opt.correct { border-color: var(--green); background: #ECFDF5; animation: popIn 0.3s ease; }
-  .find-opt.wrong { border-color: var(--red); background: #FFF5F5; animation: shake 0.3s ease; }
-
-  /* FILL BLANKS */
-  .fill-sentence {
-    font-size: 1.4rem;
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-    line-height: 2;
-  }
-  .fill-blank {
-    display: inline-block;
-    border-bottom: 4px solid var(--primary);
-    min-width: 50px;
-    text-align: center;
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 1.6rem;
-    color: var(--primary);
-    font-weight: 900;
-  }
-
-  /* RESULT DISPLAY */
-  .result-box {
-    text-align: center;
-    padding: 20px;
-    border-radius: 20px;
-    margin-top: 16px;
-    font-size: 1.2rem;
-    font-weight: 700;
-  }
-  .result-correct { background: #ECFDF5; color: #065F46; border: 3px solid var(--green); }
-  .result-wrong { background: #FFF5F5; color: #991B1B; border: 3px solid var(--red); }
-  .result-box .big-emoji { font-size: 3rem; display: block; margin-bottom: 8px; }
-
-  .next-btn {
-    width: 100%;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 16px;
-    padding: 14px;
-    font-family: 'Baloo 2', cursive;
-    font-size: 1.1rem;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 4px 0 #C04A1E;
-    transition: all 0.15s;
-    margin-top: 12px;
-  }
-  .next-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #C04A1E; }
-
-  /* PROGRESS */
-  .progress-section {
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: var(--shadow);
-    margin-bottom: 16px;
-  }
-  .progress-bar-wrap {
-    background: #f0f0f0;
-    border-radius: 20px;
-    height: 16px;
-    margin: 8px 0;
-    overflow: hidden;
-  }
-  .progress-bar {
-    height: 100%;
-    border-radius: 20px;
-    background: linear-gradient(90deg, var(--green), #34D399);
-    transition: width 0.5s ease;
-  }
-  .char-dots {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 12px;
-  }
-  .char-dot {
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 700;
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    background: #f0f0f0;
-    color: #888;
-    border: 2px solid #ddd;
-  }
-  .char-dot.done { background: #ECFDF5; color: #065F46; border-color: var(--green); }
-
-  /* CELEBRATION */
-  .celebration {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    background: rgba(0,0,0,0.7);
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-  .celebration.show { display: flex; }
-  .celebration-box {
-    background: white;
-    border-radius: 30px;
-    padding: 40px;
-    text-align: center;
-    max-width: 360px;
-    animation: bounceIn 0.5s ease;
-  }
-  @keyframes bounceIn { 0%{transform:scale(0.5)} 70%{transform:scale(1.1)} 100%{transform:scale(1)} }
-  .celebration-emoji { font-size: 4rem; margin-bottom: 12px; }
-  .celebration-text { font-size: 1.5rem; font-weight: 800; color: #333; margin-bottom: 8px; }
-  .celebration-sub { font-size: 1rem; color: #666; margin-bottom: 20px; }
-  .confetti-piece {
-    position: fixed;
-    width: 10px; height: 10px;
-    border-radius: 2px;
-    pointer-events: none;
-    z-index: 201;
-    animation: confettiFall 2s ease forwards;
-  }
-  @keyframes confettiFall {
-    0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-  }
-
-  /* RESPONSIVE */
-  @media (max-width: 500px) {
-    .char-nav-btn { width: 44px; height: 44px; font-size: 1.1rem; }
-    .match-q { font-size: 3rem; }
-    .find-grid { grid-template-columns: repeat(3, 1fr); }
-  }
-
-  .section-divider { height: 2px; background: linear-gradient(90deg, transparent, #FFD166, transparent); margin: 16px 0; }
-
-  /* Tone colors */
-  .tone1 { color: #EF233C; }
-  .tone2 { color: #E77C24; }
-  .tone3 { color: #3E8E14; }
-  .tone4 { color: #1171D4; }
-
-  .pinyin-tones { font-size: 0.85rem; text-align: center; color: #888; margin-bottom: 8px; }
-
-  .chapter-progress-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 6px;
-  }
-  .chapter-progress-row .prog-text { font-size: 0.8rem; color: #888; white-space: nowrap; }
+@media(max-width:480px){
+  .cnav{width:43px;height:43px;font-size:1.1rem}
+  .fgrid{grid-template-columns:repeat(3,1fr)}
+}
 </style>
 </head>
 <body>
 
-<!-- Decorative elements -->
-<div class="cloud cloud-1"></div>
-<div class="cloud cloud-2"></div>
-<div class="cloud cloud-3"></div>
-<div class="star" style="top:15%;left:10%;animation-delay:0s">⭐</div>
-<div class="star" style="top:30%;left:92%;animation-delay:1s">🌟</div>
-<div class="star" style="top:70%;left:5%;animation-delay:2s">✨</div>
-<div class="star" style="top:85%;left:88%;animation-delay:0.5s">⭐</div>
+<div class="cloud c1"></div>
+<div class="cloud c2"></div>
 
 <header>
-  <h1>🐼 汉字乐园 Chinese Fun! 🐼</h1>
-  <p>Learn Chinese Characters the Fun Way!</p>
-  <div class="stars-display">
-    <span>⭐ Stars earned: <span id="totalStars">0</span></span>
-    <span>&nbsp;|&nbsp;</span>
-    <span>✅ Learned: <span id="totalLearned">0</span>/40</span>
+  <h1>🐼 HanziHero!</h1>
+  <div class="hdr-stats">
+    <span>⭐ <span id="hStars">0</span> Stars</span>
+    <span>✅ <span id="hMastered">0</span>/40 Mastered</span>
+    <span>✏️ <span id="hWrite">0</span> Write ✓</span>
+    <span>🎤 <span id="hSpeak">0</span> Speak ✓</span>
   </div>
 </header>
 
-<div class="main-tabs">
-  <button class="main-tab active" onclick="showMainTab('chapters')">📚 Chapters</button>
-  <button class="main-tab" onclick="showMainTab('learn')">✏️ Learn</button>
-  <button class="main-tab" onclick="showMainTab('games')">🎮 Games</button>
-  <button class="main-tab" onclick="showMainTab('progress')">🏆 Progress</button>
+<div class="tabs">
+  <button class="tab active" data-tab="chapters">📚 Chapters</button>
+  <button class="tab" data-tab="learn">✏️ Learn</button>
+  <button class="tab" data-tab="games">🎮 Games</button>
+  <button class="tab" data-tab="progress">🏆 Progress</button>
 </div>
 
 <div class="content">
-
-  <!-- CHAPTERS TAB -->
-  <div id="tab-chapters" class="tab-content active">
-    <div class="chapter-grid" id="chapterGrid"></div>
+  <div id="pane-chapters" class="pane active"></div>
+  <div id="pane-learn" class="pane">
+    <p style="text-align:center;color:#aaa;padding:40px 0">Pick a chapter to start! 👆</p>
   </div>
-
-  <!-- LEARN TAB -->
-  <div id="tab-learn" class="tab-content">
-    <div id="learnContent">
-      <p style="text-align:center;color:#888;padding:40px 0">Select a chapter above to start learning! 👆</p>
-    </div>
-  </div>
-
-  <!-- GAMES TAB -->
-  <div id="tab-games" class="tab-content">
-    <div class="games-grid">
-      <div class="game-card" style="border-color:#FF6B35" onclick="startGame('match')">
-        <div class="game-icon">🎯</div>
-        <div class="game-name">Match It!</div>
-        <div class="game-desc">Match the character to its meaning</div>
-      </div>
-      <div class="game-card" style="border-color:#FFD166" onclick="startGame('find')">
-        <div class="game-icon">🔍</div>
-        <div class="game-name">Find It!</div>
-        <div class="game-desc">Find the correct character</div>
-      </div>
-      <div class="game-card" style="border-color:#06D6A0" onclick="startGame('pinyin')">
-        <div class="game-icon">🎵</div>
-        <div class="game-name">Pinyin Picker</div>
-        <div class="game-desc">Choose the right pronunciation</div>
-      </div>
-      <div class="game-card" style="border-color:#845EC2" onclick="startGame('flash')">
-        <div class="game-icon">⚡</div>
-        <div class="game-name">Flash Cards</div>
-        <div class="game-desc">Quick memory challenge!</div>
-      </div>
-    </div>
-    <p style="text-align:center;color:#aaa;margin-top:24px;font-size:0.9rem">Tip: Learn characters first to unlock more questions! 🌟</p>
-  </div>
-
-  <!-- PROGRESS TAB -->
-  <div id="tab-progress" class="tab-content">
-    <div id="progressContent"></div>
-  </div>
+  <div id="pane-games" class="pane"></div>
+  <div id="pane-progress" class="pane"></div>
 </div>
 
-<!-- GAME MODAL -->
-<div class="game-modal" id="gameModal">
-  <div class="game-box">
-    <button class="game-close" onclick="closeGame()">✕</button>
+<div class="modal" id="gameModal">
+  <div class="mbox">
+    <button class="mclose" onclick="closeGame()">✕</button>
     <div id="gameContent"></div>
   </div>
 </div>
 
-<!-- CELEBRATION -->
-<div class="celebration" id="celebration">
-  <div class="celebration-box">
-    <div class="celebration-emoji">🎉</div>
-    <div class="celebration-text" id="celText">Amazing!</div>
-    <div class="celebration-sub" id="celSub">You earned a star!</div>
-    <button class="next-btn" onclick="closeCelebration()">Keep Going! 🚀</button>
+<div class="cel" id="cel">
+  <div class="celbox">
+    <div class="cele" id="celE">🎉</div>
+    <div class="celt" id="celT">Amazing!</div>
+    <div class="cels" id="celS">Keep going!</div>
+    <button class="nbtn" onclick="closeCel()">Awesome! 🚀</button>
   </div>
 </div>
 
+<div id="toast"></div>
+
 <script>
-// ============================================================
+// ═══════════════════════════════════════
 // DATA
-// ============================================================
+// ═══════════════════════════════════════
 const CHAPTERS = [
-  {
-    id: 0,
-    title: "Chapter 1",
-    color: "#FF6B35",
-    emoji: "🌱",
-    chars: ["田","刀","在","上","下","大","小","来"]
-  },
-  {
-    id: 1,
-    title: "Chapter 2",
-    color: "#D4A000",
-    emoji: "🔥",
-    chars: ["开","火","关","两","长","广","多","少"]
-  },
-  {
-    id: 2,
-    title: "Chapter 3",
-    color: "#06D6A0",
-    emoji: "👁️",
-    chars: ["目","手","本","工","门","见","又","头"]
-  },
-  {
-    id: 3,
-    title: "Chapter 4",
-    color: "#118AB2",
-    emoji: "🐄",
-    chars: ["牛","贝","六","支","九","什","么","文"]
-  },
-  {
-    id: 4,
-    title: "Chapter 5",
-    color: "#845EC2",
-    emoji: "🌙",
-    chars: ["月","天","水","寸","正","反","白","古"]
-  }
+  {id:0,title:'Chapter 1',emoji:'🌱',chars:['田','刀','在','上','下','大','小','来']},
+  {id:1,title:'Chapter 2',emoji:'🔥',chars:['开','火','关','两','长','广','多','少']},
+  {id:2,title:'Chapter 3',emoji:'👁️',chars:['目','手','本','工','门','见','又','头']},
+  {id:3,title:'Chapter 4',emoji:'🐄',chars:['牛','贝','六','支','九','什','么','文']},
+  {id:4,title:'Chapter 5',emoji:'🌙',chars:['月','天','水','寸','正','反','白','古']}
 ];
 
-const CHAR_DATA = {
-  "田": { pinyin:"tián", tone:2, meaning:"Field / Rice paddy", emoji:"🌾", tip:"Looks like a paddy field divided into sections!", strokes:5, strokeOrder:"Outer box first, then divide inside" },
-  "刀": { pinyin:"dāo", tone:1, meaning:"Knife / Blade", emoji:"🔪", tip:"Like a bent blade!", strokes:2, strokeOrder:"Curved stroke, then hooked stroke" },
-  "在": { pinyin:"zài", tone:4, meaning:"At / Be present", emoji:"📍", tip:"Used to say where something IS!", strokes:6, strokeOrder:"Left radical first, then right" },
-  "上": { pinyin:"shàng", tone:4, meaning:"Up / Above", emoji:"⬆️", tip:"Arrow pointing UP!", strokes:3, strokeOrder:"Short top stroke, vertical, base" },
-  "下": { pinyin:"xià", tone:4, meaning:"Down / Below", emoji:"⬇️", tip:"Arrow pointing DOWN!", strokes:3, strokeOrder:"Short top stroke, vertical, drop" },
-  "大": { pinyin:"dà", tone:4, meaning:"Big / Large", emoji:"🦣", tip:"A big person with arms spread wide!", strokes:3, strokeOrder:"Horizontal, left-falling, right-falling" },
-  "小": { pinyin:"xiǎo", tone:3, meaning:"Small / Little", emoji:"🐜", tip:"A small squeeze in the middle!", strokes:3, strokeOrder:"Middle drop, left dot, right dot" },
-  "来": { pinyin:"lái", tone:2, meaning:"Come / Arrive", emoji:"🚶", tip:"Someone is COMING!", strokes:7, strokeOrder:"Top strokes first, then middle cross" },
-  "开": { pinyin:"kāi", tone:1, meaning:"Open / Start", emoji:"🚪", tip:"Opening a gate!", strokes:4, strokeOrder:"Two horizontal, then vertical, then hook" },
-  "火": { pinyin:"huǒ", tone:3, meaning:"Fire / Flame", emoji:"🔥", tip:"Flames dancing upward!", strokes:4, strokeOrder:"Left drop, right drop, left stroke, right stroke" },
-  "关": { pinyin:"guān", tone:1, meaning:"Close / Shut", emoji:"🔒", tip:"Closing the gate!", strokes:6, strokeOrder:"Top strokes, then vertical with waist" },
-  "两": { pinyin:"liǎng", tone:3, meaning:"Two / Both / A pair", emoji:"✌️", tip:"Two things inside!", strokes:7, strokeOrder:"Top bar, outer frame, inside parts" },
-  "长": { pinyin:"cháng", tone:2, meaning:"Long / Grow", emoji:"📏", tip:"Something stretching out long!", strokes:4, strokeOrder:"Top stroke, vertical, then crossing strokes" },
-  "广": { pinyin:"guǎng", tone:3, meaning:"Wide / Vast", emoji:"🌅", tip:"A wide open shelter!", strokes:3, strokeOrder:"Dot, horizontal, long left-falling" },
-  "多": { pinyin:"duō", tone:1, meaning:"Many / Much", emoji:"🌟🌟🌟", tip:"Two evenings = so many!", strokes:6, strokeOrder:"Two 夕 stacked" },
-  "少": { pinyin:"shǎo", tone:3, meaning:"Few / Little", emoji:"🫧", tip:"Just a little tiny bit!", strokes:4, strokeOrder:"Short horizontal, vertical drop, then dot" },
-  "目": { pinyin:"mù", tone:4, meaning:"Eye / Look", emoji:"👁️", tip:"A rectangle with two pupils - an eye!", strokes:5, strokeOrder:"Outer box first, then two horizontal inside" },
-  "手": { pinyin:"shǒu", tone:3, meaning:"Hand", emoji:"✋", tip:"Three fingers and a palm!", strokes:4, strokeOrder:"Three horizontal strokes, then vertical hook" },
-  "本": { pinyin:"běn", tone:3, meaning:"Root / Origin / Book", emoji:"📚", tip:"A tree with its roots marked!", strokes:5, strokeOrder:"Cross of 木, then bottom stroke" },
-  "工": { pinyin:"gōng", tone:1, meaning:"Work / Labor", emoji:"🔨", tip:"A worker's tool - like an I-beam!", strokes:3, strokeOrder:"Top bar, vertical, bottom bar" },
-  "门": { pinyin:"mén", tone:2, meaning:"Door / Gate", emoji:"🚪", tip:"Two door panels side by side!", strokes:3, strokeOrder:"Left panel stroke, top stroke, right hook" },
-  "见": { pinyin:"jiàn", tone:4, meaning:"See / Meet", emoji:"👀", tip:"An eye on legs - going to SEE!", strokes:4, strokeOrder:"Vertical, inner stroke, left leg, right leg" },
-  "又": { pinyin:"yòu", tone:4, meaning:"Again / Also", emoji:"🔄", tip:"Also, again - one more time!", strokes:2, strokeOrder:"Right-falling stroke, then dot" },
-  "头": { pinyin:"tóu", tone:2, meaning:"Head", emoji:"🗣️", tip:"Your head on top of your body!", strokes:5, strokeOrder:"Two strokes on top, then big dot" },
-  "牛": { pinyin:"niú", tone:2, meaning:"Cow / Ox", emoji:"🐄", tip:"A cow with horns!", strokes:4, strokeOrder:"Left-falling, horizontal, horizontal, vertical" },
-  "贝": { pinyin:"bèi", tone:4, meaning:"Shell / Money", emoji:"🐚", tip:"Ancient shell used as money!", strokes:4, strokeOrder:"Top two strokes, left leg, right dot" },
-  "六": { pinyin:"liù", tone:4, meaning:"Six (6)", emoji:"6️⃣", tip:"Remember: 6 sounds like 'lyoh'!", strokes:4, strokeOrder:"Dot, horizontal, left-falling, right dot" },
-  "支": { pinyin:"zhī", tone:1, meaning:"Branch / Support", emoji:"🌿", tip:"A hand holding a branch!", strokes:4, strokeOrder:"Cross top, then hand base" },
-  "九": { pinyin:"jiǔ", tone:3, meaning:"Nine (9)", emoji:"9️⃣", tip:"9 looks like a hook!", strokes:2, strokeOrder:"Horizontal turning to vertical, then hook" },
-  "什": { pinyin:"shén", tone:2, meaning:"What (in 什么)", emoji:"❓", tip:"Part of 什么 meaning 'what'!", strokes:4, strokeOrder:"Person radical, then cross" },
-  "么": { pinyin:"me", tone:0, meaning:"(What) particle", emoji:"💬", tip:"Comes after 什 to say 'what'!", strokes:3, strokeOrder:"Private dot, then twisted bottom" },
-  "文": { pinyin:"wén", tone:2, meaning:"Writing / Language", emoji:"✍️", tip:"A person writing beautifully!", strokes:4, strokeOrder:"Top dot, left-falling, right-falling, cross" },
-  "月": { pinyin:"yuè", tone:4, meaning:"Moon / Month", emoji:"🌙", tip:"The crescent moon shape!", strokes:4, strokeOrder:"Left stroke, hook, two horizontal inside" },
-  "天": { pinyin:"tiān", tone:1, meaning:"Sky / Heaven / Day", emoji:"☀️", tip:"Above the person - the SKY!", strokes:4, strokeOrder:"Horizontal, horizontal, left-falling, right-falling" },
-  "水": { pinyin:"shuǐ", tone:3, meaning:"Water", emoji:"💧", tip:"Water flowing with waves!", strokes:4, strokeOrder:"Central vertical, left stroke, left dot, right stroke" },
-  "寸": { pinyin:"cùn", tone:4, meaning:"Inch / Small unit", emoji:"📐", tip:"A very tiny measurement!", strokes:3, strokeOrder:"Horizontal, then vertical hook, then dot" },
-  "正": { pinyin:"zhèng", tone:4, meaning:"Correct / Upright", emoji:"✅", tip:"Stand up straight and be correct!", strokes:5, strokeOrder:"Top, vertical, middle, left, bottom" },
-  "反": { pinyin:"fǎn", tone:3, meaning:"Opposite / Reverse", emoji:"🔃", tip:"The opposite direction!", strokes:4, strokeOrder:"Left falling, horizontal turning, then right stroke" },
-  "白": { pinyin:"bái", tone:2, meaning:"White / Bright", emoji:"⬜", tip:"The bright white sun!", strokes:5, strokeOrder:"Top stroke, then box shape with inner stroke" },
-  "古": { pinyin:"gǔ", tone:3, meaning:"Ancient / Old", emoji:"🏺", tip:"Ten mouths = old stories passed down!", strokes:5, strokeOrder:"Cross shape on top, then mouth below" }
+const CD = {
+  '田':{py:'tián',t:2,en:'Field',emoji:'🌾',tip:'Looks like a rice paddy divided into sections!'},
+  '刀':{py:'dāo',t:1,en:'Knife',emoji:'🔪',tip:'Like a bent blade!'},
+  '在':{py:'zài',t:4,en:'At / Here',emoji:'📍',tip:'Used to say WHERE something is!'},
+  '上':{py:'shàng',t:4,en:'Up / Above',emoji:'⬆️',tip:'A line ABOVE — pointing up!'},
+  '下':{py:'xià',t:4,en:'Down / Below',emoji:'⬇️',tip:'A line BELOW — pointing down!'},
+  '大':{py:'dà',t:4,en:'Big',emoji:'🦣',tip:'A big person with arms spread wide!'},
+  '小':{py:'xiǎo',t:3,en:'Small',emoji:'🐜',tip:'A tiny squeeze in the middle!'},
+  '来':{py:'lái',t:2,en:'Come',emoji:'🚶',tip:'Someone is COMING toward you!'},
+  '开':{py:'kāi',t:1,en:'Open',emoji:'🚪',tip:'Opening a gate wide!'},
+  '火':{py:'huǒ',t:3,en:'Fire',emoji:'🔥',tip:'Flames dancing upward!'},
+  '关':{py:'guān',t:1,en:'Close',emoji:'🔒',tip:'Closing the gate shut!'},
+  '两':{py:'liǎng',t:3,en:'Two / Both',emoji:'✌️',tip:'Two things standing together!'},
+  '长':{py:'cháng',t:2,en:'Long',emoji:'📏',tip:'Something stretching out long!'},
+  '广':{py:'guǎng',t:3,en:'Wide',emoji:'🌅',tip:'A wide open shelter roof!'},
+  '多':{py:'duō',t:1,en:'Many',emoji:'✨✨',tip:'Two evenings — so many!'},
+  '少':{py:'shǎo',t:3,en:'Few',emoji:'🫧',tip:'Just a tiny little bit!'},
+  '目':{py:'mù',t:4,en:'Eye',emoji:'👁️',tip:'A rectangle with two pupils — an eye!'},
+  '手':{py:'shǒu',t:3,en:'Hand',emoji:'✋',tip:'Three fingers and a palm!'},
+  '本':{py:'běn',t:3,en:'Root / Book',emoji:'📚',tip:'A tree with its roots marked!'},
+  '工':{py:'gōng',t:1,en:'Work',emoji:'🔨',tip:'Like an I-beam for building!'},
+  '门':{py:'mén',t:2,en:'Door',emoji:'🚪',tip:'Two door panels side by side!'},
+  '见':{py:'jiàn',t:4,en:'See',emoji:'👀',tip:'An eye on legs — going to SEE!'},
+  '又':{py:'yòu',t:4,en:'Again',emoji:'🔄',tip:'One more time — again!'},
+  '头':{py:'tóu',t:2,en:'Head',emoji:'🗣️',tip:'Your head on top of your body!'},
+  '牛':{py:'niú',t:2,en:'Cow',emoji:'🐄',tip:'A cow with horns!'},
+  '贝':{py:'bèi',t:4,en:'Shell',emoji:'🐚',tip:'Ancient shells used as money!'},
+  '六':{py:'liù',t:4,en:'Six',emoji:'6️⃣',tip:'Six — sounds like lyoh!'},
+  '支':{py:'zhī',t:1,en:'Branch',emoji:'🌿',tip:'A hand holding a branch!'},
+  '九':{py:'jiǔ',t:3,en:'Nine',emoji:'9️⃣',tip:'Nine — like a curving hook!'},
+  '什':{py:'shén',t:2,en:'What (1)',emoji:'❓',tip:'First part of 什么 = what!'},
+  '么':{py:'me',t:0,en:'What (2)',emoji:'💬',tip:'Second part of 什么 = what!'},
+  '文':{py:'wén',t:2,en:'Writing',emoji:'✍️',tip:'A person writing beautifully!'},
+  '月':{py:'yuè',t:4,en:'Moon',emoji:'🌙',tip:'The crescent moon shape!'},
+  '天':{py:'tiān',t:1,en:'Sky / Day',emoji:'☀️',tip:'Above the big person — the SKY!'},
+  '水':{py:'shuǐ',t:3,en:'Water',emoji:'💧',tip:'Water flowing with waves!'},
+  '寸':{py:'cùn',t:4,en:'Inch',emoji:'📐',tip:'A very tiny measurement!'},
+  '正':{py:'zhèng',t:4,en:'Correct',emoji:'✅',tip:'Stand upright and be correct!'},
+  '反':{py:'fǎn',t:3,en:'Opposite',emoji:'🔃',tip:'The opposite direction!'},
+  '白':{py:'bái',t:2,en:'White',emoji:'⬜',tip:'The bright white sun!'},
+  '古':{py:'gǔ',t:3,en:'Ancient',emoji:'🏺',tip:'Ten mouths — old stories passed down!'}
 };
 
-// State
-let learnedChars = JSON.parse(localStorage.getItem('learnedChars') || '[]');
-let totalStars = parseInt(localStorage.getItem('totalStars') || '0');
-let currentChapter = null;
-let currentCharIndex = 0;
-let mediaRecorder = null;
-let audioChunks = [];
-let isRecording = false;
-let drawCtx = null;
-let isDrawing = false;
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let S = JSON.parse(localStorage.getItem('hzS')||'{}');
+// S[char] = { w: bool, s: bool }
+let stars = parseInt(localStorage.getItem('hzSt')||'0');
+let curCh = null, curIdx = 0;
+let watchW = null, quizW = null;
+let qTotal = 0, qDone = 0;
+let speechR = null, isRec = false;
+let GS = {};
 
-// ============================================================
+function save(){
+  localStorage.setItem('hzS',JSON.stringify(S));
+  localStorage.setItem('hzSt',stars);
+  updateHdr();
+}
+
+function status(c){
+  const s=S[c]||{};
+  if(s.w&&s.s) return 'mastered';
+  if(s.w||s.s) return 'partial';
+  return 'none';
+}
+
+function updateHdr(){
+  const all=Object.keys(CD);
+  document.getElementById('hStars').textContent=stars;
+  document.getElementById('hMastered').textContent=all.filter(c=>status(c)==='mastered').length;
+  document.getElementById('hWrite').textContent=all.filter(c=>S[c]?.w).length;
+  document.getElementById('hSpeak').textContent=all.filter(c=>S[c]?.s).length;
+}
+
+// ═══════════════════════════════════════
 // INIT
-// ============================================================
-function init() {
-  updateHeader();
-  renderChapters();
-  renderProgress();
+// ═══════════════════════════════════════
+function init(){
+  updateHdr();
+  renderChs();
+  renderGames();
+  renderProg();
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.addEventListener('click',()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.pane').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById('pane-'+t.dataset.tab).classList.add('active');
+      if(t.dataset.tab==='learn'&&curCh) renderLearn();
+      if(t.dataset.tab==='progress') renderProg();
+      if(t.dataset.tab==='chapters') renderChs();
+    });
+  });
 }
 
-function saveState() {
-  localStorage.setItem('learnedChars', JSON.stringify(learnedChars));
-  localStorage.setItem('totalStars', totalStars.toString());
+function goTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-'+name).classList.add('active');
 }
 
-function updateHeader() {
-  document.getElementById('totalStars').textContent = totalStars;
-  document.getElementById('totalLearned').textContent = learnedChars.length;
-}
-
-// ============================================================
+// ═══════════════════════════════════════
 // CHAPTERS
-// ============================================================
-function renderChapters() {
-  const grid = document.getElementById('chapterGrid');
-  grid.innerHTML = CHAPTERS.map(ch => {
-    const done = ch.chars.filter(c => learnedChars.includes(c)).length;
-    const pct = Math.round(done/ch.chars.length*100);
-    return `
-      <div class="chapter-card ch-${ch.id}" onclick="openChapter(${ch.id})">
-        <div class="ch-badge">${ch.emoji}</div>
-        <div class="ch-num">${ch.title}</div>
-        <div class="ch-chars">${ch.chars.slice(0,4).join(' ')}<br>${ch.chars.slice(4,8).join(' ')}</div>
-        <div class="chapter-progress-row">
-          <div class="progress-bar-wrap" style="flex:1;height:10px">
-            <div class="progress-bar" style="width:${pct}%"></div>
-          </div>
-          <span class="prog-text">${done}/8</span>
+// ═══════════════════════════════════════
+function renderChs(){
+  document.getElementById('pane-chapters').innerHTML=`<div class="ch-grid">${
+    CHAPTERS.map(ch=>{
+      const done=ch.chars.filter(c=>status(c)==='mastered').length;
+      const part=ch.chars.filter(c=>status(c)==='partial').length;
+      const pct=Math.round((done+part*.5)/8*100);
+      return `<div class="ch-card ch${ch.id}" onclick="openCh(${ch.id})">
+        <div style="font-size:1.5rem;margin-bottom:4px">${ch.emoji}</div>
+        <div class="ch-label">${ch.title}</div>
+        <div class="ch-chars">${ch.chars.slice(0,4).join(' ')}<br>${ch.chars.slice(4).join(' ')}</div>
+        <div class="ch-prog">
+          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+          <span style="font-size:.75rem;color:#888;white-space:nowrap">${done}/8⭐</span>
         </div>
-        <div class="ch-stars">${done > 0 ? '⭐'.repeat(Math.min(done,3)) : '○○○'}</div>
+      </div>`;
+    }).join('')
+  }</div>`;
+}
+
+function openCh(id){
+  curCh=CHAPTERS[id]; curIdx=0;
+  watchW=null; quizW=null;
+  goTab('learn'); renderLearn();
+}
+
+// ═══════════════════════════════════════
+// LEARN
+// ═══════════════════════════════════════
+function renderLearn(){
+  if(!curCh) return;
+  document.getElementById('pane-learn').innerHTML=`
+    <div class="learn-hdr">
+      <button class="back-btn" onclick="goTab('chapters');renderChs()">←</button>
+      <div>
+        <div style="font-size:1.2rem;font-weight:800;color:#333">${curCh.emoji} ${curCh.title}</div>
+        <div style="font-size:.82rem;color:#888">Pass ✏️ Write Test + 🎤 Speak Test to master each character!</div>
       </div>
-    `;
+    </div>
+    <div class="char-nav" id="cnav"></div>
+    <div id="carea"></div>`;
+  renderNav(); renderChar();
+}
+
+function renderNav(){
+  const n=document.getElementById('cnav');
+  if(!n) return;
+  n.innerHTML=curCh.chars.map((c,i)=>{
+    const st=status(c);
+    return `<button class="cnav ${i===curIdx?'active':''} ${st==='mastered'?'mastered':st==='partial'?'partial':''}" onclick="pickC(${i})">${c}</button>`;
   }).join('');
 }
 
-function openChapter(id) {
-  currentChapter = CHAPTERS[id];
-  currentCharIndex = 0;
-  showMainTab('learn');
-  renderLearnPage();
+function pickC(i){
+  curIdx=i; watchW=null; quizW=null;
+  renderNav(); renderChar();
 }
 
-// ============================================================
-// LEARN PAGE
-// ============================================================
-function renderLearnPage() {
-  if (!currentChapter) return;
-  const ch = currentChapter;
-  const content = document.getElementById('learnContent');
-  content.innerHTML = `
-    <div class="learn-header">
-      <button class="back-btn" onclick="showMainTab('chapters')">←</button>
-      <div>
-        <div style="font-size:1.3rem;font-weight:800;color:#333">${ch.emoji} ${ch.title}</div>
-        <div style="font-size:0.9rem;color:#888">Tap a character to learn it!</div>
+function renderChar(){
+  const area=document.getElementById('carea');
+  if(!area) return;
+  const c=curCh.chars[curIdx], d=CD[c], sv=S[c]||{}, st=status(c);
+  const step1done=sv.w, step2done=sv.s;
+
+  area.innerHTML=`
+    <!-- INTRO -->
+    <div class="card">
+      <div class="big-char-wrap">
+        <span class="big-char" onclick="spk('${c}')">${c}</span>
+        <div class="char-pills">
+          <span class="pill py">${d.py}</span>
+          <span class="pill">${d.en}</span>
+          <span class="pill">${d.emoji}</span>
+        </div>
+        <div class="char-tip">💡 ${d.tip}</div>
+        <div style="text-align:center;color:#bbb;font-size:.8rem;margin-top:4px">👆 Tap character to hear it!</div>
       </div>
     </div>
-    <div class="char-nav" id="charNav"></div>
-    <div id="charCardArea"></div>
-  `;
-  renderCharNav();
-  renderCharCard();
-}
 
-function renderCharNav() {
-  const nav = document.getElementById('charNav');
-  if (!nav) return;
-  nav.innerHTML = currentChapter.chars.map((c, i) => `
-    <button class="char-nav-btn ${i===currentCharIndex?'active':''} ${learnedChars.includes(c)?'learned':''}"
-      onclick="selectChar(${i})">${c}</button>
-  `).join('');
-}
-
-function selectChar(i) {
-  currentCharIndex = i;
-  renderCharNav();
-  renderCharCard();
-  // Reset canvas
-  setTimeout(() => {
-    setupCanvas();
-  }, 100);
-}
-
-function renderCharCard() {
-  const area = document.getElementById('charCardArea');
-  if (!area) return;
-  const c = currentChapter.chars[currentCharIndex];
-  const d = CHAR_DATA[c];
-  const isLearned = learnedChars.includes(c);
-
-  area.innerHTML = `
-    <div class="char-card">
-      <div class="char-display">
-        <span class="big-char" onclick="speakChar('${c}')" title="Click to hear!">${c}</span>
-        <div class="pinyin-tones">
-          <span style="color:#EF233C">1st: ā</span> &nbsp;
-          <span style="color:#E77C24">2nd: á</span> &nbsp;
-          <span style="color:#3E8E14">3rd: ǎ</span> &nbsp;
-          <span style="color:#1171D4">4th: à</span> &nbsp;
-          <span style="color:#888">light: a</span>
-        </div>
-        <div class="char-info">
-          <span class="info-pill pinyin tone${d.tone}">${d.pinyin}</span>
-          <span class="info-pill">${d.strokes} strokes</span>
-        </div>
-        <div class="char-meaning">
-          <span class="emoji">${d.emoji}</span>
-          <strong>${d.meaning}</strong><br>
-          <span style="color:#aaa;font-size:0.9rem;font-style:italic">${d.tip}</span>
-        </div>
-      </div>
-
-      <div class="section-divider"></div>
-
-      <!-- PRONUNCIATION -->
-      <div class="pronounce-section">
-        <div class="section-title">🔊 Pronunciation</div>
-        <div class="audio-controls">
-          <button class="hear-btn" onclick="speakChar('${c}')">🔊 Hear it!</button>
-          <button class="hear-btn slow" onclick="speakChar('${c}', true)">🐢 Slow</button>
-        </div>
-        <div class="record-section">
-          <div style="font-size:0.9rem;color:#555;margin-bottom:8px">🎤 Now YOU try! Record your voice:</div>
-          <button class="record-btn" id="recordBtn" onclick="toggleRecord('${c}')">🎤 Hold to Record</button>
-          <div class="record-status" id="recordStatus">Press and hold to record your pronunciation!</div>
-          <div id="audioPlayback"></div>
-        </div>
-      </div>
-
-      <!-- STROKE ORDER -->
-      <div class="stroke-section">
-        <div class="section-title">✏️ How to Write: <span style="font-family:'Noto Sans SC';font-size:1.3rem;margin-left:6px">${c}</span></div>
-        <div style="font-size:0.9rem;color:#555;margin-bottom:10px">📝 ${d.strokeOrder}</div>
-        <div class="stroke-display" id="strokeAnim_${c}"></div>
-        <div style="margin-top:8px;">
-          <button class="canvas-btn" onclick="animateStrokes('${c}')" style="border-color:var(--green);color:var(--green);font-size:0.9rem;padding:8px 14px">▶️ Show stroke order</button>
-        </div>
-        <div class="writing-tips" style="margin-top:12px">
-          💡 <strong>Remember:</strong> Chinese characters are usually written <strong>top → bottom</strong>, <strong>left → right</strong>!
-        </div>
-      </div>
-
-      <!-- PRACTICE CANVAS -->
-      <div class="draw-section">
-        <div class="section-title">🖊️ Practice Writing!</div>
-        <div class="canvas-container">
-          <div class="draw-canvas-wrap">
-            <canvas id="drawCanvas" width="200" height="200"></canvas>
-            <div class="canvas-ghost" id="canvasGhost" style="width:200px;height:200px;font-size:170px;color:#845EC2">${c}</div>
-          </div>
-          <div class="canvas-btns">
-            <button class="canvas-btn" onclick="clearCanvas()">🗑️ Clear</button>
-            <button class="canvas-btn" onclick="toggleGuide()" id="guideBtn">👁️ Show guide</button>
-            <button class="canvas-btn" onclick="setPenSize(4)" style="border-color:#333">✏️ Thin</button>
-            <button class="canvas-btn" onclick="setPenSize(10)" style="border-color:#333">🖊️ Thick</button>
-          </div>
-        </div>
-      </div>
-
-      <button class="mark-learned-btn ${isLearned?'done':''}" id="learnBtn" onclick="markLearned('${c}')">
-        ${isLearned ? '✅ Already Learned!' : '🌟 Mark as Learned!'}
-      </button>
-
-      <div style="display:flex;justify-content:space-between;margin-top:12px">
-        <button onclick="selectChar(${Math.max(0,currentCharIndex-1)})" ${currentCharIndex===0?'disabled':''} 
-          style="background:white;border:3px solid #ddd;border-radius:14px;padding:10px 18px;font-family:'Baloo 2',cursive;font-weight:700;cursor:pointer;box-shadow:0 3px 0 #ddd">
-          ← Previous
-        </button>
-        <button onclick="selectChar(${Math.min(7,currentCharIndex+1)})" ${currentCharIndex===7?'disabled':''} 
-          style="background:var(--primary);color:white;border:none;border-radius:14px;padding:10px 18px;font-family:'Baloo 2',cursive;font-weight:700;cursor:pointer;box-shadow:0 4px 0 #C04A1E">
-          Next →
-        </button>
-      </div>
+    <!-- STEPS ROW -->
+    <div class="steps-row">
+      <div class="sbadge ${step1done?'done':'now'}"><div class="sn">1</div> ✏️ Write Test</div>
+      <div class="sbadge ${step1done?(step2done?'done':'now'):''}"><div class="sn">2</div> 🎤 Speak Test</div>
+      <div class="sbadge ${st==='mastered'?'done':''}"><div class="sn">3</div> ⭐ Mastered!</div>
     </div>
-  `;
 
-  setTimeout(setupCanvas, 100);
-}
+    <!-- WRITE TEST CARD -->
+    <div class="card">
+      <div class="card-title">✏️ Step 1 — Learn to Write: <span style="font-family:'Noto Sans SC';font-size:1.3rem;margin-left:4px">${c}</span></div>
+      <div class="div"></div>
 
-// ============================================================
-// SPEECH
-// ============================================================
-function speakChar(char, slow = false) {
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(char);
-    u.lang = 'zh-CN';
-    u.rate = slow ? 0.4 : 0.9;
-    u.pitch = 1.1;
-    window.speechSynthesis.speak(u);
-  } else {
-    alert('Your browser does not support speech. Please try Chrome!');
-  }
-}
+      <div style="font-size:.88rem;font-weight:700;color:#666;margin-bottom:8px">👀 Watch the stroke order animation first:</div>
+      <div class="writer-wrap">
+        <div class="writer-box" id="watchBox" style="width:220px;height:220px"></div>
+        <div class="wrow">
+          <button class="wbtn blue" onclick="doAnim()">▶️ Animate</button>
+          <button class="wbtn" onclick="doLoop()">🔁 Loop</button>
+        </div>
+      </div>
 
-// ============================================================
-// RECORDING
-// ============================================================
-async function toggleRecord(char) {
-  if (isRecording) {
-    stopRecord();
-  } else {
-    await startRecord(char);
-  }
-}
+      <div class="div"></div>
 
-async function startRecord(char) {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder = new MediaRecorder(stream);
-    audioChunks = [];
-    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-    mediaRecorder.onstop = () => {
-      const blob = new Blob(audioChunks, { type: 'audio/webm' });
-      const url = URL.createObjectURL(blob);
-      const pb = document.getElementById('audioPlayback');
-      if (pb) {
-        pb.innerHTML = `
-          <div style="margin-top:10px;background:#f0f0f0;border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px">
-            <span>🎧 Your recording:</span>
-            <audio controls src="${url}" style="flex:1;height:32px"></audio>
-          </div>
-          <div style="margin-top:8px;font-size:0.9rem;color:#555">
-            Compare with the correct pronunciation: 
-            <button onclick="speakChar('${char}')" style="background:var(--blue);color:white;border:none;border-radius:8px;padding:4px 10px;cursor:pointer;font-weight:700">🔊 Play correct</button>
-          </div>
-        `;
+      <div style="font-size:.88rem;font-weight:700;color:#666;margin-bottom:8px">
+        ✍️ Now draw each stroke in order — follow the correct stroke direction!
+        <span style="font-size:.78rem;color:#aaa;font-weight:400">(After 3 mistakes on a stroke, a hint appears)</span>
+      </div>
+      <div class="writer-wrap">
+        <div class="writer-box quiz" id="quizBox" style="width:220px;height:220px"></div>
+        <div class="wrow">
+          <button class="wbtn red" onclick="resetQ()">🗑️ Start Over</button>
+          <button class="wbtn" onclick="doHint()">💡 Hint</button>
+        </div>
+        <div class="sstatus hint" id="sstatus">✏️ Draw the 1st stroke in the correct direction!</div>
+        <div class="qprog" id="qprog"></div>
+      </div>
+
+      ${step1done?`<div class="master-badge" style="background:linear-gradient(135deg,#06D6A0,#059669);color:white;box-shadow:0 4px 0 #047857">✅ Write Test PASSED!</div>`:''}
+    </div>
+
+    <!-- SPEAK TEST CARD -->
+    <div class="card" ${!step1done?'style="opacity:.55;pointer-events:none"':''}>
+      <div class="card-title">🎤 Step 2 — Pronunciation Test</div>
+      ${!step1done
+        ? `<div class="lock-gate"><div style="font-size:2.2rem">🔒</div>
+            <div style="font-weight:800;color:#888;margin-top:6px">Complete the Write Test first!</div>
+            <div style="font-size:.82rem;color:#bbb;margin-top:4px">Pass Step 1 to unlock</div>
+           </div>`
+        : speakTestHTML(c,d,sv)
       }
-      stream.getTracks().forEach(t => t.stop());
-    };
-    mediaRecorder.start();
-    isRecording = true;
-    const btn = document.getElementById('recordBtn');
-    const status = document.getElementById('recordStatus');
-    if (btn) { btn.textContent = '🔴 Recording... (click to stop)'; btn.classList.add('recording'); }
-    if (status) status.textContent = '🎤 Recording your voice...';
-  } catch(e) {
-    const status = document.getElementById('recordStatus');
-    if (status) status.textContent = '⚠️ Microphone not available. Please allow microphone access!';
-  }
-}
-
-function stopRecord() {
-  if (mediaRecorder && isRecording) {
-    mediaRecorder.stop();
-    isRecording = false;
-    const btn = document.getElementById('recordBtn');
-    const status = document.getElementById('recordStatus');
-    if (btn) { btn.textContent = '🎤 Record Again'; btn.classList.remove('recording'); }
-    if (status) status.textContent = '✅ Done! Listen and compare below 👇';
-  }
-}
-
-// ============================================================
-// STROKE ANIMATION
-// ============================================================
-function animateStrokes(char) {
-  const d = CHAR_DATA[char];
-  const container = document.getElementById(`strokeAnim_${char}`);
-  if (!container) return;
-  container.innerHTML = '';
-  
-  // Show character building up step by step visually
-  const steps = d.strokes;
-  for (let i = 1; i <= Math.min(steps, 6); i++) {
-    const step = document.createElement('div');
-    step.className = 'stroke-step';
-    step.innerHTML = `
-      <div class="stroke-char ${i===steps?'highlight':''}">
-        <span style="font-family:'Noto Sans SC';font-size:2rem;font-weight:900;opacity:${0.2 + (i/steps)*0.8}">${char}</span>
-      </div>
-      <div class="stroke-num">Stroke ${i}</div>
-    `;
-    if (i < Math.min(steps,6)) {
-      const arrow = document.createElement('div');
-      arrow.className = 'stroke-arrow';
-      arrow.textContent = '→';
-      container.appendChild(step);
-      container.appendChild(arrow);
-    } else {
-      container.appendChild(step);
-    }
-  }
-}
-
-// ============================================================
-// CANVAS
-// ============================================================
-let penSize = 6;
-let guideVisible = false;
-
-function setupCanvas() {
-  const canvas = document.getElementById('drawCanvas');
-  if (!canvas) return;
-  drawCtx = canvas.getContext('2d');
-  drawCtx.strokeStyle = '#1A1A2E';
-  drawCtx.lineWidth = penSize;
-  drawCtx.lineCap = 'round';
-  drawCtx.lineJoin = 'round';
-
-  canvas.addEventListener('mousedown', startDraw);
-  canvas.addEventListener('mousemove', draw);
-  canvas.addEventListener('mouseup', endDraw);
-  canvas.addEventListener('mouseleave', endDraw);
-  canvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(e.touches[0]); }, {passive:false});
-  canvas.addEventListener('touchmove', e => { e.preventDefault(); draw(e.touches[0]); }, {passive:false});
-  canvas.addEventListener('touchend', endDraw);
-}
-
-function getPos(e, canvas) {
-  const rect = canvas.getBoundingClientRect();
-  return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-}
-
-function startDraw(e) {
-  isDrawing = true;
-  const canvas = document.getElementById('drawCanvas');
-  const pos = getPos(e, canvas);
-  drawCtx.beginPath();
-  drawCtx.moveTo(pos.x, pos.y);
-}
-
-function draw(e) {
-  if (!isDrawing) return;
-  const canvas = document.getElementById('drawCanvas');
-  const pos = getPos(e, canvas);
-  drawCtx.lineTo(pos.x, pos.y);
-  drawCtx.stroke();
-}
-
-function endDraw() { isDrawing = false; }
-
-function clearCanvas() {
-  const canvas = document.getElementById('drawCanvas');
-  if (canvas && drawCtx) drawCtx.clearRect(0,0,canvas.width,canvas.height);
-}
-
-function toggleGuide() {
-  guideVisible = !guideVisible;
-  const ghost = document.getElementById('canvasGhost');
-  const btn = document.getElementById('guideBtn');
-  if (ghost) ghost.style.opacity = guideVisible ? '0.12' : '0.04';
-  if (btn) btn.textContent = guideVisible ? '🙈 Hide guide' : '👁️ Show guide';
-}
-
-function setPenSize(size) {
-  penSize = size;
-  if (drawCtx) drawCtx.lineWidth = size;
-}
-
-// ============================================================
-// MARK LEARNED
-// ============================================================
-function markLearned(char) {
-  const btn = document.getElementById('learnBtn');
-  if (learnedChars.includes(char)) return;
-  learnedChars.push(char);
-  totalStars += 1;
-  saveState();
-  updateHeader();
-  renderChapters();
-  renderProgress();
-  renderCharNav();
-  if (btn) { btn.textContent = '✅ Already Learned!'; btn.classList.add('done'); }
-  
-  // Celebrate!
-  showCelebration(`🌟 Great job learning ${char}!`, `You earned a star! ${totalStars} stars total!`);
-}
-
-// ============================================================
-// CELEBRATION
-// ============================================================
-function showCelebration(text, sub) {
-  document.getElementById('celText').textContent = text;
-  document.getElementById('celSub').textContent = sub;
-  document.getElementById('celebration').classList.add('show');
-  spawnConfetti();
-}
-
-function closeCelebration() {
-  document.getElementById('celebration').classList.remove('show');
-  // Remove confetti
-  document.querySelectorAll('.confetti-piece').forEach(c => c.remove());
-}
-
-function spawnConfetti() {
-  const colors = ['#FF6B35','#FFD166','#06D6A0','#118AB2','#845EC2','#FF9EBB'];
-  for (let i = 0; i < 40; i++) {
-    setTimeout(() => {
-      const piece = document.createElement('div');
-      piece.className = 'confetti-piece';
-      piece.style.cssText = `
-        left: ${Math.random()*100}vw;
-        top: -20px;
-        background: ${colors[Math.floor(Math.random()*colors.length)]};
-        transform: rotate(${Math.random()*360}deg);
-        animation-duration: ${1.5 + Math.random()}s;
-        animation-delay: ${Math.random()*0.5}s;
-        width: ${6+Math.random()*10}px;
-        height: ${6+Math.random()*10}px;
-        border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
-      `;
-      document.body.appendChild(piece);
-      setTimeout(() => piece.remove(), 3000);
-    }, i * 40);
-  }
-}
-
-// ============================================================
-// GAMES
-// ============================================================
-let gameState = {};
-
-function startGame(type) {
-  gameState = { type, score:0, total:0, streak:0 };
-  document.getElementById('gameModal').classList.add('open');
-  renderGame(type);
-}
-
-function closeGame() {
-  document.getElementById('gameModal').classList.remove('open');
-  if (mediaRecorder && isRecording) stopRecord();
-}
-
-function renderGame(type) {
-  const gc = document.getElementById('gameContent');
-  const allChars = Object.keys(CHAR_DATA);
-
-  if (type === 'match') {
-    // Match character to meaning
-    const char = allChars[Math.floor(Math.random()*allChars.length)];
-    const d = CHAR_DATA[char];
-    const wrong = allChars.filter(c=>c!==char).sort(()=>Math.random()-0.5).slice(0,3);
-    const opts = [char, ...wrong].sort(()=>Math.random()-0.5);
-    gameState.current = char;
-
-    gc.innerHTML = `
-      <div class="game-title">🎯 Match It!</div>
-      <div class="game-score">Score: ${gameState.score} | Streak: ${gameState.streak}🔥</div>
-      <div style="font-size:0.9rem;color:#888;margin-bottom:12px">What does this character mean?</div>
-      <div class="match-q">${char}</div>
-      <div class="match-hint">Pinyin: ${d.pinyin} &nbsp; Click to hear: <button onclick="speakChar('${char}')" style="background:none;border:none;cursor:pointer;font-size:1.1rem">🔊</button></div>
-      <div class="match-options">
-        ${opts.map(c => `
-          <button class="match-opt" onclick="checkMatch('${c}','${char}',this)">
-            ${CHAR_DATA[c].emoji} ${CHAR_DATA[c].meaning.split('/')[0]}
-          </button>
-        `).join('')}
-      </div>
-      <div id="gameResult"></div>
-    `;
-  }
-
-  else if (type === 'find') {
-    // Find the character matching the description
-    const char = allChars[Math.floor(Math.random()*allChars.length)];
-    const d = CHAR_DATA[char];
-    const wrong = allChars.filter(c=>c!==char).sort(()=>Math.random()-0.5).slice(0,7);
-    const opts = [char, ...wrong].sort(()=>Math.random()-0.5);
-    gameState.current = char;
-
-    gc.innerHTML = `
-      <div class="game-title">🔍 Find It!</div>
-      <div class="game-score">Score: ${gameState.score} | Streak: ${gameState.streak}🔥</div>
-      <div class="find-clue">
-        Find: <strong>${d.emoji} ${d.meaning.split('/')[0]}</strong><br>
-        <span style="font-size:1rem;color:#888">Pinyin: ${d.pinyin}</span>
-      </div>
-      <div class="find-grid">
-        ${opts.map(c => `
-          <div class="find-opt" onclick="checkFind('${c}','${char}',this)">${c}</div>
-        `).join('')}
-      </div>
-      <div id="gameResult"></div>
-    `;
-  }
-
-  else if (type === 'pinyin') {
-    // Choose correct pinyin
-    const char = allChars[Math.floor(Math.random()*allChars.length)];
-    const d = CHAR_DATA[char];
-    const wrongPinyins = Object.values(CHAR_DATA).filter(x=>x.pinyin!==d.pinyin).map(x=>x.pinyin);
-    const wrong3 = [...new Set(wrongPinyins)].sort(()=>Math.random()-0.5).slice(0,3);
-    const opts = [d.pinyin, ...wrong3].sort(()=>Math.random()-0.5);
-    gameState.current = char;
-
-    gc.innerHTML = `
-      <div class="game-title">🎵 Pinyin Picker!</div>
-      <div class="game-score">Score: ${gameState.score} | Streak: ${gameState.streak}🔥</div>
-      <div style="font-size:0.9rem;color:#888;margin-bottom:12px">How do you pronounce this?</div>
-      <div class="match-q" onclick="speakChar('${char}')" style="cursor:pointer" title="Click to hear">${char} 🔊</div>
-      <div style="text-align:center;color:#888;margin-bottom:16px;font-size:0.9rem">Click the character to hear it!</div>
-      <div class="match-options">
-        ${opts.map(p => `
-          <button class="match-opt" onclick="checkPinyin('${p}','${d.pinyin}',this)" style="font-size:1.2rem;font-weight:800">${p}</button>
-        `).join('')}
-      </div>
-      <div id="gameResult"></div>
-    `;
-  }
-
-  else if (type === 'flash') {
-    // Flash card - show char, guess meaning
-    const char = allChars[Math.floor(Math.random()*allChars.length)];
-    const d = CHAR_DATA[char];
-    gameState.current = char;
-    gameState.revealed = false;
-
-    gc.innerHTML = `
-      <div class="game-title">⚡ Flash Cards!</div>
-      <div class="game-score">Score: ${gameState.score} | Streak: ${gameState.streak}🔥</div>
-      <div style="font-size:0.9rem;color:#888;margin-bottom:12px">What does this mean? Think first, then reveal!</div>
-      <div class="match-q" onclick="speakChar('${char}')">${char}</div>
-      <div style="text-align:center;color:#aaa;font-size:0.85rem;margin-bottom:16px">Click to hear pronunciation 🔊</div>
-      <div id="flashReveal" style="text-align:center">
-        <button onclick="revealFlash('${char}')" class="next-btn" style="background:var(--purple);box-shadow:0 4px 0 #5E3D96">
-          🔮 Reveal Answer!
-        </button>
-      </div>
-    `;
-  }
-}
-
-function checkMatch(chosen, correct, btn) {
-  document.querySelectorAll('.match-opt').forEach(b => b.disabled = true);
-  if (chosen === correct) {
-    btn.classList.add('correct');
-    gameState.score++;
-    gameState.streak++;
-    gameState.total++;
-    showGameResult(true, correct);
-  } else {
-    btn.classList.add('wrong');
-    gameState.streak = 0;
-    gameState.total++;
-    // highlight correct
-    document.querySelectorAll('.match-opt').forEach(b => {
-      if (b.textContent.includes(CHAR_DATA[correct].meaning.split('/')[0])) b.classList.add('correct');
-    });
-    showGameResult(false, correct);
-  }
-}
-
-function checkFind(chosen, correct, el) {
-  document.querySelectorAll('.find-opt').forEach(b => b.style.pointerEvents='none');
-  if (chosen === correct) {
-    el.classList.add('correct');
-    gameState.score++;
-    gameState.streak++;
-    showGameResult(true, correct);
-  } else {
-    el.classList.add('wrong');
-    gameState.streak = 0;
-    document.querySelectorAll('.find-opt').forEach(b => {
-      if (b.textContent === correct) b.classList.add('correct');
-    });
-    showGameResult(false, correct);
-  }
-}
-
-function checkPinyin(chosen, correct, btn) {
-  document.querySelectorAll('.match-opt').forEach(b => b.disabled = true);
-  if (chosen === correct) {
-    btn.classList.add('correct');
-    gameState.score++;
-    gameState.streak++;
-    showGameResult(true, gameState.current);
-  } else {
-    btn.classList.add('wrong');
-    gameState.streak = 0;
-    document.querySelectorAll('.match-opt').forEach(b => {
-      if (b.textContent.trim() === correct) b.classList.add('correct');
-    });
-    showGameResult(false, gameState.current);
-  }
-}
-
-function revealFlash(char) {
-  const d = CHAR_DATA[char];
-  document.getElementById('flashReveal').innerHTML = `
-    <div style="background:#FFF8E8;border-radius:16px;padding:16px;margin-bottom:12px;border:2px solid var(--secondary)">
-      <div style="font-size:2rem">${d.emoji}</div>
-      <div style="font-size:1.3rem;font-weight:800;color:#333">${d.meaning}</div>
-      <div style="color:var(--primary);font-size:1.1rem;font-weight:700">${d.pinyin}</div>
     </div>
-    <div style="font-size:1rem;font-weight:700;color:#555;margin-bottom:12px">Did you get it right?</div>
-    <div style="display:flex;gap:10px">
-      <button onclick="flashAnswer(true)" style="flex:1;background:var(--green);color:white;border:none;border-radius:14px;padding:14px;font-family:'Baloo 2';font-size:1rem;font-weight:800;cursor:pointer;box-shadow:0 4px 0 #04A07A">✅ Yes!</button>
-      <button onclick="flashAnswer(false)" style="flex:1;background:var(--red);color:white;border:none;border-radius:14px;padding:14px;font-family:'Baloo 2';font-size:1rem;font-weight:800;cursor:pointer;box-shadow:0 4px 0 #A0001C">❌ No</button>
+
+    ${st==='mastered'?`<div class="master-badge" style="background:linear-gradient(135deg,#FFD700,#FF8C00);color:white;box-shadow:0 4px 0 #B8860B">
+      🌟 MASTERED! You can write AND say "${c}" (${d.py})!</div>`:''}
+
+    <div style="display:flex;justify-content:space-between;margin-top:14px">
+      <button onclick="pickC(${Math.max(0,curIdx-1)})" ${curIdx===0?'disabled':''} class="wbtn" style="min-width:90px">← Prev</button>
+      <button onclick="pickC(${Math.min(7,curIdx+1)})" ${curIdx===7?'disabled':''} class="wbtn blue" style="min-width:90px">Next →</button>
+    </div>
+  `;
+
+  setTimeout(()=>{ initWatch(c); if(!step1done) initQuiz(c); }, 100);
+}
+
+function speakTestHTML(c, d, sv){
+  return `
+    <div style="background:#F0F9FF;border-radius:16px;padding:16px;border:2px solid #BAE6FD;margin-bottom:12px">
+      <div style="font-size:.88rem;font-weight:700;color:#555;margin-bottom:10px">First listen carefully, then try to say it yourself:</div>
+      <div class="hear-row">
+        <button class="hbtn" onclick="spk('${c}')">🔊 Hear it!</button>
+        <button class="hbtn slow" onclick="spk('${c}',true)">🐢 Slow</button>
+      </div>
+      <div style="font-size:.9rem;color:#555">
+        Pinyin: <strong style="color:var(--primary);font-size:1.1rem">${d.py}</strong>
+        &nbsp; Tone ${d.t===0?'neutral':d.t}
+        &nbsp; <span style="font-size:.8rem;color:#aaa">${['','1st (ā — flat)','2nd (á — rising)','3rd (ǎ — dip)','4th (à — falling)','neutral (light)'][d.t]}</span>
+      </div>
+    </div>
+
+    <div class="pron-box">
+      <div style="text-align:center;font-size:.95rem;font-weight:800;color:#555;margin-bottom:4px">
+        Say: <span style="font-family:'Noto Sans SC';font-size:1.8rem;font-weight:900;color:#1A1A2E">${c}</span>
+        &nbsp; = &nbsp; <strong style="color:var(--primary);font-size:1.2rem">${d.py}</strong>
+      </div>
+      <div style="text-align:center;font-size:.8rem;color:#bbb;margin-bottom:12px">Speak clearly into your mic in a quiet place 🤫</div>
+      <button class="rbtn" id="recBtn" onclick="toggleRec('${c}','${d.py}','${d.en}')">🎤 Tap to Record</button>
+      <div id="rresult"></div>
+      ${sv.s?`<div class="master-badge" style="background:linear-gradient(135deg,#118AB2,#0369A1);color:white;box-shadow:0 4px 0 #075985;margin-top:10px">✅ Speak Test PASSED!</div>`:''}
     </div>
   `;
 }
 
-function flashAnswer(correct) {
-  if (correct) { gameState.score++; gameState.streak++; }
-  else gameState.streak = 0;
-  showGameResult(correct, gameState.current);
-}
+// ═══════════════════════════════════════
+// HANZI WRITER
+// ═══════════════════════════════════════
 
-function showGameResult(correct, char) {
-  const d = CHAR_DATA[char];
-  const result = document.getElementById('gameResult');
-  if (!result) return;
-  if (correct) {
-    result.innerHTML = `
-      <div class="result-box result-correct">
-        <span class="big-emoji">${['🎉','⭐','🌟','🥳','🎊'][Math.floor(Math.random()*5)]}</span>
-        Correct! ${d.emoji} = ${d.meaning}
-        <br><span style="font-size:0.9rem">Score: ${gameState.score} | Streak: ${gameState.streak}🔥</span>
-      </div>
-      <button class="next-btn" onclick="renderGame('${gameState.type}')">Next Question ➜</button>
-    `;
-    if (gameState.streak > 0 && gameState.streak % 5 === 0) {
-      spawnConfetti();
-    }
-  } else {
-    result.innerHTML = `
-      <div class="result-box result-wrong">
-        <span class="big-emoji">😅</span>
-        Not quite! ${char} means ${d.meaning} (${d.pinyin})
-        <br><span style="font-size:0.9rem">Keep practicing! You've got this! 💪</span>
-      </div>
-      <button class="next-btn" onclick="renderGame('${gameState.type}')">Try Again ➜</button>
-    `;
-  }
-}
 
-// ============================================================
-// PROGRESS
-// ============================================================
-function renderProgress() {
-  const div = document.getElementById('progressContent');
-  if (!div) return;
-  const total = Object.keys(CHAR_DATA).length;
-  const done = learnedChars.length;
-  const pct = Math.round(done/total*100);
+// ═══════════════════════════════════════
+// HANZI WRITER — dynamic load
+// ═══════════════════════════════════════
+let HW = null; // HanziWriter global ref
 
-  div.innerHTML = `
-    <div class="progress-section">
-      <div class="section-title">🏆 Your Progress</div>
-      <div style="font-size:1.1rem;color:#555">You've learned <strong style="color:var(--primary)">${done}</strong> out of <strong>${total}</strong> characters!</div>
-      <div class="progress-bar-wrap" style="margin:12px 0">
-        <div class="progress-bar" style="width:${pct}%"></div>
-      </div>
-      <div style="text-align:right;font-size:0.9rem;color:#888">${pct}% complete</div>
-      <div style="font-size:1.1rem;margin-top:8px">⭐ Total stars: <strong>${totalStars}</strong></div>
-    </div>
-    ${CHAPTERS.map(ch => {
-      const cdone = ch.chars.filter(c => learnedChars.includes(c)).length;
-      return `
-        <div class="progress-section">
-          <div class="section-title">${ch.emoji} ${ch.title}</div>
-          <div class="char-dots">
-            ${ch.chars.map(c => `
-              <div class="char-dot ${learnedChars.includes(c)?'done':''}" title="${CHAR_DATA[c].meaning}">
-                ${c}
-              </div>
-            `).join('')}
-          </div>
-          <div class="progress-bar-wrap" style="margin-top:10px">
-            <div class="progress-bar" style="width:${Math.round(cdone/8*100)}%"></div>
-          </div>
-          <div style="font-size:0.85rem;color:#888;margin-top:4px">${cdone}/8 learned</div>
-        </div>
-      `;
-    }).join('')}
-    ${done > 0 ? `
-      <div style="text-align:center;padding:20px">
-        <button onclick="if(confirm('Reset all progress?')){learnedChars=[];totalStars=0;saveState();updateHeader();renderChapters();renderProgress();}" 
-          style="background:white;border:2px solid #ddd;border-radius:12px;padding:10px 20px;font-family:'Baloo 2';font-size:0.9rem;cursor:pointer;color:#999">
-          🔄 Reset Progress
-        </button>
-      </div>
-    ` : ''}
-  `;
-}
-
-// ============================================================
-// TABS
-// ============================================================
-function showMainTab(name) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(`tab-${name}`).classList.add('active');
-  document.querySelectorAll('.main-tab').forEach(t => {
-    if (t.textContent.toLowerCase().includes(name.slice(0,3))) t.classList.add('active');
-  });
-  if (name === 'learn' && currentChapter) renderLearnPage();
-  if (name === 'progress') renderProgress();
-  if (name === 'chapters') renderChapters();
-}
-
-// Match tabs more precisely
-document.querySelectorAll('.main-tab').forEach(t => {
-  t.onclick = function() {
-    document.querySelectorAll('.main-tab').forEach(x => x.classList.remove('active'));
-    this.classList.add('active');
+function loadHanziWriter(cb){
+  if(HW){ cb(); return; }
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/hanzi-writer@3.5.0/dist/hanzi-writer.min.js';
+  s.onload = () => { HW = window.HanziWriter; cb(); };
+  s.onerror = () => {
+    // Try alternate CDN
+    const s2 = document.createElement('script');
+    s2.src = 'https://unpkg.com/hanzi-writer@3.5.0/dist/hanzi-writer.min.js';
+    s2.onload = () => { HW = window.HanziWriter; cb(); };
+    s2.onerror = () => showToast('⚠️ Could not load Hanzi Writer. Check your internet connection.');
+    document.head.appendChild(s2);
   };
-});
+  document.head.appendChild(s);
+}
 
-// ============================================================
-// START
-// ============================================================
+function hzLoader(char, onLoad, onError){
+  const urls = [
+    `https://cdn.jsdelivr.net/npm/hanzi-writer-data@latest/${encodeURIComponent(char)}.json`,
+    `https://unpkg.com/hanzi-writer-data@latest/${encodeURIComponent(char)}.json`
+  ];
+  function tryUrl(i){
+    if(i>=urls.length){ onError(); return; }
+    fetch(urls[i]).then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(onLoad).catch(()=>tryUrl(i+1));
+  }
+  tryUrl(0);
+}
+
+function initWatch(char){
+  loadHanziWriter(()=>{
+    const el=document.getElementById('watchBox');
+    if(!el||!HW) return;
+    try {
+      watchW = HW.create('watchBox', char, {
+        width:214, height:214, padding:14,
+        showOutline:true, strokeColor:'#1A1A2E', outlineColor:'#E0D0FF',
+        strokeAnimationSpeed:1.2, delayBetweenStrokes:450,
+        charDataLoader: hzLoader
+      });
+    } catch(e){ console.log('Watch error',e); }
+  });
+}
+
+function initQuiz(char){
+  loadHanziWriter(()=>{
+    const el=document.getElementById('quizBox');
+    if(!el||!HW) return;
+    qDone=0; qTotal=0;
+    try {
+      quizW = HW.create('quizBox', char, {
+        width:214, height:214, padding:14,
+        showOutline:true, showCharacter:false,
+        strokeColor:'#845EC2', outlineColor:'#E0D0FF',
+        highlightColor:'#06D6A0', drawingColor:'#845EC2', drawingWidth:5,
+        showHintAfterMisses:3, highlightOnComplete:true,
+        charDataLoader: hzLoader,
+        onLoadCharDataSuccess:(data)=>{
+          qTotal=data.strokes.length;
+          updQProg();
+          beginQuiz(char);
+        },
+        onLoadCharDataError:()=>{
+          const s=document.getElementById('sstatus');
+          if(s){ s.textContent='⚠️ Stroke data unavailable. Check your internet!'; s.className='sstatus bad'; }
+        }
+      });
+    } catch(e){ console.log('Quiz error',e); }
+  });
+}
+
+function beginQuiz(char){
+  if(!quizW) return;
+  quizW.quiz({
+    onMistake:(d)=>{
+      const s=document.getElementById('sstatus');
+      if(s){
+        s.className='sstatus bad';
+        s.textContent=`❌ Wrong direction! Stroke ${d.strokeNum+1} — try again! (${d.mistakesOnStroke} mistake${d.mistakesOnStroke>1?'s':''})`;
+      }
+    },
+    onCorrectStroke:(d)=>{
+      qDone=d.strokeNum+1; updQProg();
+      const s=document.getElementById('sstatus');
+      if(s){
+        s.className='sstatus ok';
+        s.textContent=`✅ Stroke ${qDone} correct! ${qDone<qTotal?'Keep going!':'Almost there!'}`;
+      }
+    },
+    onComplete:()=>{
+      const c=curCh.chars[curIdx], d=CD[c];
+      const s=document.getElementById('sstatus');
+      if(s){ s.className='sstatus done'; s.textContent=`🎉 All ${qTotal} strokes correct! "${c}" written perfectly!`; }
+      if(!S[c]?.w){
+        if(!S[c]) S[c]={};
+        S[c].w=true; stars++;
+        save(); renderChs();
+        showCel('✏️ Write Test Passed!',`You wrote ${c} (${d.py}) with correct strokes! Now try the Speak Test! 🎤`,'🎊');
+        setTimeout(()=>{ renderNav(); renderChar(); }, 2500);
+      }
+    }
+  });
+}
+
+function doAnim(){ if(watchW) watchW.animateCharacter(); }
+function doLoop(){ if(watchW) watchW.loopCharacterAnimation(); }
+function doHint(){ if(quizW) quizW.showHint(); }
+function resetQ(){
+  if(!quizW) return;
+  qDone=0; updQProg();
+  quizW.cancelQuiz();
+  const s=document.getElementById('sstatus');
+  if(s){ s.className='sstatus hint'; s.textContent='✏️ Draw the 1st stroke in the correct direction!'; }
+  setTimeout(()=>beginQuiz(curCh.chars[curIdx]),120);
+}
+function updQProg(){
+  const p=document.getElementById('qprog');
+  if(p&&qTotal>0) p.textContent=`Strokes completed: ${qDone} / ${qTotal}`;
+}
+
+// ═══════════════════════════════════════
+// AUDIO
+// ═══════════════════════════════════════
+function spk(char, slow=false){
+  const a=new Audio();
+  a.src=`https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=zh-CN&client=gtx&q=${encodeURIComponent(char)}`;
+  a.playbackRate=slow?.6:1;
+  a.play().catch(()=>{
+    if(!window.speechSynthesis){ showToast('⚠️ No audio support. Try Chrome!'); return; }
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(char);
+    u.lang='zh-CN'; u.rate=slow?.4:.85;
+    const v=window.speechSynthesis.getVoices().find(x=>x.lang.startsWith('zh'));
+    if(v) u.voice=v;
+    u.onerror=()=>showToast('⚠️ No Chinese voice. Install Chinese language in system settings.');
+    window.speechSynthesis.speak(u);
+  });
+}
+
+// ═══════════════════════════════════════
+// SPEECH RECOGNITION
+// ═══════════════════════════════════════
+function toggleRec(char, py, en){
+  isRec ? stopRec() : startRec(char, py, en);
+}
+
+function startRec(char, py, en){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ showToast('⚠️ Speech recognition needs Chrome on desktop/Android!'); return; }
+
+  speechR=new SR();
+  speechR.lang='zh-CN';
+  speechR.continuous=false;
+  speechR.interimResults=false;
+  speechR.maxAlternatives=8;
+
+  const btn=document.getElementById('recBtn');
+  const res=document.getElementById('rresult');
+  if(btn){ btn.textContent='🔴 Listening... (tap to stop)'; btn.classList.add('rec'); }
+  if(res){ res.className='rresult wait'; res.innerHTML='🎧 Listening for your Chinese...'; res.style.display=''; }
+  isRec=true;
+
+  speechR.onresult=(e)=>{
+    // Collect all alternatives
+    let heardList=[];
+    for(let i=0;i<e.results.length;i++){
+      for(let j=0;j<e.results[i].length;j++){
+        heardList.push(e.results[i][j].transcript.trim());
+      }
+    }
+    if(heardList.length) processRec(heardList, char, py, en);
+  };
+
+  speechR.onerror=(e)=>{
+    isRec=false;
+    if(btn){ btn.textContent='🎤 Tap to Record'; btn.classList.remove('rec'); }
+    const msgs={'no-speech':'No speech heard — speak louder!','not-allowed':'Microphone blocked! Allow mic in browser.','network':'Network error — check connection.'};
+    if(res){ res.className='rresult fail'; res.innerHTML='⚠️ '+(msgs[e.error]||'Could not hear you. Try again!'); }
+  };
+  speechR.onend=()=>{ isRec=false; if(btn){ btn.textContent='🎤 Tap to Record Again'; btn.classList.remove('rec'); } };
+  speechR.start();
+}
+
+function stopRec(){ if(speechR) speechR.stop(); isRec=false; }
+
+function normTone(s){ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s/g,''); }
+
+function processRec(heardList, char, py, en){
+  const res=document.getElementById('rresult');
+  if(!res) return;
+  const mainHeard=heardList[0];
+  const normPy=normTone(py);
+
+  // Check all alternatives
+  const pass=heardList.some(h=>{
+    const hl=h.toLowerCase().trim();
+    const hn=normTone(h);
+    return (
+      hl.includes(char) ||          // said the actual character
+      hn.includes(normPy) ||        // pinyin match (no tones)
+      normPy.includes(hn) ||
+      en.toLowerCase().split('/').some(m=>hl.includes(m.trim())) // English meaning
+    );
+  });
+
+  if(pass){
+    res.className='rresult pass';
+    res.innerHTML=`<span style="font-size:1.8rem">🎉</span><br>
+      <strong>Great pronunciation!</strong><br>
+      <span style="font-size:.85rem;opacity:.8">I heard: "${mainHeard}"</span><br>
+      <span style="font-size:.85rem">✅ Matches ${char} = ${py}</span>`;
+    const c=curCh.chars[curIdx], d=CD[c];
+    if(!S[c]?.s){
+      if(!S[c]) S[c]={};
+      S[c].s=true;
+      const nowMastered=S[c].w&&S[c].s;
+      stars += nowMastered ? 2 : 1;
+      save(); renderChs();
+      if(nowMastered){
+        setTimeout(()=>{
+          showCel(`⭐ MASTERED ${c}!`,`You can write AND say ${c} (${d.py})! +2 Stars! 🌟`,'🌟');
+          renderNav(); renderChar();
+        }, 1600);
+      } else {
+        setTimeout(()=>{ renderNav(); renderChar(); }, 1800);
+      }
+    }
+  } else {
+    res.className='rresult fail';
+    res.innerHTML=`<span style="font-size:1.4rem">😅</span> <strong>Not quite!</strong><br>
+      I heard: "<em>${mainHeard}</em>"<br>
+      <span style="font-size:.85rem">Try saying <strong style="color:var(--primary)">${py}</strong> for ${char} (${en})</span><br>
+      <span style="font-size:.78rem;color:#bbb">Listen again then try once more 👆</span>`;
+  }
+}
+
+// ═══════════════════════════════════════
+// GAMES
+// ═══════════════════════════════════════
+function renderGames(){
+  document.getElementById('pane-games').innerHTML=`
+    <div class="games-grid">
+      <div class="gcard" style="border-color:#FF6B35" onclick="startGame('match')">
+        <div class="gicon">🎯</div><div class="gname">Match It!</div>
+        <div class="gdesc">Match character to meaning</div>
+      </div>
+      <div class="gcard" style="border-color:#FFD166" onclick="startGame('find')">
+        <div class="gicon">🔍</div><div class="gname">Find It!</div>
+        <div class="gdesc">Find the right character</div>
+      </div>
+      <div class="gcard" style="border-color:#06D6A0" onclick="startGame('pinyin')">
+        <div class="gicon">🎵</div><div class="gname">Pinyin Pick!</div>
+        <div class="gdesc">Choose correct pronunciation</div>
+      </div>
+      <div class="gcard" style="border-color:#845EC2" onclick="startGame('flash')">
+        <div class="gicon">⚡</div><div class="gname">Flash Cards</div>
+        <div class="gdesc">Quick memory challenge!</div>
+      </div>
+    </div>
+    <p style="text-align:center;color:#bbb;margin-top:18px;font-size:.85rem">All 40 characters available in games! 🎮</p>`;
+}
+
+function startGame(type){ GS={type,score:0,streak:0}; document.getElementById('gameModal').classList.add('open'); renderGame(type); }
+function closeGame(){ document.getElementById('gameModal').classList.remove('open'); }
+
+function renderGame(type){
+  const gc=document.getElementById('gameContent');
+  const chars=Object.keys(CD);
+  const char=chars[Math.floor(Math.random()*chars.length)];
+  const d=CD[char]; GS.cur=char;
+  const sc=`<div class="gscore">Score: ${GS.score} &nbsp; Streak: ${GS.streak}🔥</div>`;
+
+  if(type==='match'){
+    const wrong=chars.filter(c=>c!==char).sort(()=>Math.random()-.5).slice(0,3);
+    const opts=[char,...wrong].sort(()=>Math.random()-.5);
+    gc.innerHTML=`<div class="gtitle">🎯 Match It!</div>${sc}
+      <div style="font-size:.88rem;color:#888;margin-bottom:8px">What does this mean?</div>
+      <div class="gchar" onclick="spk('${char}')">${char} <span style="font-size:1rem">🔊</span></div>
+      <div style="text-align:center;font-size:.78rem;color:#bbb;margin-bottom:10px">Tap to hear</div>
+      <div class="gopts">${opts.map(c=>`<button class="gopt" onclick="chkM(this,'${c}','${char}')">${CD[c].emoji} ${CD[c].en.split('/')[0]}</button>`).join('')}</div>
+      <div id="gr"></div>`;
+  } else if(type==='find'){
+    const wrong=chars.filter(c=>c!==char).sort(()=>Math.random()-.5).slice(0,7);
+    const opts=[char,...wrong].sort(()=>Math.random()-.5);
+    gc.innerHTML=`<div class="gtitle">🔍 Find It!</div>${sc}
+      <div style="background:#FFF8E8;border-radius:14px;padding:12px;border:2px dashed var(--secondary);text-align:center;margin-bottom:14px;font-weight:700;color:#555">
+        Find: <strong style="color:var(--primary);font-size:1.2rem">${d.emoji} ${d.en.split('/')[0]}</strong><br>
+        <span style="font-size:.85rem;color:#888">Pinyin: ${d.py}</span>
+      </div>
+      <div class="fgrid">${opts.map(c=>`<div class="fopt" onclick="chkF(this,'${c}','${char}')">${c}</div>`).join('')}</div>
+      <div id="gr"></div>`;
+  } else if(type==='pinyin'){
+    const allP=[...new Set(Object.values(CD).map(x=>x.py))].filter(p=>p!==d.py).sort(()=>Math.random()-.5).slice(0,3);
+    const opts=[d.py,...allP].sort(()=>Math.random()-.5);
+    gc.innerHTML=`<div class="gtitle">🎵 Pinyin Pick!</div>${sc}
+      <div style="font-size:.88rem;color:#888;margin-bottom:8px">How do you say this character?</div>
+      <div class="gchar" onclick="spk('${char}')">${char} <span style="font-size:1rem">🔊</span></div>
+      <div style="text-align:center;font-size:.78rem;color:#bbb;margin-bottom:10px">Tap to hear</div>
+      <div class="gopts">${opts.map(p=>`<button class="gopt" style="font-size:1.15rem;font-weight:800" onclick="chkP(this,'${p}','${d.py}','${char}')">${p}</button>`).join('')}</div>
+      <div id="gr"></div>`;
+  } else if(type==='flash'){
+    gc.innerHTML=`<div class="gtitle">⚡ Flash Cards!</div>${sc}
+      <div style="font-size:.88rem;color:#888;margin-bottom:8px">What does this mean? Think first!</div>
+      <div class="gchar" onclick="spk('${char}')">${char}</div>
+      <div style="text-align:center;font-size:.78rem;color:#bbb;margin-bottom:14px">Tap to hear pronunciation</div>
+      <button onclick="revealF('${char}')" class="nbtn" style="background:var(--purple);box-shadow:0 4px 0 #5E3D96">🔮 Reveal Answer!</button>
+      <div id="gr"></div>`;
+  }
+}
+
+function chkM(btn,chosen,correct){
+  document.querySelectorAll('.gopt').forEach(b=>b.disabled=true);
+  if(chosen===correct){btn.classList.add('ok');GS.score++;GS.streak++;gRes(true,correct);}
+  else{btn.classList.add('bad');GS.streak=0;document.querySelectorAll('.gopt').forEach(b=>{if(b.textContent.includes(CD[correct].en.split('/')[0]))b.classList.add('ok');});gRes(false,correct);}
+}
+function chkF(el,chosen,correct){
+  document.querySelectorAll('.fopt').forEach(b=>b.style.pointerEvents='none');
+  if(chosen===correct){el.classList.add('ok');GS.score++;GS.streak++;gRes(true,correct);}
+  else{el.classList.add('bad');GS.streak=0;document.querySelectorAll('.fopt').forEach(b=>{if(b.textContent===correct)b.classList.add('ok');});gRes(false,correct);}
+}
+function chkP(btn,chosen,correct,char){
+  document.querySelectorAll('.gopt').forEach(b=>b.disabled=true);
+  if(chosen===correct){btn.classList.add('ok');GS.score++;GS.streak++;gRes(true,char);}
+  else{btn.classList.add('bad');GS.streak=0;document.querySelectorAll('.gopt').forEach(b=>{if(b.textContent.trim()===correct)b.classList.add('ok');});gRes(false,char);}
+}
+function revealF(char){
+  const d=CD[char];
+  document.getElementById('gr').innerHTML=`
+    <div style="background:#FFF8E8;border-radius:14px;padding:14px;margin:12px 0;border:2px solid var(--secondary);text-align:center">
+      <div style="font-size:2rem">${d.emoji}</div>
+      <div style="font-size:1.2rem;font-weight:800">${d.en}</div>
+      <div style="color:var(--primary);font-weight:700">${d.py}</div>
+    </div>
+    <div style="font-weight:700;color:#555;text-align:center;margin-bottom:10px">Did you know it?</div>
+    <div style="display:flex;gap:8px">
+      <button onclick="flashA(true)" style="flex:1;background:var(--green);color:white;border:none;border-radius:12px;padding:12px;font-family:'Baloo 2';font-size:1rem;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #04A07A">✅ Yes!</button>
+      <button onclick="flashA(false)" style="flex:1;background:var(--red);color:white;border:none;border-radius:12px;padding:12px;font-family:'Baloo 2';font-size:1rem;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #A0001C">❌ No</button>
+    </div>`;
+}
+function flashA(ok){ if(ok){GS.score++;GS.streak++;}else GS.streak=0; gRes(ok,GS.cur); }
+function gRes(pass,char){
+  const d=CD[char], el=document.getElementById('gr');
+  if(!el) return;
+  if(pass){
+    el.innerHTML=`<div class="gres pass"><span class="be">${['🎉','⭐','🌟','🥳','✨'][Math.floor(Math.random()*5)]}</span>
+      Correct! ${char} = ${d.en} (${d.py})<br><small>Score: ${GS.score} | Streak: ${GS.streak}🔥</small>
+    </div><button class="nbtn" onclick="renderGame('${GS.type}')">Next ➜</button>`;
+    if(GS.streak>0&&GS.streak%5===0) spawnC();
+  } else {
+    el.innerHTML=`<div class="gres fail"><span class="be">😅</span>
+      ${char} = ${d.en} (${d.py}) — keep practicing!
+    </div><button class="nbtn" onclick="renderGame('${GS.type}')">Try Again ➜</button>`;
+  }
+}
+
+// ═══════════════════════════════════════
+// PROGRESS
+// ═══════════════════════════════════════
+function renderProg(){
+  const all=Object.keys(CD), mastered=all.filter(c=>status(c)==='mastered').length;
+  const pct=Math.round(mastered/all.length*100);
+  document.getElementById('pane-progress').innerHTML=`
+    <div class="psec">
+      <div class="pstitle">🏆 Overall Progress</div>
+      <div style="font-size:1rem;color:#555">Mastered <strong style="color:var(--primary)">${mastered}</strong> / 40</div>
+      <div class="prog-bar" style="margin:10px 0;height:14px;border-radius:10px">
+        <div class="prog-fill" style="width:${pct}%;height:14px"></div>
+      </div>
+      <div style="font-size:.82rem;color:#aaa">${pct}% &nbsp;|&nbsp; ⭐ ${stars} stars &nbsp;|&nbsp; ✏️ ${all.filter(c=>S[c]?.w).length} write &nbsp;|&nbsp; 🎤 ${all.filter(c=>S[c]?.s).length} speak</div>
+      <div style="font-size:.78rem;margin-top:8px;color:#ccc">
+        <span style="color:#845EC2">■</span> Write ✓ &nbsp;
+        <span style="color:#D4A000">■</span> Speak ✓ &nbsp;
+        <span style="color:var(--green)">■</span> Mastered ⭐ &nbsp;
+        <span style="color:#ddd">■</span> Not started
+      </div>
+    </div>
+    ${CHAPTERS.map(ch=>{
+      const done=ch.chars.filter(c=>status(c)==='mastered').length;
+      return `<div class="psec">
+        <div class="pstitle">${ch.emoji} ${ch.title}</div>
+        <div class="cdots">${ch.chars.map(c=>{
+          const sv=S[c]||{};
+          const cl=sv.w&&sv.s?'both':sv.w?'wonly':sv.s?'sonly':'';
+          const ic=sv.w&&sv.s?'⭐':sv.w?'✏️':sv.s?'🎤':'';
+          return `<div class="cdot ${cl}" title="${CD[c].en} (${CD[c].py})">${c}<small>${ic}</small></div>`;
+        }).join('')}</div>
+        <div class="prog-bar" style="margin-top:10px;height:9px;border-radius:9px">
+          <div class="prog-fill" style="width:${Math.round(done/8*100)}%"></div>
+        </div>
+        <div style="font-size:.8rem;color:#aaa;margin-top:4px">${done}/8 mastered</div>
+      </div>`;
+    }).join('')}
+    <div style="text-align:center;padding:14px">
+      <button onclick="if(confirm('Reset ALL progress?')){S={};stars=0;save();renderChs();renderProg();}"
+        style="background:white;border:2px solid #ddd;border-radius:12px;padding:8px 16px;font-family:'Baloo 2';font-size:.85rem;cursor:pointer;color:#ccc">
+        🔄 Reset Progress
+      </button>
+    </div>`;
+}
+
+// ═══════════════════════════════════════
+// CELEBRATION
+// ═══════════════════════════════════════
+function showCel(title,sub,emoji='🎉'){
+  document.getElementById('celT').textContent=title;
+  document.getElementById('celS').textContent=sub;
+  document.getElementById('celE').textContent=emoji;
+  document.getElementById('cel').classList.add('show');
+  spawnC();
+}
+function closeCel(){
+  document.getElementById('cel').classList.remove('show');
+  document.querySelectorAll('.cp').forEach(c=>c.remove());
+}
+function spawnC(){
+  const cols=['#FF6B35','#FFD166','#06D6A0','#118AB2','#845EC2','#FF9EBB','#EF233C'];
+  for(let i=0;i<50;i++) setTimeout(()=>{
+    const p=document.createElement('div');
+    p.className='cp';
+    p.style.cssText=`left:${Math.random()*100}vw;top:-10px;width:${7+Math.random()*9}px;height:${7+Math.random()*9}px;
+      background:${cols[Math.floor(Math.random()*cols.length)]};
+      animation-duration:${1.4+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;
+      border-radius:${Math.random()>.5?'50%':'2px'};`;
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),3000);
+  },i*32);
+}
+
+function showToast(msg,dur=4000){
+  const t=document.getElementById('toast');
+  t.innerHTML=msg; t.style.display='block';
+  clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',dur);
+}
+
 init();
 </script>
 </body>
