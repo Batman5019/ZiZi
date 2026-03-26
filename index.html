@@ -2,254 +2,364 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🐼 Zizi</title>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FFBA08">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="HanziHero">
+<meta name="description" content="Learn Chinese characters with stroke order, pronunciation tests and fun games!">
+<title>🐼 ZiZi — Learn Chinese!</title>
 
-<style>
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>/* ═══════════════════════════════════════
+   HANZIHERO — STYLESHEET
+═══════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&family=Noto+Sans+SC:wght@400;700;900&display=swap');
+
 :root {
   --primary:#FF6B35; --secondary:#FFD166; --green:#06D6A0; --blue:#118AB2;
-  --purple:#845EC2; --red:#EF233C; --bg:#FFF7ED;
-  --shadow:0 5px 0 rgba(0,0,0,0.13);
+  --purple:#845EC2; --red:#EF233C; --pink:#FF9EBB; --bg:#FFF7ED;
+  --shadow:0 5px 0 rgba(0,0,0,0.13); --radius:20px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Baloo 2',cursive;background:var(--bg);min-height:100vh;overflow-x:hidden}
+html{scroll-behavior:smooth}
+body{font-family:'Baloo 2',cursive;background:var(--bg);min-height:100vh;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent}
 
-.cloud{position:fixed;background:white;border-radius:50px;opacity:.5;pointer-events:none;z-index:0}
+/* CLOUDS */
+.cloud{position:fixed;background:white;border-radius:50px;opacity:.45;pointer-events:none;z-index:0}
 .cloud::before,.cloud::after{content:'';position:absolute;background:white;border-radius:50%}
-.c1{width:120px;height:38px;top:7%;left:-10px;animation:cmove 22s linear infinite}
-.c1::before{width:58px;height:58px;top:-28px;left:14px}
-.c1::after{width:38px;height:38px;top:-16px;left:54px}
-.c2{width:150px;height:46px;top:22%;left:72%;animation:cmove 30s linear infinite 6s}
-.c2::before{width:76px;height:76px;top:-38px;left:18px}
-.c2::after{width:50px;height:50px;top:-22px;left:76px}
-@keyframes cmove{from{transform:translateX(120vw)}to{transform:translateX(-320px)}}
+.c1{width:120px;height:38px;top:6%;left:-10px;animation:cmove 24s linear infinite}
+.c1::before{width:60px;height:60px;top:-30px;left:14px}
+.c1::after{width:40px;height:40px;top:-18px;left:55px}
+.c2{width:160px;height:48px;top:20%;left:70%;animation:cmove 32s linear infinite 7s}
+.c2::before{width:80px;height:80px;top:-40px;left:20px}
+.c2::after{width:54px;height:54px;top:-24px;left:78px}
+.c3{width:100px;height:32px;top:60%;left:40%;animation:cmove 20s linear infinite 3s}
+.c3::before{width:50px;height:50px;top:-26px;left:10px}
+.c3::after{width:34px;height:34px;top:-14px;left:48px}
+@keyframes cmove{from{transform:translateX(120vw)}to{transform:translateX(-340px)}}
 
-header{position:relative;z-index:10;text-align:center;padding:18px 20px 14px;
+/* HEADER */
+header{position:relative;z-index:10;text-align:center;padding:16px 20px 12px;
   background:linear-gradient(180deg,#FFD166,#FFBA08);border-bottom:5px solid #E8A000;
   box-shadow:0 4px 0 rgba(0,0,0,.1)}
-header h1{font-size:clamp(1.6rem,5vw,2.6rem);color:#7B2D00;text-shadow:2px 2px 0 rgba(255,255,255,.4)}
-.hdr-stats{display:flex;justify-content:center;gap:16px;margin-top:6px;font-size:.9rem;font-weight:700;color:#8B4000;flex-wrap:wrap}
+header h1{font-size:clamp(1.5rem,5vw,2.4rem);color:#7B2D00;text-shadow:2px 2px 0 rgba(255,255,255,.4);
+  display:flex;align-items:center;justify-content:center;gap:8px}
+.pwa-install-btn{background:#7B2D00;color:var(--secondary);border:none;border-radius:12px;
+  padding:6px 14px;font-family:'Baloo 2',cursive;font-size:.8rem;font-weight:800;cursor:pointer;
+  margin-left:8px;display:none}
+.pwa-install-btn.show{display:inline-block}
+.hdr-stats{display:flex;justify-content:center;gap:14px;margin-top:5px;font-size:.85rem;font-weight:700;
+  color:#8B4000;flex-wrap:wrap}
 
-.tabs{display:flex;justify-content:center;gap:6px;padding:14px 12px 0;position:relative;z-index:10;flex-wrap:wrap}
-.tab{background:white;border:3px solid #ddd;border-radius:18px 18px 0 0;padding:9px 18px;
-  font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;color:#888}
-.tab.active{border-color:var(--primary);border-bottom-color:white;color:var(--primary);transform:translateY(3px)}
-.tab:hover:not(.active){background:#FFF0E8}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:50;
+  background:white;border-top:3px solid #FFD166;
+  display:flex;justify-content:space-around;align-items:stretch;
+  box-shadow:0 -4px 12px rgba(0,0,0,.08)}
+.bnav{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8px 4px 10px;cursor:pointer;transition:all .2s;border:none;background:none;
+  font-family:'Baloo 2',cursive;color:#aaa;font-size:.68rem;font-weight:700;gap:2px;
+  border-top:3px solid transparent}
+.bnav .icon{font-size:1.4rem;line-height:1}
+.bnav.active{color:var(--primary);border-top-color:var(--primary)}
 
-.content{position:relative;z-index:5;max-width:860px;margin:0 auto;padding:20px 16px 70px}
+/* CONTENT */
+.content{position:relative;z-index:5;max-width:860px;margin:0 auto;padding:18px 14px 90px}
 .pane{display:none}.pane.active{display:block}
 
-.ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px}
-.ch-card{background:white;border-radius:18px;padding:18px 14px;text-align:center;cursor:pointer;
-  border:3px solid transparent;box-shadow:var(--shadow);transition:all .2s;position:relative}
+/* CHAPTER GRID */
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:14px}
+.ch-card{background:white;border-radius:var(--radius);padding:18px 14px;text-align:center;cursor:pointer;
+  border:3px solid transparent;box-shadow:var(--shadow);transition:all .2s;position:relative;overflow:hidden}
 .ch-card:hover{transform:translateY(-4px)}
-.ch-label{font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.ch-chars{font-family:'Noto Sans SC',sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:2px;line-height:1.7;color:#333;margin-bottom:6px}
-.ch-prog{display:flex;align-items:center;gap:6px}
-.prog-bar{flex:1;height:9px;background:#eee;border-radius:9px;overflow:hidden}
-.prog-fill{height:100%;border-radius:9px;background:linear-gradient(90deg,var(--green),#34D399);transition:width .4s}
-.ch0{border-color:#FF6B35;background:linear-gradient(135deg,#FFF5F0,white)}.ch0 .ch-label{color:#FF6B35}
-.ch1{border-color:#D4A000;background:linear-gradient(135deg,#FFFBF0,white)}.ch1 .ch-label{color:#D4A000}
-.ch2{border-color:#06D6A0;background:linear-gradient(135deg,#F0FFF9,white)}.ch2 .ch-label{color:#06D6A0}
-.ch3{border-color:#118AB2;background:linear-gradient(135deg,#F0F9FF,white)}.ch3 .ch-label{color:#118AB2}
-.ch4{border-color:#845EC2;background:linear-gradient(135deg,#F8F0FF,white)}.ch4 .ch-label{color:#845EC2}
+.ch-card:active{transform:translateY(0)}
+.ch-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.ch-type-badge{display:inline-block;font-size:.65rem;font-weight:800;padding:2px 8px;border-radius:8px;
+  background:#F0F0F0;color:#888;margin-bottom:6px}
+.ch-type-badge.sentence{background:#E8F4FF;color:var(--blue)}
+.ch-chars{font-family:'Noto Sans SC',sans-serif;font-size:1rem;font-weight:700;letter-spacing:2px;
+  line-height:1.7;color:#333;margin-bottom:6px}
+.ch-subtitle{font-size:.72rem;color:#aaa;margin-bottom:8px;font-style:italic}
+.ch-prog-row{display:flex;align-items:center;gap:6px}
+.prog-bar{flex:1;height:8px;background:#eee;border-radius:8px;overflow:hidden}
+.prog-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--green),#34D399);transition:width .4s}
 
-.learn-hdr{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.back-btn{background:white;border:3px solid #ddd;border-radius:50%;width:42px;height:42px;font-size:1.1rem;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);transition:all .2s;flex-shrink:0}
+/* LEARN */
+.learn-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.back-btn{background:white;border:3px solid #ddd;border-radius:50%;width:42px;height:42px;
+  font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow);transition:all .2s;flex-shrink:0}
 .back-btn:hover{border-color:var(--primary);transform:scale(1.08)}
 
-.char-nav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
-.cnav{font-family:'Noto Sans SC',sans-serif;font-size:1.25rem;font-weight:700;
-  width:50px;height:50px;border-radius:13px;border:3px solid #ddd;background:white;
-  cursor:pointer;transition:all .2s;box-shadow:0 3px 0 #ddd;display:flex;align-items:center;justify-content:center;position:relative}
+.char-nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.cnav{font-family:'Noto Sans SC',sans-serif;font-size:1.2rem;font-weight:700;
+  min-width:46px;height:46px;padding:0 6px;border-radius:12px;border:3px solid #ddd;background:white;
+  cursor:pointer;transition:all .2s;box-shadow:0 3px 0 #ddd;display:flex;align-items:center;
+  justify-content:center;position:relative;font-family:'Noto Sans SC',sans-serif}
 .cnav:hover{transform:translateY(-2px)}
 .cnav.active{border-color:var(--primary);background:#FFF0E8;box-shadow:0 3px 0 var(--primary)}
-.cnav.mastered::after{content:'⭐';position:absolute;top:-8px;right:-8px;font-size:12px}
-.cnav.partial::after{content:'~';position:absolute;top:-6px;right:-6px;background:var(--secondary);
-  color:#7B2D00;border-radius:50%;width:17px;height:17px;font-size:9px;display:flex;align-items:center;justify-content:center;font-family:sans-serif;font-weight:700}
+.cnav.mastered::after{content:'⭐';position:absolute;top:-8px;right:-5px;font-size:11px}
+.cnav.partial::after{content:'~';position:absolute;top:-6px;right:-5px;background:var(--secondary);
+  color:#7B2D00;border-radius:50%;width:16px;height:16px;font-size:8px;display:flex;
+  align-items:center;justify-content:center;font-family:sans-serif;font-weight:700}
 
-.card{background:white;border-radius:24px;padding:22px;box-shadow:var(--shadow);border:3px solid var(--secondary);margin-bottom:16px}
-.card-title{font-size:1rem;font-weight:800;color:#555;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+/* CARDS */
+.card{background:white;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);
+  border:3px solid var(--secondary);margin-bottom:14px}
+.card.blue{border-color:#BAE6FD;background:#F0F9FF}
+.card.green{border-color:#A7F3D0;background:#F0FFF9}
+.card.purple{border-color:#DDD6FE;background:#F8F0FF}
+.card.pink{border-color:#FBCFE8;background:#FFF0F8}
+.card-title{font-size:.95rem;font-weight:800;color:#555;margin-bottom:12px;display:flex;align-items:center;gap:7px}
 
-.big-char-wrap{text-align:center;padding:8px 0 14px}
-.big-char{font-family:'Noto Sans SC',sans-serif;font-size:clamp(4.5rem,16vw,6.5rem);font-weight:900;
-  line-height:1;color:#1A1A2E;cursor:pointer;transition:transform .15s;display:inline-block}
-.big-char:hover{transform:scale(1.06)}
-.char-pills{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:10px}
-.pill{background:#FFF0E8;border:2px solid var(--secondary);border-radius:16px;padding:5px 14px;
-  font-size:.95rem;font-weight:700;color:#8B4000}
-.pill.py{font-size:1.2rem;color:var(--primary)}
-.char-tip{text-align:center;margin-top:8px;color:#aaa;font-size:.85rem;font-style:italic}
+.big-char-wrap{text-align:center;padding:6px 0 12px}
+.big-char{font-family:'Noto Sans SC',sans-serif;font-size:clamp(4rem,15vw,6.5rem);font-weight:900;
+  line-height:1;color:#1A1A2E;cursor:pointer;transition:transform .15s;display:inline-block;
+  text-shadow:3px 3px 0 rgba(255,107,53,.1)}
+.big-char:hover{transform:scale(1.07)}
+.char-pills{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pill{background:#FFF0E8;border:2px solid var(--secondary);border-radius:14px;padding:4px 12px;
+  font-size:.9rem;font-weight:700;color:#8B4000}
+.pill.py{font-size:1.15rem;color:var(--primary)}
+.pill.en{background:#EFF9FF;border-color:#BAE6FD;color:#0369A1}
+.char-meaning-full{text-align:center;font-size:.9rem;color:#666;margin-top:6px;padding:8px 12px;
+  background:#FFFBEB;border-radius:10px;border:1px solid #FFE59A}
+.char-tip{text-align:center;color:#aaa;font-size:.82rem;font-style:italic;margin-top:6px}
 
-.steps-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.sbadge{display:flex;align-items:center;gap:6px;background:white;border:2px solid #ddd;
-  border-radius:20px;padding:6px 14px;font-size:.85rem;font-weight:700;color:#aaa}
+/* STEP BADGES */
+.steps-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.sbadge{display:flex;align-items:center;gap:5px;background:white;border:2px solid #ddd;
+  border-radius:18px;padding:5px 12px;font-size:.82rem;font-weight:700;color:#bbb}
 .sbadge.done{border-color:var(--green);background:#ECFDF5;color:#065F46}
 .sbadge.now{border-color:var(--primary);background:#FFF0E8;color:var(--primary)}
-.sbadge .sn{width:22px;height:22px;border-radius:50%;background:#ddd;display:flex;
-  align-items:center;justify-content:center;font-size:.75rem;font-weight:800;flex-shrink:0}
+.sbadge .sn{width:20px;height:20px;border-radius:50%;background:#ddd;display:flex;
+  align-items:center;justify-content:center;font-size:.7rem;font-weight:800;flex-shrink:0}
 .sbadge.done .sn{background:var(--green);color:white}
 .sbadge.now .sn{background:var(--primary);color:white}
 
+/* HANZI WRITER */
 .writer-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
-.writer-box{border:3px solid #ddd;border-radius:18px;background:white;overflow:hidden}
+.writer-box{border:3px solid #ddd;border-radius:16px;background:white;overflow:hidden;
+  position:relative}
 .writer-box.quiz{border-color:var(--purple)}
-.wrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.wbtn{background:white;border:3px solid #ddd;border-radius:12px;padding:9px 16px;
-  font-family:'Baloo 2',cursive;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s;
+.wrow{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
+.wbtn{background:white;border:3px solid #ddd;border-radius:12px;padding:8px 14px;
+  font-family:'Baloo 2',cursive;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;
   box-shadow:0 3px 0 #ccc}
 .wbtn:hover{transform:translateY(-1px)}
+.wbtn:active{transform:translateY(1px);box-shadow:0 1px 0 #ccc}
 .wbtn.blue{background:var(--blue);color:white;border-color:var(--blue);box-shadow:0 3px 0 #0A6B8A}
 .wbtn.red{background:var(--red);color:white;border-color:var(--red);box-shadow:0 3px 0 #A0001C}
+.wbtn.green{background:var(--green);color:white;border-color:var(--green);box-shadow:0 3px 0 #04A07A}
 
-.sstatus{text-align:center;font-size:.95rem;font-weight:700;padding:10px 14px;
-  border-radius:12px;margin-top:8px;min-height:44px;display:flex;align-items:center;justify-content:center;gap:6px}
+.sstatus{text-align:center;font-size:.9rem;font-weight:700;padding:9px 14px;
+  border-radius:12px;margin-top:7px;min-height:42px;display:flex;align-items:center;
+  justify-content:center;gap:5px;line-height:1.3}
 .sstatus.hint{background:#FFF8E8;color:#8B4000;border:2px solid var(--secondary)}
 .sstatus.ok{background:#ECFDF5;color:#065F46;border:2px solid var(--green)}
 .sstatus.bad{background:#FFF5F5;color:#991B1B;border:2px solid var(--red)}
 .sstatus.done{background:#F0F9FF;color:#0369A1;border:2px solid var(--blue)}
-.qprog{font-size:.85rem;color:#888;text-align:center;margin-top:4px}
+.qprog{font-size:.82rem;color:#aaa;text-align:center;margin-top:4px}
 
-.hear-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.hbtn{background:var(--blue);color:white;border:none;border-radius:14px;padding:11px 20px;
-  font-family:'Baloo 2',cursive;font-size:.95rem;font-weight:700;cursor:pointer;
+/* STROKE SOUND INDICATOR */
+.stroke-sound-fx{position:fixed;top:40%;left:50%;transform:translate(-50%,-50%) scale(0);
+  font-size:3rem;z-index:300;pointer-events:none;transition:all .15s;opacity:0}
+.stroke-sound-fx.pop{transform:translate(-50%,-50%) scale(1.4);opacity:1}
+
+/* PRONUNCIATION */
+.hear-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.hbtn{background:var(--blue);color:white;border:none;border-radius:13px;padding:10px 18px;
+  font-family:'Baloo 2',cursive;font-size:.9rem;font-weight:700;cursor:pointer;
   box-shadow:0 4px 0 #0A6B8A;transition:all .15s;display:flex;align-items:center;gap:6px}
 .hbtn:active{transform:translateY(2px);box-shadow:0 2px 0 #0A6B8A}
 .hbtn.slow{background:#5E9E60;box-shadow:0 4px 0 #3D7B3F}
+.tone-info{font-size:.82rem;color:#666;background:#FFF8E8;border-radius:10px;padding:7px 12px;
+  border:1px solid #FFE59A;line-height:1.5}
 
-.pron-box{background:#FFF0F8;border-radius:18px;padding:18px;border:2px solid #FBCFE8;margin-top:12px}
-.rbtn{width:100%;background:var(--red);color:white;border:none;border-radius:16px;padding:14px;
-  font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;cursor:pointer;
-  box-shadow:0 5px 0 #A0001C;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.rbtn{width:100%;background:var(--red);color:white;border:none;border-radius:14px;padding:13px;
+  font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;cursor:pointer;
+  box-shadow:0 5px 0 #A0001C;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:7px}
 .rbtn:active{transform:translateY(3px);box-shadow:0 2px 0 #A0001C}
 .rbtn.rec{background:#444;box-shadow:0 5px 0 #111;animation:pulse .8s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-.rresult{margin-top:12px;padding:13px;border-radius:12px;font-size:.95rem;font-weight:700;text-align:center;line-height:1.5}
-.rresult.pass{background:#ECFDF5;color:#065F46;border:2px solid var(--green)}
-.rresult.fail{background:#FFF5F5;color:#991B1B;border:2px solid var(--red)}
-.rresult.wait{background:#f5f5f5;color:#555;border:2px solid #ddd}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.65}}
+.rresult{margin-top:10px;padding:12px;border-radius:12px;font-size:.9rem;font-weight:700;
+  text-align:center;line-height:1.5;display:none}
+.rresult.pass{background:#ECFDF5;color:#065F46;border:2px solid var(--green);display:block}
+.rresult.fail{background:#FFF5F5;color:#991B1B;border:2px solid var(--red);display:block}
+.rresult.wait{background:#f5f5f5;color:#555;border:2px solid #ddd;display:block}
 
-.lock-gate{background:#f5f5f5;border-radius:16px;padding:20px;text-align:center;border:3px dashed #ddd}
-.master-badge{border-radius:18px;padding:14px;text-align:center;font-weight:800;font-size:1.05rem;
-  margin-top:12px;box-shadow:0 4px 0;animation:shine 2s ease-in-out infinite}
+/* LOCK */
+.lock-gate{background:#f5f5f5;border-radius:14px;padding:18px;text-align:center;border:3px dashed #ddd}
+
+/* MASTER BADGE */
+.master-badge{border-radius:16px;padding:13px;text-align:center;font-weight:800;font-size:1rem;
+  margin-top:10px;animation:shine 2s ease-in-out infinite}
 @keyframes shine{0%,100%{filter:brightness(1)}50%{filter:brightness(1.12)}}
 
-.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
-.gcard{background:white;border-radius:22px;padding:22px 18px;text-align:center;cursor:pointer;
+/* SENTENCE CARD */
+.sent-card{background:white;border-radius:var(--radius);padding:18px;border:3px solid var(--blue);
+  box-shadow:var(--shadow);margin-bottom:14px;cursor:pointer;transition:all .2s}
+.sent-card:hover{transform:translateY(-3px)}
+.sent-zh{font-family:'Noto Sans SC',sans-serif;font-size:2rem;font-weight:900;color:#1A1A2E;margin-bottom:4px}
+.sent-py{font-size:.95rem;color:var(--primary);font-weight:700;margin-bottom:4px}
+.sent-en{font-size:.95rem;color:#555;margin-bottom:8px}
+.sent-tip{font-size:.8rem;color:#aaa;font-style:italic}
+.sent-chars{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.sent-char-pill{font-family:'Noto Sans SC',sans-serif;background:#F0F9FF;border:2px solid #BAE6FD;
+  border-radius:10px;padding:4px 10px;font-size:.9rem;font-weight:700;color:#0369A1;
+  display:flex;align-items:center;gap:4px}
+.sent-char-pill small{font-family:'Baloo 2',cursive;color:#888;font-size:.72rem}
+.sent-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+
+/* GAMES */
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.gcard{background:white;border-radius:var(--radius);padding:20px 14px;text-align:center;cursor:pointer;
   border:3px solid #ddd;box-shadow:var(--shadow);transition:all .2s}
 .gcard:hover{transform:translateY(-4px)}
-.gicon{font-size:2.6rem;margin-bottom:8px}
-.gname{font-size:1.05rem;font-weight:800;color:#333;margin-bottom:3px}
-.gdesc{font-size:.82rem;color:#999}
+.gcard:active{transform:translateY(0)}
+.gicon{font-size:2.4rem;margin-bottom:7px}
+.gname{font-size:.95rem;font-weight:800;color:#333;margin-bottom:2px}
+.gdesc{font-size:.75rem;color:#aaa}
 
+/* MODAL */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:100;
   align-items:center;justify-content:center;padding:14px}
 .modal.open{display:flex}
-.mbox{background:white;border-radius:26px;padding:26px;max-width:540px;width:100%;
+.mbox{background:white;border-radius:24px;padding:24px;max-width:540px;width:100%;
   max-height:92vh;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.mclose{position:absolute;top:14px;right:14px;background:#f0f0f0;border:none;
-  border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;font-weight:700;
+.mclose{position:absolute;top:12px;right:12px;background:#f0f0f0;border:none;
+  border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer;font-weight:800;
   display:flex;align-items:center;justify-content:center}
 .mclose:hover{background:#fdd}
 
-.gtitle{font-size:1.4rem;font-weight:800;color:#333;margin-bottom:4px}
-.gscore{font-size:.95rem;color:#888;margin-bottom:18px}
-.gchar{font-family:'Noto Sans SC',sans-serif;font-size:4.5rem;font-weight:900;
-  text-align:center;color:#1A1A2E;margin-bottom:6px;cursor:pointer}
-.gopts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
-.gopt{background:#F8F8F8;border:3px solid #ddd;border-radius:14px;padding:13px 8px;
-  font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;color:#333;
-  font-family:'Baloo 2',cursive}
+/* GAME UI */
+.gtitle{font-size:1.3rem;font-weight:800;color:#333;margin-bottom:3px}
+.gscore{font-size:.9rem;color:#888;margin-bottom:16px}
+.gchar{font-family:'Noto Sans SC',sans-serif;font-size:4rem;font-weight:900;
+  text-align:center;color:#1A1A2E;margin-bottom:4px;cursor:pointer;line-height:1}
+.gopts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:8px}
+.gopt{background:#F8F8F8;border:3px solid #ddd;border-radius:13px;padding:12px 8px;
+  font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;text-align:center;
+  color:#333;font-family:'Baloo 2',cursive;line-height:1.3}
 .gopt:hover{border-color:var(--blue);background:#EFF9FF}
 .gopt.ok{border-color:var(--green);background:#ECFDF5;color:#065F46;animation:popIn .3s ease}
 .gopt.bad{border-color:var(--red);background:#FFF5F5;color:#991B1B;animation:shake .3s ease}
-.fgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-.fopt{font-family:'Noto Sans SC',sans-serif;font-size:2rem;font-weight:900;
+.fgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.fopt{font-family:'Noto Sans SC',sans-serif;font-size:1.8rem;font-weight:900;
   aspect-ratio:1;display:flex;align-items:center;justify-content:center;
   background:#F8F8F8;border:3px solid #ddd;border-radius:13px;cursor:pointer;transition:all .2s}
 .fopt:hover{border-color:var(--purple);background:#F8F0FF;transform:scale(1.05)}
 .fopt.ok{border-color:var(--green);background:#ECFDF5;animation:popIn .3s ease}
 .fopt.bad{border-color:var(--red);background:#FFF5F5;animation:shake .3s ease}
-.gres{text-align:center;padding:16px;border-radius:16px;margin-top:12px;font-size:1rem;font-weight:700}
+.gres{text-align:center;padding:14px;border-radius:14px;margin-top:10px;font-size:.95rem;font-weight:700}
 .gres.pass{background:#ECFDF5;color:#065F46;border:3px solid var(--green)}
 .gres.fail{background:#FFF5F5;color:#991B1B;border:3px solid var(--red)}
-.gres .be{font-size:2.6rem;display:block;margin-bottom:6px}
-.nbtn{width:100%;background:var(--primary);color:white;border:none;border-radius:14px;
-  padding:13px;font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;cursor:pointer;
-  box-shadow:0 4px 0 #C04A1E;transition:all .15s;margin-top:10px}
+.gres .be{font-size:2.4rem;display:block;margin-bottom:5px}
+.nbtn{width:100%;background:var(--primary);color:white;border:none;border-radius:13px;
+  padding:12px;font-family:'Baloo 2',cursive;font-size:1rem;font-weight:800;cursor:pointer;
+  box-shadow:0 4px 0 #C04A1E;transition:all .15s;margin-top:9px}
 .nbtn:active{transform:translateY(2px);box-shadow:0 2px 0 #C04A1E}
 
-@keyframes popIn{0%{transform:scale(.9)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes popIn{0%{transform:scale(.9)}60%{transform:scale(1.07)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 
-.psec{background:white;border-radius:18px;padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
-.pstitle{font-size:1rem;font-weight:800;color:#333;margin-bottom:10px}
-.cdots{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.cdot{font-family:'Noto Sans SC',sans-serif;font-size:.85rem;font-weight:700;
-  width:40px;height:40px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:#f0f0f0;color:#bbb;border:2px solid #ddd;gap:1px}
-.cdot small{font-family:'Baloo 2',cursive;font-size:.5rem;line-height:1;color:#aaa}
+/* PROGRESS */
+.psec{background:white;border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:12px}
+.pstitle{font-size:.95rem;font-weight:800;color:#333;margin-bottom:9px}
+.cdots{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.cdot{font-family:'Noto Sans SC',sans-serif;font-size:.82rem;font-weight:700;
+  min-width:38px;height:38px;border-radius:10px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;background:#f0f0f0;color:#bbb;border:2px solid #ddd;
+  gap:0;padding:2px}
+.cdot small{font-family:'Baloo 2',cursive;font-size:.46rem;line-height:1;color:#aaa}
 .cdot.wonly{border-color:#845EC2;background:#F8F0FF;color:#845EC2}
 .cdot.sonly{border-color:var(--secondary);background:#FFFBEB;color:#8B4000}
 .cdot.both{border-color:var(--green);background:#ECFDF5;color:#065F46}
 
-.cel{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.65);
-  align-items:center;justify-content:center}
+/* CELEBRATION */
+.cel{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.6);
+  align-items:center;justify-content:center;flex-direction:column}
 .cel.show{display:flex}
-.celbox{background:white;border-radius:28px;padding:36px 28px;text-align:center;max-width:340px;
+.celbox{background:white;border-radius:26px;padding:34px 26px;text-align:center;max-width:330px;
   animation:bounceIn .5s ease;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 @keyframes bounceIn{0%{transform:scale(.4)}70%{transform:scale(1.08)}100%{transform:scale(1)}}
-.cele{font-size:3.5rem;margin-bottom:10px}
-.celt{font-size:1.4rem;font-weight:900;color:#333;margin-bottom:6px}
-.cels{font-size:.95rem;color:#888;margin-bottom:18px}
-.cp{position:fixed;pointer-events:none;z-index:201;animation:cfall 2s ease forwards;border-radius:2px}
-@keyframes cfall{0%{transform:translateY(-80px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.cp{position:fixed;pointer-events:none;z-index:201;animation:cfall linear forwards}
+@keyframes cfall{0%{transform:translateY(-80px) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
 
-#toast{display:none;position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
-  background:#333;color:white;padding:10px 20px;border-radius:20px;font-size:.9rem;
-  z-index:999;box-shadow:0 4px 12px rgba(0,0,0,.3);text-align:center;max-width:300px;font-weight:700}
+/* TOAST */
+#toast{display:none;position:fixed;bottom:88px;left:50%;transform:translateX(-50%);
+  background:#333;color:white;padding:10px 20px;border-radius:18px;font-size:.88rem;
+  z-index:300;box-shadow:0 4px 12px rgba(0,0,0,.3);text-align:center;max-width:300px;
+  font-weight:700;pointer-events:none}
 
-.div{height:2px;background:linear-gradient(90deg,transparent,#FFD166,transparent);margin:14px 0}
+.div{height:2px;background:linear-gradient(90deg,transparent,#FFD166,transparent);margin:12px 0}
 
-@media(max-width:480px){
-  .cnav{width:43px;height:43px;font-size:1.1rem}
+/* OFFLINE BANNER */
+#offline-banner{display:none;background:#EF233C;color:white;text-align:center;
+  padding:6px;font-size:.82rem;font-weight:700;position:fixed;top:0;left:0;right:0;z-index:500}
+
+@media(max-width:420px){
+  .cnav{min-width:40px;height:40px;font-size:1rem}
   .fgrid{grid-template-columns:repeat(3,1fr)}
+  .ch-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
 }
 </style>
 </head>
 <body>
 
+<div id="offlineBanner" style="display:none;background:#EF233C;color:white;text-align:center;padding:6px;font-size:.82rem;font-weight:700;position:fixed;top:0;left:0;right:0;z-index:500">
+  📵 You're offline — some features may not work
+</div>
+
 <div class="cloud c1"></div>
 <div class="cloud c2"></div>
+<div class="cloud c3"></div>
 
 <header>
-  <h1>🐼 HanziHero!</h1>
+  <h1>
+    🐼 HanziHero!
+    <button class="pwa-install-btn" id="installBtn" onclick="installApp()">📲 Install App</button>
+  </h1>
   <div class="hdr-stats">
-    <span>⭐ <span id="hStars">0</span> Stars</span>
-    <span>✅ <span id="hMastered">0</span>/40 Mastered</span>
-    <span>✏️ <span id="hWrite">0</span> Write ✓</span>
-    <span>🎤 <span id="hSpeak">0</span> Speak ✓</span>
+    <span>⭐ <span id="hStars">0</span></span>
+    <span>✅ <span id="hMastered">0</span> Mastered</span>
+    <span>✏️ <span id="hWrite">0</span> Write</span>
+    <span>🎤 <span id="hSpeak">0</span> Speak</span>
   </div>
 </header>
 
-<div class="tabs">
-  <button class="tab active" data-tab="chapters">📚 Chapters</button>
-  <button class="tab" data-tab="learn">✏️ Learn</button>
-  <button class="tab" data-tab="games">🎮 Games</button>
-  <button class="tab" data-tab="progress">🏆 Progress</button>
-</div>
-
+<!-- MAIN CONTENT -->
 <div class="content">
   <div id="pane-chapters" class="pane active"></div>
   <div id="pane-learn" class="pane">
-    <p style="text-align:center;color:#aaa;padding:40px 0">Pick a chapter to start! 👆</p>
+    <p style="text-align:center;color:#aaa;padding:50px 0;font-size:1.1rem">
+      Pick a chapter to start! 👆<br>
+      <span style="font-size:.85rem">Tap 📚 Chapters below</span>
+    </p>
   </div>
   <div id="pane-games" class="pane"></div>
   <div id="pane-progress" class="pane"></div>
 </div>
 
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bnav active" data-tab="chapters">
+    <span class="icon">📚</span>Chapters
+  </button>
+  <button class="bnav" data-tab="learn">
+    <span class="icon">✏️</span>Learn
+  </button>
+  <button class="bnav" data-tab="games">
+    <span class="icon">🎮</span>Games
+  </button>
+  <button class="bnav" data-tab="progress">
+    <span class="icon">🏆</span>Progress
+  </button>
+</nav>
+
+<!-- GAME MODAL -->
 <div class="modal" id="gameModal">
   <div class="mbox">
     <button class="mclose" onclick="closeGame()">✕</button>
@@ -257,226 +367,665 @@ header h1{font-size:clamp(1.6rem,5vw,2.6rem);color:#7B2D00;text-shadow:2px 2px 0
   </div>
 </div>
 
+<!-- CELEBRATION -->
 <div class="cel" id="cel">
   <div class="celbox">
-    <div class="cele" id="celE">🎉</div>
-    <div class="celt" id="celT">Amazing!</div>
-    <div class="cels" id="celS">Keep going!</div>
-    <button class="nbtn" onclick="closeCel()">Awesome! 🚀</button>
+    <div style="font-size:3.5rem;margin-bottom:10px" id="celE">🎉</div>
+    <div style="font-size:1.4rem;font-weight:900;color:#333;margin-bottom:6px" id="celT">Amazing!</div>
+    <div style="font-size:.95rem;color:#888;margin-bottom:18px" id="celS">Keep going!</div>
+    <button style="width:100%;background:var(--primary);color:white;border:none;border-radius:14px;
+      padding:13px;font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;cursor:pointer;
+      box-shadow:0 4px 0 #C04A1E" onclick="closeCel()">
+      Awesome! 🚀
+    </button>
   </div>
 </div>
 
 <div id="toast"></div>
 
-<script>
-// ═══════════════════════════════════════
-// DATA
-// ═══════════════════════════════════════
+<script>// ═══════════════════════════════════════════════════════
+// HANZIHERO DATA — Characters, Chapters, Sentences
+// ═══════════════════════════════════════════════════════
+
 const CHAPTERS = [
-  {id:0,title:'Chapter 1',emoji:'🌱',chars:['田','刀','在','上','下','大','小','来']},
-  {id:1,title:'Chapter 2',emoji:'🔥',chars:['开','火','关','两','长','广','多','少']},
-  {id:2,title:'Chapter 3',emoji:'👁️',chars:['目','手','本','工','门','见','又','头']},
-  {id:3,title:'Chapter 4',emoji:'🐄',chars:['牛','贝','六','支','九','什','么','文']},
-  {id:4,title:'Chapter 5',emoji:'🌙',chars:['月','天','水','寸','正','反','白','古']}
+  // ── ORIGINAL 5 CHAPTERS (Primary 1) ──────────────────
+  {
+    id: 0, title: 'Fields & Basics', emoji: '🌾', color: '#FF6B35',
+    subtitle: 'Your very first characters!',
+    chars: ['田','刀','在','上','下','大','小','来']
+  },
+  {
+    id: 1, title: 'Fire & Size', emoji: '🔥', color: '#D4A000',
+    subtitle: 'Open, close, big and small',
+    chars: ['开','火','关','两','长','广','多','少']
+  },
+  {
+    id: 2, title: 'Body & Objects', emoji: '👁️', color: '#06D6A0',
+    subtitle: 'Eyes, hands and everyday things',
+    chars: ['目','手','本','工','门','见','又','头']
+  },
+  {
+    id: 3, title: 'Animals & Numbers', emoji: '🐄', color: '#118AB2',
+    subtitle: 'Count and spot animals',
+    chars: ['牛','贝','六','支','九','什','么','文']
+  },
+  {
+    id: 4, title: 'Nature & Time', emoji: '🌙', color: '#845EC2',
+    subtitle: 'Moon, sky, water and more',
+    chars: ['月','天','水','寸','正','反','白','古']
+  },
+  // ── NEW CHAPTERS ─────────────────────────────────────
+  {
+    id: 5, title: 'People & Family', emoji: '👨‍👩‍👧', color: '#E91E8C',
+    subtitle: 'Talk about people you love',
+    chars: ['人','口','女','子','父','母','兄','弟']
+  },
+  {
+    id: 6, title: 'Numbers 1–10', emoji: '🔢', color: '#FF5722',
+    subtitle: 'Count from one to ten!',
+    chars: ['一','二','三','四','五','六','七','八','九','十']
+  },
+  {
+    id: 7, title: 'Colors & Appearance', emoji: '🎨', color: '#9C27B0',
+    subtitle: 'Describe how things look',
+    chars: ['红','绿','蓝','黄','黑','白','大','小']
+  },
+  {
+    id: 8, title: 'Food & Drink', emoji: '🍜', color: '#F44336',
+    subtitle: 'What do you like to eat?',
+    chars: ['吃','喝','饭','水','肉','鱼','菜','果']
+  },
+  {
+    id: 9, title: 'Places & Movement', emoji: '🏠', color: '#2196F3',
+    subtitle: 'Where are you going?',
+    chars: ['去','来','回','上','下','里','外','家']
+  },
+  {
+    id: 10, title: 'Time & Days', emoji: '📅', color: '#009688',
+    subtitle: 'Talk about when things happen',
+    chars: ['今','天','明','年','月','日','时','分']
+  },
+  {
+    id: 11, title: 'Feelings & States', emoji: '😊', color: '#FF9800',
+    subtitle: 'Express how you feel',
+    chars: ['好','不','很','有','没','爱','想','高']
+  },
+  // ── SENTENCE CHAPTERS ────────────────────────────────
+  {
+    id: 12, title: 'Say Hello!', emoji: '👋', color: '#00BCD4',
+    subtitle: 'Learn greetings and introductions',
+    isSentence: true,
+    sentences: [
+      { zh:'你好', py:'nǐ hǎo', en:'Hello!', chars:['你','好'], tip:'The most common Chinese greeting!' },
+      { zh:'谢谢', py:'xiè xiè', en:'Thank you!', chars:['谢','谢'], tip:'Repeat it twice to be polite!' },
+      { zh:'再见', py:'zài jiàn', en:'Goodbye!', chars:['再','见'], tip:'再 = again, 见 = see — "see you again!"' },
+      { zh:'对不起', py:'duì bù qǐ', en:"I'm sorry!", chars:['对','不','起'], tip:'Very important to know!' },
+      { zh:'没关系', py:'méi guān xi', en:"It\'s OK!", chars:['没','关','系'], tip:'Use this to say "no worries!"' },
+      { zh:'早上好', py:'zǎo shàng hǎo', en:'Good morning!', chars:['早','上','好'], tip:'早 = early/morning' },
+      { zh:'晚上好', py:'wǎn shàng hǎo', en:'Good evening!', chars:['晚','上','好'], tip:'晚 = evening/late' },
+      { zh:'我叫…', py:'wǒ jiào', en:'My name is…', chars:['我','叫'], tip:'Tell people your name!' }
+    ]
+  },
+  {
+    id: 13, title: 'I Am & I Have', emoji: '🙋', color: '#8BC34A',
+    subtitle: 'Talk about yourself',
+    isSentence: true,
+    sentences: [
+      { zh:'我是学生', py:'wǒ shì xué shēng', en:'I am a student', chars:['我','是','学','生'], tip:'是 = am/is/are' },
+      { zh:'我有一本书', py:'wǒ yǒu yī běn shū', en:'I have one book', chars:['我','有','一','本','书'], tip:'有 = have' },
+      { zh:'我很高兴', py:'wǒ hěn gāo xìng', en:'I am very happy', chars:['我','很','高','兴'], tip:'很 = very' },
+      { zh:'我不知道', py:'wǒ bù zhī dào', en:"I don't know", chars:['我','不','知','道'], tip:'不 = not/no' },
+      { zh:'我喜欢吃', py:'wǒ xǐ huān chī', en:'I like to eat', chars:['我','喜','欢','吃'], tip:'喜欢 = like' },
+      { zh:'我要去', py:'wǒ yào qù', en:'I want to go', chars:['我','要','去'], tip:'要 = want to' },
+      { zh:'我看见了', py:'wǒ kàn jiàn le', en:'I can see it', chars:['我','看','见','了'], tip:'看 = look, 见 = see' },
+      { zh:'我回家了', py:'wǒ huí jiā le', en:'I\'m going home', chars:['我','回','家','了'], tip:'回 = return, 家 = home' }
+    ]
+  },
+  {
+    id: 14, title: 'Questions!', emoji: '❓', color: '#FF6B35',
+    subtitle: 'Ask questions in Chinese',
+    isSentence: true,
+    sentences: [
+      { zh:'你好吗？', py:'nǐ hǎo ma?', en:'How are you?', chars:['你','好','吗'], tip:'吗 turns a statement into a question!' },
+      { zh:'这是什么？', py:'zhè shì shén me?', en:'What is this?', chars:['这','是','什','么'], tip:'什么 = what' },
+      { zh:'你叫什么名字？', py:'nǐ jiào shén me míng zi?', en:'What\'s your name?', chars:['你','叫','什','么','名','字'], tip:'名字 = name' },
+      { zh:'多少钱？', py:'duō shǎo qián?', en:'How much is it?', chars:['多','少','钱'], tip:'Useful for shopping!' },
+      { zh:'在哪里？', py:'zài nǎ lǐ?', en:'Where is it?', chars:['在','哪','里'], tip:'哪里 = where' },
+      { zh:'几点了？', py:'jǐ diǎn le?', en:'What time is it?', chars:['几','点','了'], tip:'几 = how many, 点 = o\'clock' },
+      { zh:'为什么？', py:'wèi shén me?', en:'Why?', chars:['为','什','么'], tip:'A very useful question word!' },
+      { zh:'怎么了？', py:'zěn me le?', en:'What\'s wrong?', chars:['怎','么','了'], tip:'Used when something happened' }
+    ]
+  },
+  {
+    id: 15, title: 'At School', emoji: '📚', color: '#3F51B5',
+    subtitle: 'School words and sentences',
+    isSentence: true,
+    sentences: [
+      { zh:'上课了', py:'shàng kè le', en:'Class has started', chars:['上','课','了'], tip:'上 = go up/start, 课 = class' },
+      { zh:'下课了', py:'xià kè le', en:'Class is over', chars:['下','课','了'], tip:'下 = go down/end' },
+      { zh:'我要读书', py:'wǒ yào dú shū', en:'I want to read', chars:['我','要','读','书'], tip:'读 = read, 书 = book' },
+      { zh:'老师好', py:'lǎo shī hǎo', en:'Hello teacher!', chars:['老','师','好'], tip:'Always greet your teacher!' },
+      { zh:'同学们好', py:'tóng xué men hǎo', en:'Hello classmates!', chars:['同','学','们','好'], tip:'们 makes a word plural' },
+      { zh:'我不会', py:'wǒ bù huì', en:"I can't do it", chars:['我','不','会'], tip:'会 = can/know how to' },
+      { zh:'请再说一次', py:'qǐng zài shuō yī cì', en:'Please say it again', chars:['请','再','说','一','次'], tip:'请 = please — very polite!' },
+      { zh:'我明白了', py:'wǒ míng bái le', en:'I understand now!', chars:['我','明','白','了'], tip:'明白 = understand — 白 = white/clear!' }
+    ]
+  }
 ];
 
+// ── CHARACTER DICTIONARY ──────────────────────────────
 const CD = {
-  '田':{py:'tián',t:2,en:'Field',emoji:'🌾',tip:'Looks like a rice paddy divided into sections!'},
-  '刀':{py:'dāo',t:1,en:'Knife',emoji:'🔪',tip:'Like a bent blade!'},
-  '在':{py:'zài',t:4,en:'At / Here',emoji:'📍',tip:'Used to say WHERE something is!'},
-  '上':{py:'shàng',t:4,en:'Up / Above',emoji:'⬆️',tip:'A line ABOVE — pointing up!'},
-  '下':{py:'xià',t:4,en:'Down / Below',emoji:'⬇️',tip:'A line BELOW — pointing down!'},
-  '大':{py:'dà',t:4,en:'Big',emoji:'🦣',tip:'A big person with arms spread wide!'},
-  '小':{py:'xiǎo',t:3,en:'Small',emoji:'🐜',tip:'A tiny squeeze in the middle!'},
-  '来':{py:'lái',t:2,en:'Come',emoji:'🚶',tip:'Someone is COMING toward you!'},
-  '开':{py:'kāi',t:1,en:'Open',emoji:'🚪',tip:'Opening a gate wide!'},
-  '火':{py:'huǒ',t:3,en:'Fire',emoji:'🔥',tip:'Flames dancing upward!'},
-  '关':{py:'guān',t:1,en:'Close',emoji:'🔒',tip:'Closing the gate shut!'},
-  '两':{py:'liǎng',t:3,en:'Two / Both',emoji:'✌️',tip:'Two things standing together!'},
-  '长':{py:'cháng',t:2,en:'Long',emoji:'📏',tip:'Something stretching out long!'},
-  '广':{py:'guǎng',t:3,en:'Wide',emoji:'🌅',tip:'A wide open shelter roof!'},
-  '多':{py:'duō',t:1,en:'Many',emoji:'✨✨',tip:'Two evenings — so many!'},
-  '少':{py:'shǎo',t:3,en:'Few',emoji:'🫧',tip:'Just a tiny little bit!'},
-  '目':{py:'mù',t:4,en:'Eye',emoji:'👁️',tip:'A rectangle with two pupils — an eye!'},
-  '手':{py:'shǒu',t:3,en:'Hand',emoji:'✋',tip:'Three fingers and a palm!'},
-  '本':{py:'běn',t:3,en:'Root / Book',emoji:'📚',tip:'A tree with its roots marked!'},
-  '工':{py:'gōng',t:1,en:'Work',emoji:'🔨',tip:'Like an I-beam for building!'},
-  '门':{py:'mén',t:2,en:'Door',emoji:'🚪',tip:'Two door panels side by side!'},
-  '见':{py:'jiàn',t:4,en:'See',emoji:'👀',tip:'An eye on legs — going to SEE!'},
-  '又':{py:'yòu',t:4,en:'Again',emoji:'🔄',tip:'One more time — again!'},
-  '头':{py:'tóu',t:2,en:'Head',emoji:'🗣️',tip:'Your head on top of your body!'},
-  '牛':{py:'niú',t:2,en:'Cow',emoji:'🐄',tip:'A cow with horns!'},
-  '贝':{py:'bèi',t:4,en:'Shell',emoji:'🐚',tip:'Ancient shells used as money!'},
-  '六':{py:'liù',t:4,en:'Six',emoji:'6️⃣',tip:'Six — sounds like lyoh!'},
-  '支':{py:'zhī',t:1,en:'Branch',emoji:'🌿',tip:'A hand holding a branch!'},
-  '九':{py:'jiǔ',t:3,en:'Nine',emoji:'9️⃣',tip:'Nine — like a curving hook!'},
-  '什':{py:'shén',t:2,en:'What (1)',emoji:'❓',tip:'First part of 什么 = what!'},
-  '么':{py:'me',t:0,en:'What (2)',emoji:'💬',tip:'Second part of 什么 = what!'},
-  '文':{py:'wén',t:2,en:'Writing',emoji:'✍️',tip:'A person writing beautifully!'},
-  '月':{py:'yuè',t:4,en:'Moon',emoji:'🌙',tip:'The crescent moon shape!'},
-  '天':{py:'tiān',t:1,en:'Sky / Day',emoji:'☀️',tip:'Above the big person — the SKY!'},
-  '水':{py:'shuǐ',t:3,en:'Water',emoji:'💧',tip:'Water flowing with waves!'},
-  '寸':{py:'cùn',t:4,en:'Inch',emoji:'📐',tip:'A very tiny measurement!'},
-  '正':{py:'zhèng',t:4,en:'Correct',emoji:'✅',tip:'Stand upright and be correct!'},
-  '反':{py:'fǎn',t:3,en:'Opposite',emoji:'🔃',tip:'The opposite direction!'},
-  '白':{py:'bái',t:2,en:'White',emoji:'⬜',tip:'The bright white sun!'},
-  '古':{py:'gǔ',t:3,en:'Ancient',emoji:'🏺',tip:'Ten mouths — old stories passed down!'}
+  // Chapter 1
+  '田':{py:'tián',t:2,en:'Field',enFull:'A rice paddy / farm field',emoji:'🌾',tip:'Looks like a rice paddy divided into sections — the lines show the paths between fields!'},
+  '刀':{py:'dāo',t:1,en:'Knife',enFull:'A knife or blade',emoji:'🔪',tip:'Like a bent blade with a sharp edge!'},
+  '在':{py:'zài',t:4,en:'At / Here',enFull:'To be at a place; to exist',emoji:'📍',tip:'Used to say WHERE something is — like a pin on a map!'},
+  '上':{py:'shàng',t:4,en:'Up / Above',enFull:'Up, above, on top of',emoji:'⬆️',tip:'A short line ABOVE the long line — pointing upward!'},
+  '下':{py:'xià',t:4,en:'Down / Below',enFull:'Down, below, under',emoji:'⬇️',tip:'A short line BELOW the long line — pointing downward!'},
+  '大':{py:'dà',t:4,en:'Big',enFull:'Big, large, great',emoji:'🦣',tip:'A big person standing with arms spread wide — take up space!'},
+  '小':{py:'xiǎo',t:3,en:'Small',enFull:'Small, little, tiny',emoji:'🐜',tip:'A tiny line squeezed in the middle, two dots pushed aside — it is so tiny!'},
+  '来':{py:'lái',t:2,en:'Come',enFull:'To come, to arrive',emoji:'🚶',tip:'Someone is COMING toward you with open arms!'},
+  // Chapter 2
+  '开':{py:'kāi',t:1,en:'Open',enFull:'To open, to start, to turn on',emoji:'🚪',tip:'Two hands pulling a gate open wide!'},
+  '火':{py:'huǒ',t:3,en:'Fire',enFull:'Fire, flame',emoji:'🔥',tip:'Flames dancing upward — you can see the heat!'},
+  '关':{py:'guān',t:1,en:'Close',enFull:'To close, to shut, to turn off',emoji:'🔒',tip:'Pushing the gate closed and locking it!'},
+  '两':{py:'liǎng',t:3,en:'Two / Both',enFull:'Two of something; both',emoji:'✌️',tip:'Two things standing together inside a frame!'},
+  '长':{py:'cháng',t:2,en:'Long',enFull:'Long; to grow',emoji:'📏',tip:'Something stretching out long, like a ruler!'},
+  '广':{py:'guǎng',t:3,en:'Wide',enFull:'Wide, vast, extensive',emoji:'🌅',tip:'A wide open shelter roof — space as far as you can see!'},
+  '多':{py:'duō',t:1,en:'Many',enFull:'Many, much, a lot',emoji:'✨✨✨',tip:'Two evenings (夕夕) stacked — so many nights pass!'},
+  '少':{py:'shǎo',t:3,en:'Few',enFull:'Few, little, not much',emoji:'🫧',tip:'Just a tiny little bit — almost nothing!'},
+  // Chapter 3
+  '目':{py:'mù',t:4,en:'Eye',enFull:'Eye; to look',emoji:'👁️',tip:'A rectangle with two horizontal lines inside — it IS an eye!'},
+  '手':{py:'shǒu',t:3,en:'Hand',emoji:'✋',enFull:'Hand',tip:'Three fingers sticking up from a palm — count them!'},
+  '本':{py:'běn',t:3,en:'Root / Book',enFull:'Root, origin; a book (counting word)',emoji:'📚',tip:'A tree (木) with a mark at the bottom showing its roots!'},
+  '工':{py:'gōng',t:1,en:'Work',enFull:'Work, labor; worker',emoji:'🔨',tip:'Like an I-beam used in construction — built for work!'},
+  '门':{py:'mén',t:2,en:'Door',enFull:'Door, gate, entrance',emoji:'🚪',tip:'Two door panels standing side by side — push them open!'},
+  '见':{py:'jiàn',t:4,en:'See',enFull:'To see, to meet, to appear',emoji:'👀',tip:'An eye (目) on legs — it is walking around looking!'},
+  '又':{py:'yòu',t:4,en:'Again',enFull:'Again, also, furthermore',emoji:'🔄',tip:'Once more — the hand reaches out again!'},
+  '头':{py:'tóu',t:2,en:'Head',enFull:'Head; top; first',emoji:'🗣️',tip:'Your head sitting on top of your body!'},
+  // Chapter 4
+  '牛':{py:'niú',t:2,en:'Cow',enFull:'Cow, ox, bull',emoji:'🐄',tip:'A cow with horns on top — moo!'},
+  '贝':{py:'bèi',t:4,en:'Shell',enFull:'Shell; money (ancient)',emoji:'🐚',tip:'Ancient cowrie shells were used as money in China!'},
+  '六':{py:'liù',t:4,en:'Six',enFull:'The number 6',emoji:'6️⃣',tip:'Six sounds like "lyoh" — the roof with two legs!'},
+  '支':{py:'zhī',t:1,en:'Branch',enFull:'Branch; a counting word for long thin things',emoji:'🌿',tip:'A hand (又) holding a branch — snap!'},
+  '九':{py:'jiǔ',t:3,en:'Nine',enFull:'The number 9',emoji:'9️⃣',tip:'Nine looks like a curving hook — like the number 9!'},
+  '什':{py:'shén',t:2,en:'What (1st part)',enFull:'Part of 什么 (shénme) = what',emoji:'❓',tip:'The first character of 什么 which means "what"!'},
+  '么':{py:'me',t:0,en:'What (2nd part)',enFull:'Particle; part of 什么 = what',emoji:'💬',tip:'The second character of 什么. Together: 什么 = what!'},
+  '文':{py:'wén',t:2,en:'Writing',enFull:'Writing, language, culture',emoji:'✍️',tip:'A person standing beautifully — like an elegant letter!'},
+  // Chapter 5
+  '月':{py:'yuè',t:4,en:'Moon',enFull:'Moon; month',emoji:'🌙',tip:'The crescent moon shape — it also means month!'},
+  '天':{py:'tiān',t:1,en:'Sky / Day',enFull:'Sky, heaven; day',emoji:'☀️',tip:'A horizontal stroke ABOVE the big person (大) — the SKY above us!'},
+  '水':{py:'shuǐ',t:3,en:'Water',enFull:'Water',emoji:'💧',tip:'Water flowing with waves — you can see it rippling!'},
+  '寸':{py:'cùn',t:4,en:'Inch',enFull:'Chinese inch (unit); very small',emoji:'📐',tip:'A very tiny traditional measurement — about 3cm!'},
+  '正':{py:'zhèng',t:4,en:'Correct',enFull:'Correct, upright, proper',emoji:'✅',tip:'Stand up straight, be honest — that is 正!'},
+  '反':{py:'fǎn',t:3,en:'Opposite',enFull:'Opposite, reverse, to turn over',emoji:'🔃',tip:'The opposite direction — flip it around!'},
+  '白':{py:'bái',t:2,en:'White',enFull:'White; bright; clear',emoji:'⬜',tip:'The bright white sun shining in the sky!'},
+  '古':{py:'gǔ',t:3,en:'Ancient',enFull:'Ancient, old, long ago',emoji:'🏺',tip:'Ten (十) mouths (口) — ten generations of stories passed down!'},
+  // Chapter 6 — People & Family
+  '人':{py:'rén',t:2,en:'Person',enFull:'Person, human being, people',emoji:'🧑',tip:'Two legs walking — a person in motion!'},
+  '口':{py:'kǒu',t:3,en:'Mouth',enFull:'Mouth; opening',emoji:'👄',tip:'A square opening — open your mouth wide!'},
+  '女':{py:'nǚ',t:3,en:'Woman',enFull:'Woman, female',emoji:'👩',tip:'A woman crossing her arms gracefully!'},
+  '子':{py:'zǐ',t:3,en:'Child',enFull:'Child, son; a suffix',emoji:'👶',tip:'A small baby with arms raised up — pick me up!'},
+  '父':{py:'fù',t:4,en:'Father',enFull:'Father, dad',emoji:'👨',tip:'A strong figure holding something — dad!'},
+  '母':{py:'mǔ',t:3,en:'Mother',enFull:'Mother, mom',emoji:'👩',tip:'Like woman (女) but with two dots — a mother nurturing!'},
+  '兄':{py:'xiōng',t:1,en:'Elder Brother',enFull:'Elder brother',emoji:'👦',tip:'A mouth on top of a person — older brother speaks first!'},
+  '弟':{py:'dì',t:4,en:'Younger Brother',enFull:'Younger brother',emoji:'👦',tip:'A younger sibling — little brother!'},
+  // Chapter 7 — Numbers (some overlap)
+  '一':{py:'yī',t:1,en:'One',enFull:'The number 1',emoji:'1️⃣',tip:'Just one single horizontal stroke — the simplest character!'},
+  '二':{py:'èr',t:4,en:'Two',enFull:'The number 2',emoji:'2️⃣',tip:'Two horizontal strokes stacked — count them!'},
+  '三':{py:'sān',t:1,en:'Three',enFull:'The number 3',emoji:'3️⃣',tip:'Three horizontal strokes — easy to remember!'},
+  '四':{py:'sì',t:4,en:'Four',enFull:'The number 4',emoji:'4️⃣',tip:'A box with two legs — four sides!'},
+  '五':{py:'wǔ',t:3,en:'Five',enFull:'The number 5',emoji:'5️⃣',tip:'Five strokes for the number five!'},
+  '七':{py:'qī',t:1,en:'Seven',enFull:'The number 7',emoji:'7️⃣',tip:'Looks a bit like the number 7!'},
+  '八':{py:'bā',t:1,en:'Eight',enFull:'The number 8 — lucky in China!',emoji:'8️⃣',tip:'Two strokes spreading apart — 8 is the luckiest number in China! 🍀'},
+  '十':{py:'shí',t:2,en:'Ten',enFull:'The number 10',emoji:'🔟',tip:'A cross shape — ten! Plus sign = ten!'},
+  // Chapter 8 — Colors
+  '红':{py:'hóng',t:2,en:'Red',enFull:'Red color',emoji:'🔴',tip:'Red is the color of luck in China! 红 has the silk radical on the left!'},
+  '绿':{py:'lǜ',t:4,en:'Green',enFull:'Green color',emoji:'🟢',tip:'The color of plants and nature — green!'},
+  '蓝':{py:'lán',t:2,en:'Blue',enFull:'Blue color',emoji:'🔵',tip:'Blue like the sky and the ocean!'},
+  '黄':{py:'huáng',t:2,en:'Yellow',enFull:'Yellow color',emoji:'🟡',tip:'Yellow was the emperor\'s color in ancient China!'},
+  '黑':{py:'hēi',t:1,en:'Black',enFull:'Black color; dark',emoji:'⚫',tip:'Dark as night — the character looks heavy and dark!'},
+  // Chapter 9 — Food
+  '吃':{py:'chī',t:1,en:'Eat',enFull:'To eat',emoji:'🍽️',tip:'The mouth radical on the left — of course, eating uses your mouth!'},
+  '喝':{py:'hē',t:1,en:'Drink',enFull:'To drink',emoji:'🥤',tip:'Also has the mouth radical — drinking uses your mouth too!'},
+  '饭':{py:'fàn',t:4,en:'Rice / Meal',enFull:'Cooked rice; a meal',emoji:'🍚',tip:'The food radical on the left — 饭 is the most important food in China!'},
+  '肉':{py:'ròu',t:4,en:'Meat',enFull:'Meat, flesh',emoji:'🥩',tip:'Looks like a piece of meat with layers!'},
+  '鱼':{py:'yú',t:2,en:'Fish',enFull:'Fish',emoji:'🐟',tip:'Can you see the fish shape — head, body, tail, and fins?'},
+  '菜':{py:'cài',t:4,en:'Vegetable',enFull:'Vegetable; dish; food',emoji:'🥦',tip:'The plant radical on top — vegetables grow from plants!'},
+  '果':{py:'guǒ',t:3,en:'Fruit',enFull:'Fruit; result',emoji:'🍎',tip:'A tree (木) with something round on top — fruit hanging from a tree!'},
+  // Chapter 10 — Places & Movement
+  '去':{py:'qù',t:4,en:'Go',enFull:'To go (somewhere)',emoji:'🚶',tip:'Going away — moving toward a destination!'},
+  '回':{py:'huí',t:2,en:'Return',enFull:'To return, to go back',emoji:'🔄',tip:'A spiral going back inside — returning home!'},
+  '里':{py:'lǐ',t:3,en:'Inside',enFull:'Inside, within; a Chinese unit of distance',emoji:'📦',tip:'Inside the box — what is in there?'},
+  '外':{py:'wài',t:4,en:'Outside',enFull:'Outside, external',emoji:'🌳',tip:'The opposite of 里 (inside) — out there!'},
+  '家':{py:'jiā',t:1,en:'Home',enFull:'Home, family, house',emoji:'🏠',tip:'A roof (宀) over a pig (豕) — in ancient times, your home had animals!'},
+  // Chapter 11 — Feelings
+  '好':{py:'hǎo',t:3,en:'Good',enFull:'Good, well, fine; very',emoji:'😊',tip:'Woman (女) + child (子) = good! A mother and child together is happiness!'},
+  '不':{py:'bù',t:4,en:'Not / No',enFull:'No, not — negation word',emoji:'❌',tip:'A bird flying upward and refusing to come down — NO!'},
+  '很':{py:'hěn',t:3,en:'Very',enFull:'Very, quite, rather',emoji:'💯',tip:'Makes adjectives stronger — 很好 = very good!'},
+  '有':{py:'yǒu',t:3,en:'Have',enFull:'To have; there is/are',emoji:'✅',tip:'A hand holding the moon — I have it!'},
+  '没':{py:'méi',t:2,en:'Not have',enFull:'Do not have; did not (for past)',emoji:'🚫',tip:'The opposite of 有 (have) — I do not have it!'},
+  '爱':{py:'ài',t:4,en:'Love',enFull:'Love; to love',emoji:'❤️',tip:'A heart in the middle — full of love!'},
+  '想':{py:'xiǎng',t:3,en:'Think / Want',enFull:'To think; to miss; to want',emoji:'💭',tip:'Heart at the bottom — thinking comes from your heart!'},
+  '高':{py:'gāo',t:1,en:'Tall / Happy',enFull:'Tall, high; happy (in 高兴)',emoji:'😄',tip:'A tall building reaching up — tall AND happy!'},
+  // Sentence chapter extra characters
+  '你':{py:'nǐ',t:3,en:'You',enFull:'You (singular)',emoji:'👉',tip:'Person radical + another person — addressing you!'},
+  '谢':{py:'xiè',t:4,en:'Thank',enFull:'To thank',emoji:'🙏',tip:'谢谢 (xiè xiè) = thank you!'},
+  '再':{py:'zài',t:4,en:'Again',enFull:'Again; then',emoji:'🔁',tip:'再见 = goodbye (see you again)!'},
+  '对':{py:'duì',t:4,en:'Correct',enFull:'Correct; toward; a pair',emoji:'✅',tip:'对不起 = sorry (cannot face you)'},
+  '起':{py:'qǐ',t:3,en:'Rise',enFull:'To rise, to get up; to start',emoji:'⬆️',tip:'对不起 = I\'m sorry'},
+  '早':{py:'zǎo',t:3,en:'Early / Morning',enFull:'Early; morning',emoji:'🌅',tip:'早上好 = good morning!'},
+  '晚':{py:'wǎn',t:3,en:'Evening / Late',enFull:'Evening; late',emoji:'🌆',tip:'晚上好 = good evening!'},
+  '我':{py:'wǒ',t:3,en:'I / Me',enFull:'I, me',emoji:'👈',tip:'A hand with something in it — mine! I!'},
+  '是':{py:'shì',t:4,en:'Am / Is / Are',enFull:'To be (am, is, are)',emoji:'=',tip:'是 connects things — I AM a student'},
+  '学':{py:'xué',t:2,en:'Study',enFull:'To study, to learn',emoji:'📖',tip:'Learning under a teacher!'},
+  '生':{py:'shēng',t:1,en:'Life / Born',enFull:'To be born; life; student',emoji:'🌱',tip:'学生 = student (learning life)'},
+  '书':{py:'shū',t:1,en:'Book',enFull:'Book',emoji:'📚',tip:'我有一本书 = I have a book'},
+  '喜':{py:'xǐ',t:3,en:'Happy / Like',enFull:'Happy; to like (in 喜欢)',emoji:'😄',tip:'喜欢 = like/enjoy'},
+  '欢':{py:'huān',t:1,en:'Joyful',enFull:'Joyful; welcome (in 喜欢)',emoji:'🎉',tip:'喜欢 together = to like'},
+  '要':{py:'yào',t:4,en:'Want',enFull:'To want; to need; important',emoji:'🙋',tip:'我要 = I want'},
+  '看':{py:'kàn',t:4,en:'Look',enFull:'To look, to watch, to read',emoji:'👀',tip:'了 after verbs shows completed action'},
+  '了':{py:'le',t:0,en:'(done!)',enFull:'Particle showing completed action',emoji:'✅',tip:'Put 了 after a verb to say it\'s done!'},
+  '吗':{py:'ma',t:0,en:'(question?)',enFull:'Question particle — turns statement into question',emoji:'❓',tip:'Add 吗 to the end to ask a question!'},
+  '这':{py:'zhè',t:4,en:'This',enFull:'This (nearby thing)',emoji:'👇',tip:'Pointing at something close to you!'},
+  '哪':{py:'nǎ',t:3,en:'Which / Where',enFull:'Which; where',emoji:'🗺️',tip:'哪里 = where'},
+  '几':{py:'jǐ',t:3,en:'How many',enFull:'How many; several',emoji:'🔢',tip:'几点 = what time (how many o\'clock)'},
+  '点':{py:'diǎn',t:3,en:'O\'clock',enFull:'O\'clock; a bit; dot',emoji:'🕐',tip:'几点了 = what time is it?'},
+  '为':{py:'wèi',t:4,en:'For / Why',enFull:'For; because of; why (in 为什么)',emoji:'💭',tip:'为什么 = why'},
+  '怎':{py:'zěn',t:3,en:'How',enFull:'How (in 怎么)',emoji:'🤔',tip:'怎么了 = what happened?'},
+  '课':{py:'kè',t:4,en:'Class',enFull:'Class, lesson, course',emoji:'📒',tip:'上课 = class starts, 下课 = class ends'},
+  '读':{py:'dú',t:2,en:'Read',enFull:'To read aloud, to study',emoji:'📖',tip:'读书 = to read a book'},
+  '老':{py:'lǎo',t:3,en:'Old / Teacher',enFull:'Old; respectful title (in 老师)',emoji:'👴',tip:'老师 = teacher (honorable old one)'},
+  '师':{py:'shī',t:1,en:'Teacher',enFull:'Teacher, master, expert',emoji:'👩‍🏫',tip:'老师 = teacher'},
+  '同':{py:'tóng',t:2,en:'Same / Together',enFull:'Same; together (in 同学)',emoji:'🤝',tip:'同学 = classmate (same student)'},
+  '们':{py:'men',t:0,en:'(plural)',enFull:'Plural suffix for people',emoji:'👥',tip:'我们 = we; 你们 = you all; 同学们 = classmates'},
+  '会':{py:'huì',t:4,en:'Can / Know how',enFull:'Can; know how to; meeting',emoji:'💡',tip:'我不会 = I don\'t know how'},
+  '请':{py:'qǐng',t:3,en:'Please',enFull:'Please; to invite; to treat',emoji:'🙏',tip:'请 is very polite — always use it!'},
+  '说':{py:'shuō',t:1,en:'Say / Speak',enFull:'To say, to speak, to talk',emoji:'💬',tip:'请再说一次 = please say it again'},
+  '次':{py:'cì',t:4,en:'Time / Once',enFull:'Time(s), occurrence',emoji:'1️⃣',tip:'一次 = one time; 再一次 = one more time'},
+  '明':{py:'míng',t:2,en:'Bright / Clear',enFull:'Bright; clear; understand (明白)',emoji:'💡',tip:'Sun (日) + moon (月) = very bright!'},
+  '知':{py:'zhī',t:1,en:'Know',enFull:'To know, to be aware',emoji:'🧠',tip:'知道 = to know'},
+  '道':{py:'dào',t:4,en:'Road / Way',enFull:'Road; way; to say (知道)',emoji:'🛣️',tip:'知道 = know the way = to know!'},
+  '名':{py:'míng',t:2,en:'Name',enFull:'Name; famous',emoji:'🏷️',tip:'名字 = full name'},
+  '字':{py:'zì',t:4,en:'Character',enFull:'Character, word, letter',emoji:'字',tip:'名字 = name; this very app teaches 字!'},
+  '钱':{py:'qián',t:2,en:'Money',enFull:'Money, currency',emoji:'💰',tip:'多少钱 = how much money = how much does it cost?'},
+  '兴':{py:'xìng',t:4,en:'Excited / Happy',enFull:'Excited, interested; happy (高兴)',emoji:'🎊',tip:'高兴 = happy!'},
+  '叫':{py:'jiào',t:4,en:'Be called',enFull:'To be called; to call out',emoji:'📢',tip:'我叫… = my name is…'},
+  '系':{py:'xi',t:0,en:'Connection',enFull:'Connection, relation (in 没关系)',emoji:'🔗',tip:'没关系 = it\'s OK (no problem)'},
 };
 
-// ═══════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════
-let S = JSON.parse(localStorage.getItem('hzS')||'{}');
-// S[char] = { w: bool, s: bool }
-let stars = parseInt(localStorage.getItem('hzSt')||'0');
+// ── SENTENCES reference for display ──────────────────
+// (Sentence chapters defined inline in CHAPTERS above)
+</script>
+<script>// ═══════════════════════════════════════════════════════
+// HANZIHERO — app.js
+// ═══════════════════════════════════════════════════════
+
+// ── STATE ─────────────────────────────────────────────
+let S = JSON.parse(localStorage.getItem('hzS') || '{}');
+let stars = parseInt(localStorage.getItem('hzSt') || '0');
 let curCh = null, curIdx = 0;
-let watchW = null, quizW = null;
+let HW = null, watchW = null, quizW = null;
 let qTotal = 0, qDone = 0;
 let speechR = null, isRec = false;
 let GS = {};
+let deferredInstall = null;
+let AudioCtx = null;
 
-function save(){
-  localStorage.setItem('hzS',JSON.stringify(S));
-  localStorage.setItem('hzSt',stars);
+function save() {
+  localStorage.setItem('hzS', JSON.stringify(S));
+  localStorage.setItem('hzSt', stars);
   updateHdr();
 }
 
-function status(c){
-  const s=S[c]||{};
-  if(s.w&&s.s) return 'mastered';
-  if(s.w||s.s) return 'partial';
+function getStatus(c) {
+  const s = S[c] || {};
+  if (s.w && s.sp) return 'mastered';
+  if (s.w || s.sp) return 'partial';
   return 'none';
 }
 
-function updateHdr(){
-  const all=Object.keys(CD);
-  document.getElementById('hStars').textContent=stars;
-  document.getElementById('hMastered').textContent=all.filter(c=>status(c)==='mastered').length;
-  document.getElementById('hWrite').textContent=all.filter(c=>S[c]?.w).length;
-  document.getElementById('hSpeak').textContent=all.filter(c=>S[c]?.s).length;
+function updateHdr() {
+  const all = Object.keys(CD);
+  const mastered = all.filter(c => getStatus(c) === 'mastered').length;
+  document.getElementById('hStars').textContent = stars;
+  document.getElementById('hMastered').textContent = mastered;
+  document.getElementById('hWrite').textContent = all.filter(c => S[c]?.w).length;
+  document.getElementById('hSpeak').textContent = all.filter(c => S[c]?.sp).length;
 }
 
-// ═══════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════
-function init(){
+// ── AUDIO CONTEXT FOR STROKE SOUNDS ──────────────────
+function getAudioCtx() {
+  if (!AudioCtx) AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return AudioCtx;
+}
+
+function playStrokeSound(correct) {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    if (correct) {
+      // Pleasant ascending tone for correct stroke
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.22);
+    } else {
+      // Low thud for wrong stroke
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(220, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.2);
+    }
+
+    // Visual flash
+    const fx = document.getElementById('strokeFx');
+    if (fx) {
+      fx.textContent = correct ? '✅' : '❌';
+      fx.classList.add('pop');
+      setTimeout(() => fx.classList.remove('pop'), 300);
+    }
+  } catch (e) {}
+}
+
+function playCompleteSound() {
+  try {
+    const ctx = getAudioCtx();
+    const notes = [523, 659, 784, 1047]; // C5 E5 G5 C6
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.1);
+      gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + i * 0.1 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.3);
+      osc.start(ctx.currentTime + i * 0.1);
+      osc.stop(ctx.currentTime + i * 0.1 + 0.3);
+    });
+  } catch (e) {}
+}
+
+// ── INIT ──────────────────────────────────────────────
+function init() {
   updateHdr();
   renderChs();
   renderGames();
   renderProg();
-  document.querySelectorAll('.tab').forEach(t=>{
-    t.addEventListener('click',()=>{
-      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-      document.querySelectorAll('.pane').forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-      document.getElementById('pane-'+t.dataset.tab).classList.add('active');
-      if(t.dataset.tab==='learn'&&curCh) renderLearn();
-      if(t.dataset.tab==='progress') renderProg();
-      if(t.dataset.tab==='chapters') renderChs();
+
+  // Bottom nav
+  document.querySelectorAll('.bnav').forEach(b => {
+    b.addEventListener('click', () => {
+      goTab(b.dataset.tab);
+      if (b.dataset.tab === 'learn' && curCh) renderLearn();
+      if (b.dataset.tab === 'progress') renderProg();
+      if (b.dataset.tab === 'chapters') renderChs();
     });
+  });
+
+  // PWA install
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredInstall = e;
+    document.getElementById('installBtn').classList.add('show');
+  });
+
+  // Offline
+  window.addEventListener('offline', () => document.getElementById('offlineBanner').style.display = 'block');
+  window.addEventListener('online', () => document.getElementById('offlineBanner').style.display = 'none');
+
+  // Service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+
+  // Unlock AudioContext on first tap
+  document.addEventListener('touchstart', () => {
+    try { getAudioCtx().resume(); } catch(e) {}
+  }, { once: true });
+  document.addEventListener('click', () => {
+    try { getAudioCtx().resume(); } catch(e) {}
+  }, { once: true });
+}
+
+function installApp() {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  deferredInstall.userChoice.then(() => {
+    deferredInstall = null;
+    document.getElementById('installBtn').classList.remove('show');
   });
 }
 
-function goTab(name){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
-  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
-  document.getElementById('pane-'+name).classList.add('active');
+function goTab(name) {
+  document.querySelectorAll('.bnav').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  const p = document.getElementById('pane-' + name);
+  if (p) p.classList.add('active');
 }
 
-// ═══════════════════════════════════════
-// CHAPTERS
-// ═══════════════════════════════════════
-function renderChs(){
-  document.getElementById('pane-chapters').innerHTML=`<div class="ch-grid">${
-    CHAPTERS.map(ch=>{
-      const done=ch.chars.filter(c=>status(c)==='mastered').length;
-      const part=ch.chars.filter(c=>status(c)==='partial').length;
-      const pct=Math.round((done+part*.5)/8*100);
-      return `<div class="ch-card ch${ch.id}" onclick="openCh(${ch.id})">
-        <div style="font-size:1.5rem;margin-bottom:4px">${ch.emoji}</div>
-        <div class="ch-label">${ch.title}</div>
-        <div class="ch-chars">${ch.chars.slice(0,4).join(' ')}<br>${ch.chars.slice(4).join(' ')}</div>
-        <div class="ch-prog">
-          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
-          <span style="font-size:.75rem;color:#888;white-space:nowrap">${done}/8⭐</span>
-        </div>
-      </div>`;
-    }).join('')
-  }</div>`;
+// ── CHAPTERS ─────────────────────────────────────────
+function renderChs() {
+  const charChs = CHAPTERS.filter(c => !c.isSentence);
+  const sentChs = CHAPTERS.filter(c => c.isSentence);
+
+  let html = `<div style="font-size:1rem;font-weight:800;color:#555;margin-bottom:10px">📖 Character Chapters</div>
+    <div class="ch-grid">
+    ${charChs.map(ch => chCardHTML(ch)).join('')}
+    </div>
+    <div style="font-size:1rem;font-weight:800;color:#555;margin:18px 0 10px">💬 Sentence Chapters</div>
+    <div class="ch-grid">
+    ${sentChs.map(ch => chCardHTML(ch)).join('')}
+    </div>`;
+  document.getElementById('pane-chapters').innerHTML = html;
 }
 
-function openCh(id){
-  curCh=CHAPTERS[id]; curIdx=0;
-  watchW=null; quizW=null;
-  goTab('learn'); renderLearn();
+function chCardHTML(ch) {
+  if (ch.isSentence) {
+    const done = (S['sent_' + ch.id] || []).length;
+    const total = ch.sentences.length;
+    const pct = Math.round(done / total * 100);
+    return `<div class="ch-card" style="border-color:${ch.color}" onclick="openCh(${ch.id})">
+      <div style="font-size:1.4rem;margin-bottom:3px">${ch.emoji}</div>
+      <div class="ch-label" style="color:${ch.color}">${ch.title}</div>
+      <div class="ch-type-badge sentence">💬 Sentences</div>
+      <div class="ch-subtitle">${ch.subtitle}</div>
+      <div class="ch-prog-row">
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+        <span style="font-size:.72rem;color:#aaa;white-space:nowrap">${done}/${total}</span>
+      </div>
+    </div>`;
+  }
+  const done = ch.chars.filter(c => getStatus(c) === 'mastered').length;
+  const part = ch.chars.filter(c => getStatus(c) === 'partial').length;
+  const pct = Math.round((done + part * 0.5) / ch.chars.length * 100);
+  const preview = ch.chars.slice(0, 8);
+  return `<div class="ch-card" style="border-color:${ch.color}" onclick="openCh(${ch.id})">
+    <div style="font-size:1.4rem;margin-bottom:3px">${ch.emoji}</div>
+    <div class="ch-label" style="color:${ch.color}">${ch.title}</div>
+    <div class="ch-type-badge">✏️ Characters</div>
+    <div class="ch-chars">${preview.slice(0,5).join(' ')}<br>${preview.slice(5).join(' ')}</div>
+    <div class="ch-subtitle">${ch.subtitle}</div>
+    <div class="ch-prog-row">
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+      <span style="font-size:.72rem;color:#aaa;white-space:nowrap">${done}/${ch.chars.length}⭐</span>
+    </div>
+  </div>`;
 }
 
-// ═══════════════════════════════════════
-// LEARN
-// ═══════════════════════════════════════
-function renderLearn(){
-  if(!curCh) return;
-  document.getElementById('pane-learn').innerHTML=`
+function openCh(id) {
+  curCh = CHAPTERS.find(c => c.id === id);
+  curIdx = 0;
+  watchW = null; quizW = null;
+  goTab('learn');
+  renderLearn();
+}
+
+// ── LEARN ─────────────────────────────────────────────
+function renderLearn() {
+  if (!curCh) return;
+  const pane = document.getElementById('pane-learn');
+
+  if (curCh.isSentence) {
+    renderSentenceChapter(pane);
+    return;
+  }
+
+  pane.innerHTML = `
     <div class="learn-hdr">
       <button class="back-btn" onclick="goTab('chapters');renderChs()">←</button>
       <div>
-        <div style="font-size:1.2rem;font-weight:800;color:#333">${curCh.emoji} ${curCh.title}</div>
-        <div style="font-size:.82rem;color:#888">Pass ✏️ Write Test + 🎤 Speak Test to master each character!</div>
+        <div style="font-size:1.1rem;font-weight:800;color:#333">${curCh.emoji} ${curCh.title}</div>
+        <div style="font-size:.78rem;color:#888">Pass ✏️ Write + 🎤 Speak to master each character</div>
       </div>
     </div>
     <div class="char-nav" id="cnav"></div>
     <div id="carea"></div>`;
-  renderNav(); renderChar();
+  renderNav();
+  renderChar();
 }
 
-function renderNav(){
-  const n=document.getElementById('cnav');
-  if(!n) return;
-  n.innerHTML=curCh.chars.map((c,i)=>{
-    const st=status(c);
-    return `<button class="cnav ${i===curIdx?'active':''} ${st==='mastered'?'mastered':st==='partial'?'partial':''}" onclick="pickC(${i})">${c}</button>`;
+function renderSentenceChapter(pane) {
+  const ch = curCh;
+  const done = S['sent_' + ch.id] || [];
+  pane.innerHTML = `
+    <div class="learn-hdr">
+      <button class="back-btn" onclick="goTab('chapters');renderChs()">←</button>
+      <div>
+        <div style="font-size:1.1rem;font-weight:800;color:#333">${ch.emoji} ${ch.title}</div>
+        <div style="font-size:.78rem;color:#888">${ch.subtitle}</div>
+      </div>
+    </div>
+    <div style="margin-bottom:14px;font-size:.85rem;color:#888">
+      Tap 🔊 to hear. Tap 🎤 to practice saying it. Tap ✅ when you know it!
+    </div>
+    ${ch.sentences.map((s, i) => {
+      const isDone = done.includes(i);
+      return `<div class="sent-card" style="border-color:${isDone ? '#06D6A0' : ch.color};${isDone ? 'background:#F0FFF9' : ''}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div class="sent-zh" onclick="spk('${s.zh}')">${s.zh}</div>
+          <div style="font-size:1.5rem">${isDone ? '⭐' : '○'}</div>
+        </div>
+        <div class="sent-py">${s.py}</div>
+        <div class="sent-en">🇬🇧 ${s.en}</div>
+        <div class="sent-tip">💡 ${s.tip}</div>
+        <div class="sent-chars">
+          ${s.chars.map(c => CD[c] ? `<div class="sent-char-pill">${c}<small>${CD[c]?.py}</small></div>` : '').join('')}
+        </div>
+        <div class="sent-actions">
+          <button class="wbtn blue" onclick="spk('${s.zh}')">🔊 Hear</button>
+          <button class="wbtn blue slow" style="background:#5E9E60;border-color:#5E9E60;box-shadow:0 3px 0 #3D7B3F" onclick="spk('${s.zh}',true)">🐢 Slow</button>
+          <button class="wbtn" onclick="practiceSent(${ch.id},${i},'${encodeURIComponent(s.zh)}','${encodeURIComponent(s.py)}','${encodeURIComponent(s.en)}')">🎤 Practice</button>
+          ${!isDone ? `<button class="wbtn green" onclick="markSent(${ch.id},${i})">✅ I know it!</button>` : '<span style="color:#06D6A0;font-weight:700;font-size:.85rem">✅ Learned!</span>'}
+        </div>
+      </div>`;
+    }).join('')}
+  `;
+}
+
+function markSent(chId, idx) {
+  const key = 'sent_' + chId;
+  if (!S[key]) S[key] = [];
+  if (!S[key].includes(idx)) {
+    S[key].push(idx);
+    stars++;
+    save();
+    renderChs();
+    renderLearn();
+  }
+}
+
+function practiceSent(chId, idx, zhEnc, pyEnc, enEnc) {
+  const zh = decodeURIComponent(zhEnc);
+  const py = decodeURIComponent(pyEnc);
+  const en = decodeURIComponent(enEnc);
+  spk(zh); // play it first
+
+  setTimeout(() => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { showToast('⚠️ Speech recognition needs Chrome!'); return; }
+    showToast('🎤 Listening... say the sentence!', 5000);
+    const r = new SR();
+    r.lang = 'zh-CN';
+    r.maxAlternatives = 5;
+    r.onresult = (e) => {
+      const heard = Array.from(e.results[0]).map(a => a.transcript);
+      const pass = heard.some(h => {
+        const hl = h.toLowerCase();
+        return zh.split('').some(c => hl.includes(c)) || normTone(hl).includes(normTone(py.split(' ')[0]));
+      });
+      showToast(pass ? `🎉 Great! "${heard[0]}"` : `😅 I heard: "${heard[0]}" — try again!`, 3000);
+    };
+    r.onerror = () => showToast('⚠️ Could not hear — try again!');
+    r.start();
+  }, 1200);
+}
+
+// ── CHARACTER NAV + CARD ──────────────────────────────
+function renderNav() {
+  const n = document.getElementById('cnav');
+  if (!n) return;
+  n.innerHTML = curCh.chars.map((c, i) => {
+    const st = getStatus(c);
+    return `<button class="cnav ${i===curIdx?'active':''} ${st==='mastered'?'mastered':st==='partial'?'partial':''}"
+      onclick="pickC(${i})">${c}</button>`;
   }).join('');
 }
 
-function pickC(i){
-  curIdx=i; watchW=null; quizW=null;
+function pickC(i) {
+  curIdx = i; watchW = null; quizW = null;
   renderNav(); renderChar();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function renderChar(){
-  const area=document.getElementById('carea');
-  if(!area) return;
-  const c=curCh.chars[curIdx], d=CD[c], sv=S[c]||{}, st=status(c);
-  const step1done=sv.w, step2done=sv.s;
+function renderChar() {
+  const area = document.getElementById('carea');
+  if (!area) return;
+  const c = curCh.chars[curIdx];
+  const d = CD[c];
+  if (!d) { area.innerHTML = `<div class="card"><p>Character data missing for ${c}</p></div>`; return; }
+  const sv = S[c] || {};
+  const st = getStatus(c);
 
-  area.innerHTML=`
-    <!-- INTRO -->
+  area.innerHTML = `
+    <!-- INTRO CARD -->
     <div class="card">
       <div class="big-char-wrap">
         <span class="big-char" onclick="spk('${c}')">${c}</span>
         <div class="char-pills">
           <span class="pill py">${d.py}</span>
-          <span class="pill">${d.en}</span>
+          <span class="pill en">🇬🇧 ${d.en}</span>
           <span class="pill">${d.emoji}</span>
         </div>
+        <div class="char-meaning-full">${d.enFull}</div>
         <div class="char-tip">💡 ${d.tip}</div>
-        <div style="text-align:center;color:#bbb;font-size:.8rem;margin-top:4px">👆 Tap character to hear it!</div>
+        <div style="text-align:center;color:#bbb;font-size:.75rem;margin-top:5px">👆 Tap character to hear it!</div>
       </div>
     </div>
 
-    <!-- STEPS ROW -->
+    <!-- STEPS -->
     <div class="steps-row">
-      <div class="sbadge ${step1done?'done':'now'}"><div class="sn">1</div> ✏️ Write Test</div>
-      <div class="sbadge ${step1done?(step2done?'done':'now'):''}"><div class="sn">2</div> 🎤 Speak Test</div>
-      <div class="sbadge ${st==='mastered'?'done':''}"><div class="sn">3</div> ⭐ Mastered!</div>
+      <div class="sbadge ${sv.w?'done':'now'}"><div class="sn">1</div> ✏️ Write</div>
+      <div class="sbadge ${sv.w?(sv.sp?'done':'now'):''}"><div class="sn">2</div> 🎤 Speak</div>
+      <div class="sbadge ${st==='mastered'?'done':''}"><div class="sn">3</div> ⭐ Mastered</div>
     </div>
 
-    <!-- WRITE TEST CARD -->
-    <div class="card">
-      <div class="card-title">✏️ Step 1 — Learn to Write: <span style="font-family:'Noto Sans SC';font-size:1.3rem;margin-left:4px">${c}</span></div>
+    <!-- WRITE CARD -->
+    <div class="card purple">
+      <div class="card-title">✏️ Step 1 — Write: <span style="font-family:'Noto Sans SC';font-size:1.2rem">${c}</span></div>
       <div class="div"></div>
-
-      <div style="font-size:.88rem;font-weight:700;color:#666;margin-bottom:8px">👀 Watch the stroke order animation first:</div>
+      <div style="font-size:.82rem;font-weight:700;color:#666;margin-bottom:8px">👀 Watch the stroke animation:</div>
       <div class="writer-wrap">
         <div class="writer-box" id="watchBox" style="width:220px;height:220px"></div>
         <div class="wrow">
@@ -484,328 +1033,313 @@ function renderChar(){
           <button class="wbtn" onclick="doLoop()">🔁 Loop</button>
         </div>
       </div>
-
       <div class="div"></div>
-
-      <div style="font-size:.88rem;font-weight:700;color:#666;margin-bottom:8px">
-        ✍️ Now draw each stroke in order — follow the correct stroke direction!
-        <span style="font-size:.78rem;color:#aaa;font-weight:400">(After 3 mistakes on a stroke, a hint appears)</span>
+      <div style="font-size:.82rem;font-weight:700;color:#666;margin-bottom:6px">
+        ✍️ Draw each stroke in the correct order and direction!
+        <span style="font-size:.75rem;color:#aaa;font-weight:400"> (After 3 mistakes a hint shows)</span>
       </div>
       <div class="writer-wrap">
         <div class="writer-box quiz" id="quizBox" style="width:220px;height:220px"></div>
         <div class="wrow">
-          <button class="wbtn red" onclick="resetQ()">🗑️ Start Over</button>
+          <button class="wbtn red" onclick="resetQ()">🗑️ Retry</button>
           <button class="wbtn" onclick="doHint()">💡 Hint</button>
         </div>
-        <div class="sstatus hint" id="sstatus">✏️ Draw the 1st stroke in the correct direction!</div>
+        <div class="sstatus hint" id="sstatus">✏️ Draw the 1st stroke — follow the correct direction!</div>
         <div class="qprog" id="qprog"></div>
       </div>
-
-      ${step1done?`<div class="master-badge" style="background:linear-gradient(135deg,#06D6A0,#059669);color:white;box-shadow:0 4px 0 #047857">✅ Write Test PASSED!</div>`:''}
+      ${sv.w ? `<div class="master-badge" style="background:linear-gradient(135deg,#06D6A0,#059669);color:white;box-shadow:0 4px 0 #047857">✅ Write Test Passed!</div>` : ''}
     </div>
 
-    <!-- SPEAK TEST CARD -->
-    <div class="card" ${!step1done?'style="opacity:.55;pointer-events:none"':''}>
-      <div class="card-title">🎤 Step 2 — Pronunciation Test</div>
-      ${!step1done
-        ? `<div class="lock-gate"><div style="font-size:2.2rem">🔒</div>
-            <div style="font-weight:800;color:#888;margin-top:6px">Complete the Write Test first!</div>
-            <div style="font-size:.82rem;color:#bbb;margin-top:4px">Pass Step 1 to unlock</div>
-           </div>`
-        : speakTestHTML(c,d,sv)
+    <!-- SPEAK CARD -->
+    <div class="card pink" ${!sv.w ? 'style="opacity:.5;pointer-events:none"' : ''}>
+      <div class="card-title">🎤 Step 2 — Speak: <span style="font-family:'Noto Sans SC';font-size:1.2rem">${c}</span></div>
+      ${!sv.w
+        ? `<div class="lock-gate"><div style="font-size:2rem">🔒</div>
+            <div style="font-weight:800;color:#888;margin-top:5px">Pass the Write Test first!</div></div>`
+        : speakCardHTML(c, d, sv)
       }
     </div>
 
-    ${st==='mastered'?`<div class="master-badge" style="background:linear-gradient(135deg,#FFD700,#FF8C00);color:white;box-shadow:0 4px 0 #B8860B">
-      🌟 MASTERED! You can write AND say "${c}" (${d.py})!</div>`:''}
+    ${st === 'mastered' ? `<div class="master-badge" style="background:linear-gradient(135deg,#FFD700,#FF8C00);color:white;box-shadow:0 4px 0 #B8860B">
+      🌟 MASTERED! You can write AND say "${c}" (${d.py})!</div>` : ''}
 
-    <div style="display:flex;justify-content:space-between;margin-top:14px">
-      <button onclick="pickC(${Math.max(0,curIdx-1)})" ${curIdx===0?'disabled':''} class="wbtn" style="min-width:90px">← Prev</button>
-      <button onclick="pickC(${Math.min(7,curIdx+1)})" ${curIdx===7?'disabled':''} class="wbtn blue" style="min-width:90px">Next →</button>
+    <!-- PREV / NEXT -->
+    <div style="display:flex;justify-content:space-between;margin-top:14px;gap:8px">
+      <button onclick="pickC(${Math.max(0,curIdx-1)})" ${curIdx===0?'disabled':''} class="wbtn" style="flex:1">← Prev</button>
+      <button onclick="pickC(${Math.min(curCh.chars.length-1,curIdx+1)})" ${curIdx===curCh.chars.length-1?'disabled':''} class="wbtn blue" style="flex:1">Next →</button>
     </div>
+
+    <div id="strokeFx" class="stroke-sound-fx"></div>
   `;
 
-  setTimeout(()=>{ initWatch(c); if(!step1done) initQuiz(c); }, 100);
+  setTimeout(() => { initWatch(c); if (!sv.w) initQuiz(c); }, 120);
 }
 
-function speakTestHTML(c, d, sv){
+function speakCardHTML(c, d, sv) {
+  const toneLabels = ['neutral (light tone)', '1st tone ā (flat ‾)', '2nd tone á (rising ╱)', '3rd tone ǎ (dip ∨)', '4th tone à (falling ╲)'];
   return `
-    <div style="background:#F0F9FF;border-radius:16px;padding:16px;border:2px solid #BAE6FD;margin-bottom:12px">
-      <div style="font-size:.88rem;font-weight:700;color:#555;margin-bottom:10px">First listen carefully, then try to say it yourself:</div>
+    <div style="background:#F0F9FF;border-radius:14px;padding:14px;border:2px solid #BAE6FD;margin-bottom:12px">
+      <div style="font-size:.82rem;font-weight:700;color:#555;margin-bottom:9px">Listen carefully, then repeat!</div>
       <div class="hear-row">
-        <button class="hbtn" onclick="spk('${c}')">🔊 Hear it!</button>
+        <button class="hbtn" onclick="spk('${c}')">🔊 Normal speed</button>
         <button class="hbtn slow" onclick="spk('${c}',true)">🐢 Slow</button>
       </div>
-      <div style="font-size:.9rem;color:#555">
-        Pinyin: <strong style="color:var(--primary);font-size:1.1rem">${d.py}</strong>
-        &nbsp; Tone ${d.t===0?'neutral':d.t}
-        &nbsp; <span style="font-size:.8rem;color:#aaa">${['','1st (ā — flat)','2nd (á — rising)','3rd (ǎ — dip)','4th (à — falling)','neutral (light)'][d.t]}</span>
+      <div class="tone-info">
+        Pinyin: <strong style="color:var(--primary);font-size:1.05rem">${d.py}</strong> &nbsp;|&nbsp;
+        ${toneLabels[d.t] || 'light tone'}
+        <br>English: <strong>${d.enFull}</strong>
       </div>
     </div>
 
-    <div class="pron-box">
-      <div style="text-align:center;font-size:.95rem;font-weight:800;color:#555;margin-bottom:4px">
-        Say: <span style="font-family:'Noto Sans SC';font-size:1.8rem;font-weight:900;color:#1A1A2E">${c}</span>
-        &nbsp; = &nbsp; <strong style="color:var(--primary);font-size:1.2rem">${d.py}</strong>
+    <div style="background:#FFF0F8;border-radius:14px;padding:14px;border:2px solid #FBCFE8">
+      <div style="text-align:center;font-size:.88rem;font-weight:800;color:#555;margin-bottom:3px">
+        Now say: <span style="font-family:'Noto Sans SC';font-size:1.6rem;font-weight:900">${c}</span>
+        = <strong style="color:var(--primary)">${d.py}</strong>
       </div>
-      <div style="text-align:center;font-size:.8rem;color:#bbb;margin-bottom:12px">Speak clearly into your mic in a quiet place 🤫</div>
-      <button class="rbtn" id="recBtn" onclick="toggleRec('${c}','${d.py}','${d.en}')">🎤 Tap to Record</button>
-      <div id="rresult"></div>
-      ${sv.s?`<div class="master-badge" style="background:linear-gradient(135deg,#118AB2,#0369A1);color:white;box-shadow:0 4px 0 #075985;margin-top:10px">✅ Speak Test PASSED!</div>`:''}
-    </div>
-  `;
+      <div style="text-align:center;font-size:.75rem;color:#bbb;margin-bottom:10px">
+        Say it clearly in a quiet place 🤫
+      </div>
+      <button class="rbtn" id="recBtn" onclick="toggleRec('${c}','${d.py}','${d.en}')">
+        🎤 Tap to Record
+      </button>
+      <div class="rresult" id="rresult"></div>
+      ${sv.sp ? `<div class="master-badge" style="margin-top:10px;background:linear-gradient(135deg,#118AB2,#0369A1);color:white;box-shadow:0 4px 0 #075985">✅ Speak Test Passed!</div>` : ''}
+    </div>`;
 }
 
-// ═══════════════════════════════════════
-// HANZI WRITER
-// ═══════════════════════════════════════
-
-
-// ═══════════════════════════════════════
-// HANZI WRITER — dynamic load
-// ═══════════════════════════════════════
-let HW = null; // HanziWriter global ref
-
-function loadHanziWriter(cb){
-  if(HW){ cb(); return; }
-  const s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/hanzi-writer@3.5.0/dist/hanzi-writer.min.js';
-  s.onload = () => { HW = window.HanziWriter; cb(); };
-  s.onerror = () => {
-    // Try alternate CDN
-    const s2 = document.createElement('script');
-    s2.src = 'https://unpkg.com/hanzi-writer@3.5.0/dist/hanzi-writer.min.js';
-    s2.onload = () => { HW = window.HanziWriter; cb(); };
-    s2.onerror = () => showToast('⚠️ Could not load Hanzi Writer. Check your internet connection.');
-    document.head.appendChild(s2);
-  };
-  document.head.appendChild(s);
+// ── HANZI WRITER ──────────────────────────────────────
+function loadHW(cb) {
+  if (HW) { cb(); return; }
+  const urls = [
+    'https://cdn.jsdelivr.net/npm/hanzi-writer@3.5.0/dist/hanzi-writer.min.js',
+    'https://unpkg.com/hanzi-writer@3.5.0/dist/hanzi-writer.min.js'
+  ];
+  function tryLoad(i) {
+    if (i >= urls.length) { showToast('⚠️ Could not load stroke library. Check internet.'); return; }
+    const s = document.createElement('script');
+    s.src = urls[i];
+    s.onload = () => { HW = window.HanziWriter; cb(); };
+    s.onerror = () => tryLoad(i + 1);
+    document.head.appendChild(s);
+  }
+  tryLoad(0);
 }
 
-function hzLoader(char, onLoad, onError){
+function hzData(char, onLoad, onError) {
   const urls = [
     `https://cdn.jsdelivr.net/npm/hanzi-writer-data@latest/${encodeURIComponent(char)}.json`,
     `https://unpkg.com/hanzi-writer-data@latest/${encodeURIComponent(char)}.json`
   ];
-  function tryUrl(i){
-    if(i>=urls.length){ onError(); return; }
-    fetch(urls[i]).then(r=>{ if(!r.ok) throw 0; return r.json(); }).then(onLoad).catch(()=>tryUrl(i+1));
+  function tryUrl(i) {
+    if (i >= urls.length) { onError(); return; }
+    fetch(urls[i]).then(r => { if (!r.ok) throw 0; return r.json(); }).then(onLoad).catch(() => tryUrl(i + 1));
   }
   tryUrl(0);
 }
 
-function initWatch(char){
-  loadHanziWriter(()=>{
-    const el=document.getElementById('watchBox');
-    if(!el||!HW) return;
+function initWatch(char) {
+  loadHW(() => {
+    if (!document.getElementById('watchBox') || !HW) return;
     try {
       watchW = HW.create('watchBox', char, {
-        width:214, height:214, padding:14,
-        showOutline:true, strokeColor:'#1A1A2E', outlineColor:'#E0D0FF',
-        strokeAnimationSpeed:1.2, delayBetweenStrokes:450,
-        charDataLoader: hzLoader
+        width: 214, height: 214, padding: 16,
+        showOutline: true,
+        strokeColor: '#1A1A2E',
+        outlineColor: '#DDD6FE',
+        strokeAnimationSpeed: 1.1,
+        delayBetweenStrokes: 400,
+        charDataLoader: hzData
       });
-    } catch(e){ console.log('Watch error',e); }
+    } catch (e) {}
   });
 }
 
-function initQuiz(char){
-  loadHanziWriter(()=>{
-    const el=document.getElementById('quizBox');
-    if(!el||!HW) return;
-    qDone=0; qTotal=0;
+function initQuiz(char) {
+  loadHW(() => {
+    if (!document.getElementById('quizBox') || !HW) return;
+    qDone = 0; qTotal = 0;
     try {
       quizW = HW.create('quizBox', char, {
-        width:214, height:214, padding:14,
-        showOutline:true, showCharacter:false,
-        strokeColor:'#845EC2', outlineColor:'#E0D0FF',
-        highlightColor:'#06D6A0', drawingColor:'#845EC2', drawingWidth:5,
-        showHintAfterMisses:3, highlightOnComplete:true,
-        charDataLoader: hzLoader,
-        onLoadCharDataSuccess:(data)=>{
-          qTotal=data.strokes.length;
+        width: 214, height: 214, padding: 16,
+        showOutline: true, showCharacter: false,
+        strokeColor: '#845EC2',
+        outlineColor: '#DDD6FE',
+        highlightColor: '#06D6A0',
+        drawingColor: '#845EC2',
+        drawingWidth: 5,
+        showHintAfterMisses: 3,
+        highlightOnComplete: true,
+        charDataLoader: hzData,
+        onLoadCharDataSuccess: (data) => {
+          qTotal = data.strokes.length;
           updQProg();
           beginQuiz(char);
         },
-        onLoadCharDataError:()=>{
-          const s=document.getElementById('sstatus');
-          if(s){ s.textContent='⚠️ Stroke data unavailable. Check your internet!'; s.className='sstatus bad'; }
+        onLoadCharDataError: () => {
+          const s = document.getElementById('sstatus');
+          if (s) { s.textContent = '⚠️ Stroke data unavailable. Check internet!'; s.className = 'sstatus bad'; }
         }
       });
-    } catch(e){ console.log('Quiz error',e); }
+    } catch (e) {}
   });
 }
 
-function beginQuiz(char){
-  if(!quizW) return;
+function beginQuiz(char) {
+  if (!quizW) return;
   quizW.quiz({
-    onMistake:(d)=>{
-      const s=document.getElementById('sstatus');
-      if(s){
-        s.className='sstatus bad';
-        s.textContent=`❌ Wrong direction! Stroke ${d.strokeNum+1} — try again! (${d.mistakesOnStroke} mistake${d.mistakesOnStroke>1?'s':''})`;
+    onMistake: (d) => {
+      playStrokeSound(false);
+      const s = document.getElementById('sstatus');
+      if (s) {
+        s.className = 'sstatus bad';
+        s.textContent = `❌ Wrong direction! Stroke ${d.strokeNum + 1} — try again! (${d.mistakesOnStroke} mistake${d.mistakesOnStroke > 1 ? 's' : ''})`;
       }
     },
-    onCorrectStroke:(d)=>{
-      qDone=d.strokeNum+1; updQProg();
-      const s=document.getElementById('sstatus');
-      if(s){
-        s.className='sstatus ok';
-        s.textContent=`✅ Stroke ${qDone} correct! ${qDone<qTotal?'Keep going!':'Almost there!'}`;
+    onCorrectStroke: (d) => {
+      playStrokeSound(true);
+      qDone = d.strokeNum + 1; updQProg();
+      const s = document.getElementById('sstatus');
+      if (s) {
+        s.className = 'sstatus ok';
+        s.textContent = `✅ Stroke ${qDone} correct! ${qDone < qTotal ? `Next stroke (${qDone + 1}/${qTotal})` : 'Almost done!'}`;
       }
     },
-    onComplete:()=>{
-      const c=curCh.chars[curIdx], d=CD[c];
-      const s=document.getElementById('sstatus');
-      if(s){ s.className='sstatus done'; s.textContent=`🎉 All ${qTotal} strokes correct! "${c}" written perfectly!`; }
-      if(!S[c]?.w){
-        if(!S[c]) S[c]={};
-        S[c].w=true; stars++;
+    onComplete: () => {
+      playCompleteSound();
+      const c = curCh.chars[curIdx], d = CD[c];
+      const s = document.getElementById('sstatus');
+      if (s) { s.className = 'sstatus done'; s.textContent = `🎉 All ${qTotal} strokes correct! "${c}" written perfectly!`; }
+      if (!S[c]?.w) {
+        if (!S[c]) S[c] = {};
+        S[c].w = true; stars++;
         save(); renderChs();
-        showCel('✏️ Write Test Passed!',`You wrote ${c} (${d.py}) with correct strokes! Now try the Speak Test! 🎤`,'🎊');
-        setTimeout(()=>{ renderNav(); renderChar(); }, 2500);
+        showCel('✏️ Write Test Passed!', `You wrote ${c} (${d.py}) correctly! Now try the Speak Test! 🎤`, '🎊');
+        setTimeout(() => { renderNav(); renderChar(); }, 2600);
       }
     }
   });
 }
 
-function doAnim(){ if(watchW) watchW.animateCharacter(); }
-function doLoop(){ if(watchW) watchW.loopCharacterAnimation(); }
-function doHint(){ if(quizW) quizW.showHint(); }
-function resetQ(){
-  if(!quizW) return;
-  qDone=0; updQProg();
+function doAnim() { if (watchW) watchW.animateCharacter(); }
+function doLoop() { if (watchW) watchW.loopCharacterAnimation(); }
+function doHint() { if (quizW) quizW.showHint(); }
+function resetQ() {
+  if (!quizW) return;
+  qDone = 0; updQProg();
   quizW.cancelQuiz();
-  const s=document.getElementById('sstatus');
-  if(s){ s.className='sstatus hint'; s.textContent='✏️ Draw the 1st stroke in the correct direction!'; }
-  setTimeout(()=>beginQuiz(curCh.chars[curIdx]),120);
+  const s = document.getElementById('sstatus');
+  if (s) { s.className = 'sstatus hint'; s.textContent = '✏️ Draw the 1st stroke — follow the correct direction!'; }
+  setTimeout(() => beginQuiz(curCh.chars[curIdx]), 120);
 }
-function updQProg(){
-  const p=document.getElementById('qprog');
-  if(p&&qTotal>0) p.textContent=`Strokes completed: ${qDone} / ${qTotal}`;
+function updQProg() {
+  const p = document.getElementById('qprog');
+  if (p && qTotal > 0) p.textContent = `Strokes: ${qDone} / ${qTotal}`;
 }
 
-// ═══════════════════════════════════════
-// AUDIO
-// ═══════════════════════════════════════
-function spk(char, slow=false){
-  const a=new Audio();
-  a.src=`https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=zh-CN&client=gtx&q=${encodeURIComponent(char)}`;
-  a.playbackRate=slow?.6:1;
-  a.play().catch(()=>{
-    if(!window.speechSynthesis){ showToast('⚠️ No audio support. Try Chrome!'); return; }
+// ── SPEECH OUTPUT ─────────────────────────────────────
+function spk(text, slow = false) {
+  const a = new Audio();
+  a.src = `https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=zh-CN&client=gtx&q=${encodeURIComponent(text)}`;
+  a.playbackRate = slow ? 0.6 : 1;
+  a.play().catch(() => {
+    if (!window.speechSynthesis) { showToast('⚠️ No audio. Try Chrome!'); return; }
     window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(char);
-    u.lang='zh-CN'; u.rate=slow?.4:.85;
-    const v=window.speechSynthesis.getVoices().find(x=>x.lang.startsWith('zh'));
-    if(v) u.voice=v;
-    u.onerror=()=>showToast('⚠️ No Chinese voice. Install Chinese language in system settings.');
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN'; u.rate = slow ? 0.4 : 0.85;
+    const v = window.speechSynthesis.getVoices().find(x => x.lang.startsWith('zh'));
+    if (v) u.voice = v;
+    u.onerror = () => showToast('⚠️ No Chinese voice — install Chinese language pack.');
     window.speechSynthesis.speak(u);
   });
 }
 
-// ═══════════════════════════════════════
-// SPEECH RECOGNITION
-// ═══════════════════════════════════════
-function toggleRec(char, py, en){
+// ── SPEECH RECOGNITION ───────────────────────────────
+function toggleRec(char, py, en) {
   isRec ? stopRec() : startRec(char, py, en);
 }
 
-function startRec(char, py, en){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){ showToast('⚠️ Speech recognition needs Chrome on desktop/Android!'); return; }
+function startRec(char, py, en) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { showToast('⚠️ Speech recognition requires Chrome on Android/Desktop!'); return; }
+  speechR = new SR();
+  speechR.lang = 'zh-CN';
+  speechR.continuous = false;
+  speechR.interimResults = false;
+  speechR.maxAlternatives = 8;
 
-  speechR=new SR();
-  speechR.lang='zh-CN';
-  speechR.continuous=false;
-  speechR.interimResults=false;
-  speechR.maxAlternatives=8;
+  const btn = document.getElementById('recBtn');
+  const res = document.getElementById('rresult');
+  if (btn) { btn.textContent = '🔴 Listening... (tap to stop)'; btn.classList.add('rec'); }
+  if (res) { res.className = 'rresult wait'; res.innerHTML = '🎧 Listening for Chinese...'; }
+  isRec = true;
 
-  const btn=document.getElementById('recBtn');
-  const res=document.getElementById('rresult');
-  if(btn){ btn.textContent='🔴 Listening... (tap to stop)'; btn.classList.add('rec'); }
-  if(res){ res.className='rresult wait'; res.innerHTML='🎧 Listening for your Chinese...'; res.style.display=''; }
-  isRec=true;
-
-  speechR.onresult=(e)=>{
-    // Collect all alternatives
-    let heardList=[];
-    for(let i=0;i<e.results.length;i++){
-      for(let j=0;j<e.results[i].length;j++){
-        heardList.push(e.results[i][j].transcript.trim());
-      }
-    }
-    if(heardList.length) processRec(heardList, char, py, en);
+  speechR.onresult = (e) => {
+    const heardList = Array.from(e.results[0]).map(a => a.transcript.trim());
+    if (heardList.length) processRec(heardList, char, py, en);
   };
-
-  speechR.onerror=(e)=>{
-    isRec=false;
-    if(btn){ btn.textContent='🎤 Tap to Record'; btn.classList.remove('rec'); }
-    const msgs={'no-speech':'No speech heard — speak louder!','not-allowed':'Microphone blocked! Allow mic in browser.','network':'Network error — check connection.'};
-    if(res){ res.className='rresult fail'; res.innerHTML='⚠️ '+(msgs[e.error]||'Could not hear you. Try again!'); }
+  speechR.onerror = (e) => {
+    isRec = false;
+    if (btn) { btn.textContent = '🎤 Tap to Record'; btn.classList.remove('rec'); }
+    const msgs = { 'no-speech': 'No speech heard — speak louder!', 'not-allowed': 'Mic blocked! Allow in browser settings.', 'network': 'Network error.' };
+    if (res) { res.className = 'rresult fail'; res.innerHTML = '⚠️ ' + (msgs[e.error] || 'Could not hear you. Try again!'); }
   };
-  speechR.onend=()=>{ isRec=false; if(btn){ btn.textContent='🎤 Tap to Record Again'; btn.classList.remove('rec'); } };
+  speechR.onend = () => {
+    isRec = false;
+    if (btn) { btn.textContent = '🎤 Tap to Record Again'; btn.classList.remove('rec'); }
+  };
   speechR.start();
 }
 
-function stopRec(){ if(speechR) speechR.stop(); isRec=false; }
+function stopRec() { if (speechR) speechR.stop(); isRec = false; }
 
-function normTone(s){ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s/g,''); }
+function normTone(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s/g, ''); }
 
-function processRec(heardList, char, py, en){
-  const res=document.getElementById('rresult');
-  if(!res) return;
-  const mainHeard=heardList[0];
-  const normPy=normTone(py);
-
-  // Check all alternatives
-  const pass=heardList.some(h=>{
-    const hl=h.toLowerCase().trim();
-    const hn=normTone(h);
-    return (
-      hl.includes(char) ||          // said the actual character
-      hn.includes(normPy) ||        // pinyin match (no tones)
-      normPy.includes(hn) ||
-      en.toLowerCase().split('/').some(m=>hl.includes(m.trim())) // English meaning
-    );
+function processRec(heardList, char, py, en) {
+  const res = document.getElementById('rresult');
+  if (!res) return;
+  const normPy = normTone(py);
+  const pass = heardList.some(h => {
+    const hl = h.toLowerCase().trim();
+    const hn = normTone(h);
+    return hl.includes(char) || hn.includes(normPy) || normPy.includes(hn) ||
+      en.toLowerCase().split('/').some(m => hl.includes(m.trim()));
   });
 
-  if(pass){
-    res.className='rresult pass';
-    res.innerHTML=`<span style="font-size:1.8rem">🎉</span><br>
+  if (pass) {
+    res.className = 'rresult pass';
+    res.innerHTML = `<span style="font-size:1.8rem">🎉</span><br>
       <strong>Great pronunciation!</strong><br>
-      <span style="font-size:.85rem;opacity:.8">I heard: "${mainHeard}"</span><br>
-      <span style="font-size:.85rem">✅ Matches ${char} = ${py}</span>`;
-    const c=curCh.chars[curIdx], d=CD[c];
-    if(!S[c]?.s){
-      if(!S[c]) S[c]={};
-      S[c].s=true;
-      const nowMastered=S[c].w&&S[c].s;
+      <span style="font-size:.82rem;opacity:.8">I heard: "${heardList[0]}"</span><br>
+      <span style="font-size:.82rem">✅ Matches ${char} = ${py}</span>`;
+    const c = curCh.chars[curIdx], d = CD[c];
+    if (!S[c]?.sp) {
+      if (!S[c]) S[c] = {};
+      S[c].sp = true;
+      const nowMastered = S[c].w && S[c].sp;
       stars += nowMastered ? 2 : 1;
       save(); renderChs();
-      if(nowMastered){
-        setTimeout(()=>{
-          showCel(`⭐ MASTERED ${c}!`,`You can write AND say ${c} (${d.py})! +2 Stars! 🌟`,'🌟');
+      if (nowMastered) {
+        setTimeout(() => {
+          showCel(`⭐ MASTERED ${c}!`, `You can write AND say ${c} (${d.py})! +2 Stars!`, '🌟');
           renderNav(); renderChar();
         }, 1600);
       } else {
-        setTimeout(()=>{ renderNav(); renderChar(); }, 1800);
+        setTimeout(() => { renderNav(); renderChar(); }, 1800);
       }
     }
   } else {
-    res.className='rresult fail';
-    res.innerHTML=`<span style="font-size:1.4rem">😅</span> <strong>Not quite!</strong><br>
-      I heard: "<em>${mainHeard}</em>"<br>
-      <span style="font-size:.85rem">Try saying <strong style="color:var(--primary)">${py}</strong> for ${char} (${en})</span><br>
-      <span style="font-size:.78rem;color:#bbb">Listen again then try once more 👆</span>`;
+    res.className = 'rresult fail';
+    res.innerHTML = `<span style="font-size:1.3rem">😅</span> <strong>Not quite!</strong><br>
+      I heard: "<em>${heardList[0]}</em>"<br>
+      <span style="font-size:.82rem">Say <strong style="color:var(--primary)">${py}</strong> for ${char} (${en})</span><br>
+      <span style="font-size:.75rem;color:#bbb">Listen again then try once more 👆</span>`;
   }
 }
 
-// ═══════════════════════════════════════
-// GAMES
-// ═══════════════════════════════════════
-function renderGames(){
-  document.getElementById('pane-games').innerHTML=`
+// ── GAMES ─────────────────────────────────────────────
+function renderGames() {
+  document.getElementById('pane-games').innerHTML = `
+    <div style="font-size:1rem;font-weight:800;color:#555;margin-bottom:10px">🎮 Pick a Game!</div>
     <div class="games-grid">
       <div class="gcard" style="border-color:#FF6B35" onclick="startGame('match')">
         <div class="gicon">🎯</div><div class="gname">Match It!</div>
@@ -817,188 +1351,257 @@ function renderGames(){
       </div>
       <div class="gcard" style="border-color:#06D6A0" onclick="startGame('pinyin')">
         <div class="gicon">🎵</div><div class="gname">Pinyin Pick!</div>
-        <div class="gdesc">Choose correct pronunciation</div>
+        <div class="gdesc">Choose the right sound</div>
       </div>
       <div class="gcard" style="border-color:#845EC2" onclick="startGame('flash')">
         <div class="gicon">⚡</div><div class="gname">Flash Cards</div>
         <div class="gdesc">Quick memory challenge!</div>
       </div>
+      <div class="gcard" style="border-color:#118AB2" onclick="startGame('sentence')">
+        <div class="gicon">💬</div><div class="gname">Sentence Match</div>
+        <div class="gdesc">Match sentence to meaning</div>
+      </div>
+      <div class="gcard" style="border-color:#E91E8C" onclick="startGame('tone')">
+        <div class="gicon">🎶</div><div class="gname">Tone Quiz</div>
+        <div class="gdesc">Pick the right tone!</div>
+      </div>
     </div>
-    <p style="text-align:center;color:#bbb;margin-top:18px;font-size:.85rem">All 40 characters available in games! 🎮</p>`;
+    <p style="text-align:center;color:#bbb;font-size:.82rem;margin-top:6px">All characters and sentences available! 🎮</p>`;
 }
 
-function startGame(type){ GS={type,score:0,streak:0}; document.getElementById('gameModal').classList.add('open'); renderGame(type); }
-function closeGame(){ document.getElementById('gameModal').classList.remove('open'); }
+function startGame(type) { GS = { type, score: 0, streak: 0 }; document.getElementById('gameModal').classList.add('open'); renderGame(type); }
+function closeGame() { document.getElementById('gameModal').classList.remove('open'); }
 
-function renderGame(type){
-  const gc=document.getElementById('gameContent');
-  const chars=Object.keys(CD);
-  const char=chars[Math.floor(Math.random()*chars.length)];
-  const d=CD[char]; GS.cur=char;
-  const sc=`<div class="gscore">Score: ${GS.score} &nbsp; Streak: ${GS.streak}🔥</div>`;
+function renderGame(type) {
+  const gc = document.getElementById('gameContent');
+  const chars = Object.keys(CD);
+  const char = chars[Math.floor(Math.random() * chars.length)];
+  const d = CD[char]; GS.cur = char;
+  const sc = `<div class="gscore">Score: ${GS.score} &nbsp; Streak: ${GS.streak}🔥</div>`;
 
-  if(type==='match'){
-    const wrong=chars.filter(c=>c!==char).sort(()=>Math.random()-.5).slice(0,3);
-    const opts=[char,...wrong].sort(()=>Math.random()-.5);
-    gc.innerHTML=`<div class="gtitle">🎯 Match It!</div>${sc}
-      <div style="font-size:.88rem;color:#888;margin-bottom:8px">What does this mean?</div>
-      <div class="gchar" onclick="spk('${char}')">${char} <span style="font-size:1rem">🔊</span></div>
-      <div style="text-align:center;font-size:.78rem;color:#bbb;margin-bottom:10px">Tap to hear</div>
-      <div class="gopts">${opts.map(c=>`<button class="gopt" onclick="chkM(this,'${c}','${char}')">${CD[c].emoji} ${CD[c].en.split('/')[0]}</button>`).join('')}</div>
-      <div id="gr"></div>`;
-  } else if(type==='find'){
-    const wrong=chars.filter(c=>c!==char).sort(()=>Math.random()-.5).slice(0,7);
-    const opts=[char,...wrong].sort(()=>Math.random()-.5);
-    gc.innerHTML=`<div class="gtitle">🔍 Find It!</div>${sc}
-      <div style="background:#FFF8E8;border-radius:14px;padding:12px;border:2px dashed var(--secondary);text-align:center;margin-bottom:14px;font-weight:700;color:#555">
-        Find: <strong style="color:var(--primary);font-size:1.2rem">${d.emoji} ${d.en.split('/')[0]}</strong><br>
-        <span style="font-size:.85rem;color:#888">Pinyin: ${d.py}</span>
+  if (type === 'match') {
+    const wrong = chars.filter(c => c !== char).sort(() => Math.random() - .5).slice(0, 3);
+    const opts = [char, ...wrong].sort(() => Math.random() - .5);
+    gc.innerHTML = `<div class="gtitle">🎯 Match It!</div>${sc}
+      <div style="font-size:.85rem;color:#888;margin-bottom:7px">What does this mean?</div>
+      <div class="gchar" onclick="spk('${char}')">${char} <span style="font-size:.9rem">🔊</span></div>
+      <div style="text-align:center;font-size:.72rem;color:#bbb;margin-bottom:9px">Tap to hear</div>
+      <div class="gopts">${opts.map(c => `<button class="gopt" onclick="chkM(this,'${c}','${char}')">
+        ${CD[c].emoji} ${CD[c].en}<br><small style="color:#aaa">${CD[c].py}</small>
+      </button>`).join('')}</div><div id="gr"></div>`;
+  }
+  else if (type === 'find') {
+    const wrong = chars.filter(c => c !== char).sort(() => Math.random() - .5).slice(0, 7);
+    const opts = [char, ...wrong].sort(() => Math.random() - .5);
+    gc.innerHTML = `<div class="gtitle">🔍 Find It!</div>${sc}
+      <div style="background:#FFF8E8;border-radius:12px;padding:11px;border:2px dashed var(--secondary);text-align:center;margin-bottom:12px;font-weight:700;color:#555">
+        Find: <strong style="color:var(--primary);font-size:1.1rem">${d.emoji} ${d.en}</strong><br>
+        <span style="font-size:.82rem;color:#888">Pinyin: ${d.py}</span>
       </div>
-      <div class="fgrid">${opts.map(c=>`<div class="fopt" onclick="chkF(this,'${c}','${char}')">${c}</div>`).join('')}</div>
+      <div class="fgrid">${opts.map(c => `<div class="fopt" onclick="chkF(this,'${c}','${char}')">${c}</div>`).join('')}</div>
       <div id="gr"></div>`;
-  } else if(type==='pinyin'){
-    const allP=[...new Set(Object.values(CD).map(x=>x.py))].filter(p=>p!==d.py).sort(()=>Math.random()-.5).slice(0,3);
-    const opts=[d.py,...allP].sort(()=>Math.random()-.5);
-    gc.innerHTML=`<div class="gtitle">🎵 Pinyin Pick!</div>${sc}
-      <div style="font-size:.88rem;color:#888;margin-bottom:8px">How do you say this character?</div>
-      <div class="gchar" onclick="spk('${char}')">${char} <span style="font-size:1rem">🔊</span></div>
-      <div style="text-align:center;font-size:.78rem;color:#bbb;margin-bottom:10px">Tap to hear</div>
-      <div class="gopts">${opts.map(p=>`<button class="gopt" style="font-size:1.15rem;font-weight:800" onclick="chkP(this,'${p}','${d.py}','${char}')">${p}</button>`).join('')}</div>
+  }
+  else if (type === 'pinyin') {
+    const allP = [...new Set(Object.values(CD).map(x => x.py))].filter(p => p !== d.py).sort(() => Math.random() - .5).slice(0, 3);
+    const opts = [d.py, ...allP].sort(() => Math.random() - .5);
+    gc.innerHTML = `<div class="gtitle">🎵 Pinyin Pick!</div>${sc}
+      <div style="font-size:.85rem;color:#888;margin-bottom:7px">How do you say this?</div>
+      <div class="gchar" onclick="spk('${char}')">${char} <span style="font-size:.9rem">🔊</span></div>
+      <div style="text-align:center;font-size:.72rem;color:#bbb;margin-bottom:9px">Tap to hear</div>
+      <div class="gopts">${opts.map(p => `<button class="gopt" style="font-size:1.1rem;font-weight:800" onclick="chkP(this,'${p}','${d.py}','${char}')">${p}</button>`).join('')}</div>
       <div id="gr"></div>`;
-  } else if(type==='flash'){
-    gc.innerHTML=`<div class="gtitle">⚡ Flash Cards!</div>${sc}
-      <div style="font-size:.88rem;color:#888;margin-bottom:8px">What does this mean? Think first!</div>
+  }
+  else if (type === 'flash') {
+    gc.innerHTML = `<div class="gtitle">⚡ Flash Cards!</div>${sc}
+      <div style="font-size:.85rem;color:#888;margin-bottom:7px">What does this mean?</div>
       <div class="gchar" onclick="spk('${char}')">${char}</div>
-      <div style="text-align:center;font-size:.78rem;color:#bbb;margin-bottom:14px">Tap to hear pronunciation</div>
+      <div style="text-align:center;font-size:.72rem;color:#bbb;margin-bottom:12px">Tap to hear pronunciation</div>
       <button onclick="revealF('${char}')" class="nbtn" style="background:var(--purple);box-shadow:0 4px 0 #5E3D96">🔮 Reveal Answer!</button>
+      <div id="gr"></div>`;
+  }
+  else if (type === 'sentence') {
+    const allSents = CHAPTERS.filter(c => c.isSentence).flatMap(c => c.sentences);
+    const sent = allSents[Math.floor(Math.random() * allSents.length)];
+    GS.sentAns = sent.en;
+    const wrongSents = allSents.filter(s => s.en !== sent.en).sort(() => Math.random() - .5).slice(0, 3);
+    const opts = [sent, ...wrongSents].sort(() => Math.random() - .5);
+    gc.innerHTML = `<div class="gtitle">💬 Sentence Match!</div>${sc}
+      <div style="font-size:.85rem;color:#888;margin-bottom:7px">What does this mean?</div>
+      <div style="font-family:'Noto Sans SC',sans-serif;font-size:1.8rem;font-weight:900;text-align:center;
+        color:#1A1A2E;margin-bottom:4px;cursor:pointer;line-height:1.3" onclick="spk('${sent.zh}')">${sent.zh} 🔊</div>
+      <div style="text-align:center;font-size:.82rem;color:var(--primary);font-weight:700;margin-bottom:12px">${sent.py}</div>
+      <div class="gopts">${opts.map(s => `<button class="gopt" onclick="chkSent(this,'${encodeURIComponent(s.en)}','${encodeURIComponent(sent.en)}')">${s.en}</button>`).join('')}</div>
+      <div id="gr"></div>`;
+  }
+  else if (type === 'tone') {
+    const tones = [0,1,2,3,4];
+    const opts4 = tones.filter(t => t !== d.t).sort(() => Math.random()-.5).slice(0,3);
+    const allOpts = [d.t, ...opts4].sort(() => Math.random()-.5);
+    const toneNames = ['Neutral', '1st (ā)', '2nd (á)', '3rd (ǎ)', '4th (à)'];
+    gc.innerHTML = `<div class="gtitle">🎶 Tone Quiz!</div>${sc}
+      <div style="font-size:.85rem;color:#888;margin-bottom:7px">What tone is this character?</div>
+      <div class="gchar" onclick="spk('${char}')">${char} <span style="font-size:.9rem">🔊</span></div>
+      <div style="text-align:center;font-size:1rem;color:var(--primary);font-weight:700;margin-bottom:10px">${d.py}</div>
+      <div class="gopts">${allOpts.map(t => `<button class="gopt" onclick="chkTone(this,${t},${d.t},'${char}')">${toneNames[t]}</button>`).join('')}</div>
       <div id="gr"></div>`;
   }
 }
 
-function chkM(btn,chosen,correct){
-  document.querySelectorAll('.gopt').forEach(b=>b.disabled=true);
-  if(chosen===correct){btn.classList.add('ok');GS.score++;GS.streak++;gRes(true,correct);}
-  else{btn.classList.add('bad');GS.streak=0;document.querySelectorAll('.gopt').forEach(b=>{if(b.textContent.includes(CD[correct].en.split('/')[0]))b.classList.add('ok');});gRes(false,correct);}
+function chkM(btn, chosen, correct) {
+  document.querySelectorAll('.gopt').forEach(b => b.disabled = true);
+  if (chosen === correct) { btn.classList.add('ok'); GS.score++; GS.streak++; gRes(true, correct); }
+  else { btn.classList.add('bad'); GS.streak = 0; document.querySelectorAll('.gopt').forEach(b => { if (b.textContent.includes(CD[correct].en)) b.classList.add('ok'); }); gRes(false, correct); }
 }
-function chkF(el,chosen,correct){
-  document.querySelectorAll('.fopt').forEach(b=>b.style.pointerEvents='none');
-  if(chosen===correct){el.classList.add('ok');GS.score++;GS.streak++;gRes(true,correct);}
-  else{el.classList.add('bad');GS.streak=0;document.querySelectorAll('.fopt').forEach(b=>{if(b.textContent===correct)b.classList.add('ok');});gRes(false,correct);}
+function chkF(el, chosen, correct) {
+  document.querySelectorAll('.fopt').forEach(b => b.style.pointerEvents = 'none');
+  if (chosen === correct) { el.classList.add('ok'); GS.score++; GS.streak++; gRes(true, correct); }
+  else { el.classList.add('bad'); GS.streak = 0; document.querySelectorAll('.fopt').forEach(b => { if (b.textContent === correct) b.classList.add('ok'); }); gRes(false, correct); }
 }
-function chkP(btn,chosen,correct,char){
-  document.querySelectorAll('.gopt').forEach(b=>b.disabled=true);
-  if(chosen===correct){btn.classList.add('ok');GS.score++;GS.streak++;gRes(true,char);}
-  else{btn.classList.add('bad');GS.streak=0;document.querySelectorAll('.gopt').forEach(b=>{if(b.textContent.trim()===correct)b.classList.add('ok');});gRes(false,char);}
+function chkP(btn, chosen, correct, char) {
+  document.querySelectorAll('.gopt').forEach(b => b.disabled = true);
+  if (chosen === correct) { btn.classList.add('ok'); GS.score++; GS.streak++; gRes(true, char); }
+  else { btn.classList.add('bad'); GS.streak = 0; document.querySelectorAll('.gopt').forEach(b => { if (b.textContent.trim() === correct) b.classList.add('ok'); }); gRes(false, char); }
 }
-function revealF(char){
-  const d=CD[char];
-  document.getElementById('gr').innerHTML=`
-    <div style="background:#FFF8E8;border-radius:14px;padding:14px;margin:12px 0;border:2px solid var(--secondary);text-align:center">
-      <div style="font-size:2rem">${d.emoji}</div>
-      <div style="font-size:1.2rem;font-weight:800">${d.en}</div>
+function chkSent(btn, chosenEnc, correctEnc) {
+  const chosen = decodeURIComponent(chosenEnc), correct = decodeURIComponent(correctEnc);
+  document.querySelectorAll('.gopt').forEach(b => b.disabled = true);
+  if (chosen === correct) { btn.classList.add('ok'); GS.score++; GS.streak++; }
+  else { btn.classList.add('bad'); GS.streak = 0; document.querySelectorAll('.gopt').forEach(b => { if (b.textContent.trim() === correct) b.classList.add('ok'); }); }
+  const gr = document.getElementById('gr');
+  if (gr) {
+    gr.innerHTML = `<div class="gres ${chosen===correct?'pass':'fail'}"><span class="be">${chosen===correct?'🎉':'😅'}</span>
+      ${chosen===correct?'Correct!':'Not quite!'} Score: ${GS.score} | Streak: ${GS.streak}🔥
+    </div><button class="nbtn" onclick="renderGame('sentence')">Next ➜</button>`;
+  }
+}
+function chkTone(btn, chosen, correct, char) {
+  document.querySelectorAll('.gopt').forEach(b => b.disabled = true);
+  const toneNames = ['Neutral', '1st (ā)', '2nd (á)', '3rd (ǎ)', '4th (à)'];
+  if (chosen === correct) { btn.classList.add('ok'); GS.score++; GS.streak++; gRes(true, char); }
+  else { btn.classList.add('bad'); GS.streak = 0; document.querySelectorAll('.gopt').forEach(b => { if (b.textContent === toneNames[correct]) b.classList.add('ok'); }); gRes(false, char); }
+}
+function revealF(char) {
+  const d = CD[char];
+  document.getElementById('gr').innerHTML = `
+    <div style="background:#FFF8E8;border-radius:12px;padding:12px;margin:10px 0;border:2px solid var(--secondary);text-align:center">
+      <div style="font-size:1.8rem">${d.emoji}</div>
+      <div style="font-size:1.1rem;font-weight:800">${d.enFull}</div>
       <div style="color:var(--primary);font-weight:700">${d.py}</div>
     </div>
-    <div style="font-weight:700;color:#555;text-align:center;margin-bottom:10px">Did you know it?</div>
-    <div style="display:flex;gap:8px">
-      <button onclick="flashA(true)" style="flex:1;background:var(--green);color:white;border:none;border-radius:12px;padding:12px;font-family:'Baloo 2';font-size:1rem;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #04A07A">✅ Yes!</button>
-      <button onclick="flashA(false)" style="flex:1;background:var(--red);color:white;border:none;border-radius:12px;padding:12px;font-family:'Baloo 2';font-size:1rem;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #A0001C">❌ No</button>
+    <div style="font-weight:700;color:#555;text-align:center;margin-bottom:8px">Did you know it?</div>
+    <div style="display:flex;gap:7px">
+      <button onclick="flashA(true)" style="flex:1;background:var(--green);color:white;border:none;border-radius:11px;padding:11px;font-family:'Baloo 2';font-size:.9rem;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #04A07A">✅ Yes!</button>
+      <button onclick="flashA(false)" style="flex:1;background:var(--red);color:white;border:none;border-radius:11px;padding:11px;font-family:'Baloo 2';font-size:.9rem;font-weight:800;cursor:pointer;box-shadow:0 3px 0 #A0001C">❌ No</button>
     </div>`;
 }
-function flashA(ok){ if(ok){GS.score++;GS.streak++;}else GS.streak=0; gRes(ok,GS.cur); }
-function gRes(pass,char){
-  const d=CD[char], el=document.getElementById('gr');
-  if(!el) return;
-  if(pass){
-    el.innerHTML=`<div class="gres pass"><span class="be">${['🎉','⭐','🌟','🥳','✨'][Math.floor(Math.random()*5)]}</span>
+function flashA(ok) { if (ok) { GS.score++; GS.streak++; } else GS.streak = 0; gRes(ok, GS.cur); }
+
+function gRes(pass, char) {
+  const d = CD[char], el = document.getElementById('gr');
+  if (!el) return;
+  if (pass) {
+    el.innerHTML = `<div class="gres pass"><span class="be">${['🎉','⭐','🌟','🥳','✨'][Math.floor(Math.random()*5)]}</span>
       Correct! ${char} = ${d.en} (${d.py})<br><small>Score: ${GS.score} | Streak: ${GS.streak}🔥</small>
     </div><button class="nbtn" onclick="renderGame('${GS.type}')">Next ➜</button>`;
-    if(GS.streak>0&&GS.streak%5===0) spawnC();
+    if (GS.streak > 0 && GS.streak % 5 === 0) spawnC();
   } else {
-    el.innerHTML=`<div class="gres fail"><span class="be">😅</span>
-      ${char} = ${d.en} (${d.py}) — keep practicing!
+    el.innerHTML = `<div class="gres fail"><span class="be">😅</span>
+      ${char} = ${d.enFull} (${d.py}) — practice more!
     </div><button class="nbtn" onclick="renderGame('${GS.type}')">Try Again ➜</button>`;
   }
 }
 
-// ═══════════════════════════════════════
-// PROGRESS
-// ═══════════════════════════════════════
-function renderProg(){
-  const all=Object.keys(CD), mastered=all.filter(c=>status(c)==='mastered').length;
-  const pct=Math.round(mastered/all.length*100);
-  document.getElementById('pane-progress').innerHTML=`
+// ── PROGRESS ─────────────────────────────────────────
+function renderProg() {
+  const all = Object.keys(CD), mastered = all.filter(c => getStatus(c) === 'mastered').length;
+  const pct = Math.round(mastered / all.length * 100);
+  const sentTotal = CHAPTERS.filter(c => c.isSentence).reduce((a, c) => a + c.sentences.length, 0);
+  const sentDone = CHAPTERS.filter(c => c.isSentence).reduce((a, c) => a + (S['sent_' + c.id] || []).length, 0);
+
+  document.getElementById('pane-progress').innerHTML = `
     <div class="psec">
-      <div class="pstitle">🏆 Overall Progress</div>
-      <div style="font-size:1rem;color:#555">Mastered <strong style="color:var(--primary)">${mastered}</strong> / 40</div>
-      <div class="prog-bar" style="margin:10px 0;height:14px;border-radius:10px">
-        <div class="prog-fill" style="width:${pct}%;height:14px"></div>
+      <div class="pstitle">🏆 Your Progress</div>
+      <div style="font-size:.95rem;color:#555;margin-bottom:6px">Characters mastered: <strong style="color:var(--primary)">${mastered}</strong> / ${all.length}</div>
+      <div class="prog-bar" style="height:13px;border-radius:10px;margin-bottom:4px">
+        <div class="prog-fill" style="width:${pct}%;height:13px"></div>
       </div>
-      <div style="font-size:.82rem;color:#aaa">${pct}% &nbsp;|&nbsp; ⭐ ${stars} stars &nbsp;|&nbsp; ✏️ ${all.filter(c=>S[c]?.w).length} write &nbsp;|&nbsp; 🎤 ${all.filter(c=>S[c]?.s).length} speak</div>
-      <div style="font-size:.78rem;margin-top:8px;color:#ccc">
+      <div style="font-size:.8rem;color:#aaa;margin-bottom:10px">${pct}% complete</div>
+      <div style="font-size:.95rem;color:#555;margin-bottom:6px">Sentences learned: <strong style="color:var(--blue)">${sentDone}</strong> / ${sentTotal}</div>
+      <div style="font-size:.82rem;color:#666">⭐ ${stars} stars &nbsp;|&nbsp; ✏️ ${all.filter(c=>S[c]?.w).length} write &nbsp;|&nbsp; 🎤 ${all.filter(c=>S[c]?.sp).length} speak</div>
+      <div style="font-size:.75rem;margin-top:8px;color:#ccc">
         <span style="color:#845EC2">■</span> Write ✓ &nbsp;
         <span style="color:#D4A000">■</span> Speak ✓ &nbsp;
-        <span style="color:var(--green)">■</span> Mastered ⭐ &nbsp;
-        <span style="color:#ddd">■</span> Not started
+        <span style="color:var(--green)">■</span> Mastered ⭐
       </div>
     </div>
-    ${CHAPTERS.map(ch=>{
-      const done=ch.chars.filter(c=>status(c)==='mastered').length;
+    ${CHAPTERS.filter(c => !c.isSentence).map(ch => {
+      const done = ch.chars.filter(c => getStatus(c) === 'mastered').length;
       return `<div class="psec">
         <div class="pstitle">${ch.emoji} ${ch.title}</div>
-        <div class="cdots">${ch.chars.map(c=>{
-          const sv=S[c]||{};
-          const cl=sv.w&&sv.s?'both':sv.w?'wonly':sv.s?'sonly':'';
-          const ic=sv.w&&sv.s?'⭐':sv.w?'✏️':sv.s?'🎤':'';
-          return `<div class="cdot ${cl}" title="${CD[c].en} (${CD[c].py})">${c}<small>${ic}</small></div>`;
+        <div class="cdots">${ch.chars.map(c => {
+          const sv = S[c] || {};
+          const cl = sv.w && sv.sp ? 'both' : sv.w ? 'wonly' : sv.sp ? 'sonly' : '';
+          const ic = sv.w && sv.sp ? '⭐' : sv.w ? '✏️' : sv.sp ? '🎤' : '';
+          return `<div class="cdot ${cl}" title="${CD[c]?.en} (${CD[c]?.py})">${c}<small>${ic}</small></div>`;
         }).join('')}</div>
-        <div class="prog-bar" style="margin-top:10px;height:9px;border-radius:9px">
-          <div class="prog-fill" style="width:${Math.round(done/8*100)}%"></div>
+        <div class="prog-bar" style="margin-top:9px;height:8px;border-radius:8px">
+          <div class="prog-fill" style="width:${Math.round(done/ch.chars.length*100)}%"></div>
         </div>
-        <div style="font-size:.8rem;color:#aaa;margin-top:4px">${done}/8 mastered</div>
+        <div style="font-size:.78rem;color:#aaa;margin-top:4px">${done}/${ch.chars.length} mastered</div>
+      </div>`;
+    }).join('')}
+    ${CHAPTERS.filter(c => c.isSentence).map(ch => {
+      const done2 = (S['sent_' + ch.id] || []).length;
+      return `<div class="psec">
+        <div class="pstitle">${ch.emoji} ${ch.title} <span style="font-size:.72rem;color:var(--blue);background:#E8F4FF;border-radius:6px;padding:1px 6px;margin-left:4px">sentences</span></div>
+        <div class="prog-bar" style="margin:6px 0;height:8px;border-radius:8px">
+          <div class="prog-fill" style="width:${Math.round(done2/ch.sentences.length*100)}%;background:linear-gradient(90deg,var(--blue),#38BDF8)"></div>
+        </div>
+        <div style="font-size:.78rem;color:#aaa">${done2}/${ch.sentences.length} learned</div>
       </div>`;
     }).join('')}
     <div style="text-align:center;padding:14px">
       <button onclick="if(confirm('Reset ALL progress?')){S={};stars=0;save();renderChs();renderProg();}"
-        style="background:white;border:2px solid #ddd;border-radius:12px;padding:8px 16px;font-family:'Baloo 2';font-size:.85rem;cursor:pointer;color:#ccc">
+        style="background:white;border:2px solid #ddd;border-radius:11px;padding:8px 16px;font-family:'Baloo 2';font-size:.82rem;cursor:pointer;color:#ccc">
         🔄 Reset Progress
       </button>
     </div>`;
 }
 
-// ═══════════════════════════════════════
-// CELEBRATION
-// ═══════════════════════════════════════
-function showCel(title,sub,emoji='🎉'){
-  document.getElementById('celT').textContent=title;
-  document.getElementById('celS').textContent=sub;
-  document.getElementById('celE').textContent=emoji;
+// ── CELEBRATION ───────────────────────────────────────
+function showCel(title, sub, emoji = '🎉') {
+  document.getElementById('celT').textContent = title;
+  document.getElementById('celS').textContent = sub;
+  document.getElementById('celE').textContent = emoji;
   document.getElementById('cel').classList.add('show');
   spawnC();
 }
-function closeCel(){
+function closeCel() {
   document.getElementById('cel').classList.remove('show');
-  document.querySelectorAll('.cp').forEach(c=>c.remove());
+  document.querySelectorAll('.cp').forEach(c => c.remove());
 }
-function spawnC(){
-  const cols=['#FF6B35','#FFD166','#06D6A0','#118AB2','#845EC2','#FF9EBB','#EF233C'];
-  for(let i=0;i<50;i++) setTimeout(()=>{
-    const p=document.createElement('div');
-    p.className='cp';
-    p.style.cssText=`left:${Math.random()*100}vw;top:-10px;width:${7+Math.random()*9}px;height:${7+Math.random()*9}px;
+function spawnC() {
+  const cols = ['#FF6B35','#FFD166','#06D6A0','#118AB2','#845EC2','#FF9EBB','#EF233C'];
+  for (let i = 0; i < 60; i++) setTimeout(() => {
+    const p = document.createElement('div');
+    p.className = 'cp';
+    const dur = 1.4 + Math.random() * 0.9;
+    p.style.cssText = `left:${Math.random()*100}vw;top:-10px;width:${7+Math.random()*9}px;height:${7+Math.random()*9}px;
       background:${cols[Math.floor(Math.random()*cols.length)]};
-      animation-duration:${1.4+Math.random()*.8}s;animation-delay:${Math.random()*.4}s;
+      animation-duration:${dur}s;animation-delay:${Math.random()*.5}s;
       border-radius:${Math.random()>.5?'50%':'2px'};`;
     document.body.appendChild(p);
-    setTimeout(()=>p.remove(),3000);
-  },i*32);
+    setTimeout(() => p.remove(), (dur + 0.6) * 1000);
+  }, i * 28);
 }
 
-function showToast(msg,dur=4000){
-  const t=document.getElementById('toast');
-  t.innerHTML=msg; t.style.display='block';
-  clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',dur);
+function showToast(msg, dur = 3500) {
+  const t = document.getElementById('toast');
+  t.innerHTML = msg; t.style.display = 'block';
+  clearTimeout(t._t); t._t = setTimeout(() => t.style.display = 'none', dur);
 }
 
+// ── START ─────────────────────────────────────────────
 init();
 </script>
 </body>
