@@ -294,6 +294,16 @@ header h1{font-size:clamp(1.5rem,5vw,2.4rem);color:#7B2D00;text-shadow:2px 2px 0
   z-index:300;box-shadow:0 4px 12px rgba(0,0,0,.3);text-align:center;max-width:300px;
   font-weight:700;pointer-events:none}
 
+@keyframes strokeNamePop {
+  0%  { transform: scale(0.85); opacity: 0.4; }
+  60% { transform: scale(1.06); opacity: 1; }
+  100%{ transform: scale(1);    opacity: 1; }
+}
+@keyframes countdown {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
 .div{height:2px;background:linear-gradient(90deg,transparent,#FFD166,transparent);margin:12px 0}
 
 /* OFFLINE BANNER */
@@ -693,6 +703,123 @@ function updateHdr() {
   document.getElementById('hSpeak').textContent = all.filter(c => S[c]?.sp).length;
 }
 
+// ── STROKE NAME DATABASE ──────────────────────────────
+// Maps hanzi-writer stroke type keys → display info
+const STROKE_NAMES = {
+  // Hanzi writer uses these internal type names
+  's':    { zh:'横', py:'Héng',   en:'Horizontal', desc:'Left → Right flat stroke' },
+  'h':    { zh:'横', py:'Héng',   en:'Horizontal', desc:'Left → Right flat stroke' },
+  'hz':   { zh:'横折', py:'Héng Zhé', en:'Horizontal-Bend', desc:'Go right, then turn down' },
+  'hzw':  { zh:'横折弯', py:'Héng Zhé Wān', en:'H-Bend-Curve', desc:'Right, down, then curve' },
+  'hzwg': { zh:'横折弯钩', py:'Héng Zhé Wān Gōu', en:'H-Bend-Curve-Hook', desc:'Right, down, curve, hook' },
+  'hg':   { zh:'横钩', py:'Héng Gōu', en:'Horizontal-Hook', desc:'Go right then hook down' },
+  'hxg':  { zh:'横斜钩', py:'Héng Xié Gōu', en:'Curved Hook', desc:'Sweeping hook to upper right' },
+  'hp':   { zh:'横撇', py:'Héng Piě', en:'H-Left-Falling', desc:'Right then fall left' },
+  'hzg':  { zh:'横折钩', py:'Héng Zhé Gōu', en:'H-Bend-Hook', desc:'Right, bend down, then hook' },
+  'hzzp': { zh:'横折折撇', py:'Héng Zhé Zhé Piě', en:'H-Bend-Bend-Left', desc:'Multiple bends with left fall' },
+  'hzzg': { zh:'横折折折钩', py:'Héng Zhé Zhé Zhé Gōu', en:'H-Multi-Bend-Hook', desc:'Multiple bends ending in hook' },
+  'p':    { zh:'撇', py:'Piě',    en:'Left-Falling', desc:'Sweep down to the left' },
+  'pz':   { zh:'撇折', py:'Piě Zhé', en:'Left-Falling-Bend', desc:'Fall left then bend right' },
+  'pvz':  { zh:'撇竖折', py:'Piě Shù Zhé', en:'Left-V-Bend', desc:'Left fall, down, then right' },
+  'pd':   { zh:'撇点', py:'Piě Diǎn', en:'Left-Dot', desc:'Short left fall ending in dot' },
+  'n':    { zh:'捺', py:'Nà',     en:'Right-Falling', desc:'Sweep down to the right' },
+  'na':   { zh:'捺', py:'Nà',     en:'Right-Falling', desc:'Sweep down to the right' },
+  'd':    { zh:'点', py:'Diǎn',   en:'Dot', desc:'A small downward dot' },
+  'sg':   { zh:'竖钩', py:'Shù Gōu', en:'Vertical-Hook', desc:'Go straight down then hook' },
+  'sz':   { zh:'竖折', py:'Shù Zhé', en:'Vertical-Bend', desc:'Go down then bend right' },
+  'szs':  { zh:'竖折撇', py:'Shù Zhé Piě', en:'V-Bend-Left', desc:'Down, right, then fall left' },
+  'swz':  { zh:'竖弯折', py:'Shù Wān Zhé', en:'V-Curve-Bend', desc:'Down, curve, then right' },
+  'swzg': { zh:'竖弯折钩', py:'Shù Wān Zhé Gōu', en:'V-Curve-Hook', desc:'Down, curve, bend, hook' },
+  'sw':   { zh:'竖弯', py:'Shù Wān', en:'Vertical-Curve', desc:'Go down then curve right' },
+  'swg':  { zh:'竖弯钩', py:'Shù Wān Gōu', en:'V-Curve-Hook', desc:'Down, curve, end in hook' },
+  's2':   { zh:'竖', py:'Shù',    en:'Vertical', desc:'Straight down stroke' },
+  'g':    { zh:'钩', py:'Gōu',    en:'Hook', desc:'A stroke ending with a hook' },
+  't':    { zh:'提', py:'Tí',     en:'Rising', desc:'Short upward diagonal stroke' },
+  'w':    { zh:'弯', py:'Wān',    en:'Curve', desc:'A curved stroke' },
+  'wg':   { zh:'弯钩', py:'Wān Gōu', en:'Curve-Hook', desc:'Curve ending in hook' },
+  'z':    { zh:'折', py:'Zhé',    en:'Bend/Turn', desc:'A stroke that changes direction' },
+  'zg':   { zh:'折钩', py:'Zhé Gōu', en:'Bend-Hook', desc:'A bend ending in a hook' },
+  // catch-all vertical
+  'vs':   { zh:'竖', py:'Shù',    en:'Vertical', desc:'Straight down stroke' },
+};
+
+// Classify a stroke from its median path (fallback when type unknown)
+function classifyStrokeByPath(medians) {
+  if (!medians || medians.length < 2) return STROKE_NAMES['d'];
+  const first = medians[0], last = medians[medians.length - 1];
+  const dx = last[0] - first[0], dy = last[1] - first[1];
+  const adx = Math.abs(dx), ady = Math.abs(dy);
+  if (ady < adx * 0.4) return STROKE_NAMES['h'];       // mostly horizontal → héng
+  if (adx < ady * 0.4 && dy > 0) return STROKE_NAMES['s2'];  // mostly down → shù
+  if (dx < 0 && dy > 0) return STROKE_NAMES['p'];      // left-down → piě
+  if (dx > 0 && dy > 0) return STROKE_NAMES['n'];      // right-down → nà
+  if (ady < 6 && adx < 6) return STROKE_NAMES['d'];    // tiny → diǎn
+  return STROKE_NAMES['t'];                              // upward → tí
+}
+
+// Get stroke info for stroke index from loaded char data
+let currentCharData = null;  // store loaded hanzi data
+
+function getStrokeInfo(strokeIndex) {
+  if (!currentCharData) return null;
+  const strokes = currentCharData.strokes;
+  const radStrokes = currentCharData.radStrokes;
+  if (!strokes || strokeIndex >= strokes.length) return null;
+
+  // Try to match via the stroke path key
+  const medians = currentCharData.medians?.[strokeIndex];
+  const path = strokes[strokeIndex];
+
+  // Extract stroke type from SVG path command heuristic
+  // Hanzi writer paths start with commands that indicate type
+  let type = null;
+  if (path) {
+    const m = path.match(/^[MLCQl]*([-\d.]+)/);
+    // Use path shape classification
+  }
+
+  return classifyStrokeByPath(medians);
+}
+
+// Announce stroke name via speech synthesis
+function announceStroke(strokeIndex) {
+  const info = getStrokeInfo(strokeIndex);
+  if (!info) return;
+
+  // Update the stroke name display
+  const el = document.getElementById('strokeNameDisplay');
+  if (el) {
+    el.innerHTML = `
+      <span style="font-family:'Noto Sans SC',sans-serif;font-size:1.4rem;font-weight:900;color:#845EC2">${info.zh}</span>
+      <span style="font-size:1rem;font-weight:800;color:var(--primary);margin:0 6px">${info.py}</span>
+      <span style="font-size:.82rem;color:#666">${info.en}</span>
+    `;
+    el.style.animation = 'none';
+    el.offsetHeight; // reflow
+    el.style.animation = 'strokeNamePop .4s ease';
+  }
+
+  // Speak the stroke name in Chinese
+  speakStrokeName(info.zh);
+}
+
+function speakStrokeName(text) {
+  try {
+    // Try Web Speech (faster for short words)
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'zh-CN'; u.rate = 1.0; u.volume = 0.9;
+      const v = window.speechSynthesis.getVoices().find(x => x.lang.startsWith('zh'));
+      if (v) { u.voice = v; window.speechSynthesis.speak(u); return; }
+    }
+    // Fallback: Google TTS
+    const a = new Audio(`https://translate.googleapis.com/translate_tts?ie=UTF-8&tl=zh-CN&client=gtx&q=${encodeURIComponent(text)}`);
+    a.volume = 0.8;
+    a.play().catch(() => {});
+  } catch(e) {}
+}
+
 // ── AUDIO CONTEXT FOR STROKE SOUNDS ──────────────────
 function getAudioCtx() {
   if (!AudioCtx) AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -708,26 +835,23 @@ function playStrokeSound(correct) {
     gain.connect(ctx.destination);
 
     if (correct) {
-      // Pleasant ascending tone for correct stroke
       osc.type = 'sine';
       osc.frequency.setValueAtTime(440, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.12);
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.22);
-    } else {
-      // Low thud for wrong stroke
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(220, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.15);
-      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.setValueAtTime(0.28, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
       osc.start(ctx.currentTime);
       osc.stop(ctx.currentTime + 0.2);
+    } else {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(220, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.22, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.18);
     }
 
-    // Visual flash
     const fx = document.getElementById('strokeFx');
     if (fx) {
       fx.textContent = correct ? '✅' : '❌';
@@ -740,17 +864,15 @@ function playStrokeSound(correct) {
 function playCompleteSound() {
   try {
     const ctx = getAudioCtx();
-    const notes = [523, 659, 784, 1047]; // C5 E5 G5 C6
+    const notes = [523, 659, 784, 1047];
     notes.forEach((freq, i) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = 'sine';
-      osc.frequency.value = freq;
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine'; osc.frequency.value = freq;
       gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.1);
-      gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + i * 0.1 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.3);
+      gain.gain.linearRampToValueAtTime(0.28, ctx.currentTime + i * 0.1 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.28);
       osc.start(ctx.currentTime + i * 0.1);
       osc.stop(ctx.currentTime + i * 0.1 + 0.3);
     });
@@ -1028,6 +1150,10 @@ function renderChar() {
       <div style="font-size:.82rem;font-weight:700;color:#666;margin-bottom:8px">👀 Watch the stroke animation:</div>
       <div class="writer-wrap">
         <div class="writer-box" id="watchBox" style="width:220px;height:220px"></div>
+        <div id="strokeNameDisplay" style="min-height:28px;text-align:center;padding:4px 8px;
+          background:#F8F0FF;border-radius:10px;border:2px solid #DDD6FE;font-weight:700;
+          display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;
+          animation-name:strokeNamePop;animation-duration:.4s"></div>
         <div class="wrow">
           <button class="wbtn blue" onclick="doAnim()">▶️ Animate</button>
           <button class="wbtn" onclick="doLoop()">🔁 Loop</button>
@@ -1072,16 +1198,22 @@ function renderChar() {
     <div id="strokeFx" class="stroke-sound-fx"></div>
   `;
 
-  setTimeout(() => { initWatch(c); if (!sv.w) initQuiz(c); }, 120);
+  setTimeout(() => {
+    initWatch(c);
+    if (!sv.w) initQuiz(c);
+    if (sv.w) initRecTest(c, d.py, d.en);
+  }, 120);
 }
 
 function speakCardHTML(c, d, sv) {
   const toneLabels = ['neutral (light tone)', '1st tone ā (flat ‾)', '2nd tone á (rising ╱)', '3rd tone ǎ (dip ∨)', '4th tone à (falling ╲)'];
   return `
     <div style="background:#F0F9FF;border-radius:14px;padding:14px;border:2px solid #BAE6FD;margin-bottom:12px">
-      <div style="font-size:.82rem;font-weight:700;color:#555;margin-bottom:9px">Listen carefully, then repeat!</div>
+      <div style="font-size:.82rem;font-weight:700;color:#555;margin-bottom:9px">
+        1️⃣ Listen carefully first:
+      </div>
       <div class="hear-row">
-        <button class="hbtn" onclick="spk('${c}')">🔊 Normal speed</button>
+        <button class="hbtn" onclick="spk('${c}')">🔊 Hear it!</button>
         <button class="hbtn slow" onclick="spk('${c}',true)">🐢 Slow</button>
       </div>
       <div class="tone-info">
@@ -1092,17 +1224,18 @@ function speakCardHTML(c, d, sv) {
     </div>
 
     <div style="background:#FFF0F8;border-radius:14px;padding:14px;border:2px solid #FBCFE8">
-      <div style="text-align:center;font-size:.88rem;font-weight:800;color:#555;margin-bottom:3px">
-        Now say: <span style="font-family:'Noto Sans SC';font-size:1.6rem;font-weight:900">${c}</span>
+      <div style="text-align:center;font-size:.88rem;font-weight:800;color:#555;margin-bottom:2px">
+        2️⃣ Now say it! <span style="font-family:'Noto Sans SC';font-size:1.6rem;font-weight:900">${c}</span>
         = <strong style="color:var(--primary)">${d.py}</strong>
       </div>
-      <div style="text-align:center;font-size:.75rem;color:#bbb;margin-bottom:10px">
-        Say it clearly in a quiet place 🤫
+      <div style="text-align:center;font-size:.75rem;color:#aaa;margin-bottom:10px">
+        You get <strong>3 attempts</strong> — just try your best! 🤗
       </div>
       <button class="rbtn" id="recBtn" onclick="toggleRec('${c}','${d.py}','${d.en}')">
-        🎤 Tap to Record
+        🎤 Tap &amp; Say It!
       </button>
-      <div class="rresult" id="rresult"></div>
+      <div id="recAttempts" style="text-align:center;font-size:.82rem;color:#888;margin-top:6px;min-height:20px"></div>
+      <div class="rresult" id="rresult" style="display:none"></div>
       ${sv.sp ? `<div class="master-badge" style="margin-top:10px;background:linear-gradient(135deg,#118AB2,#0369A1);color:white;box-shadow:0 4px 0 #075985">✅ Speak Test Passed!</div>` : ''}
     </div>`;
 }
@@ -1146,9 +1279,14 @@ function initWatch(char) {
         showOutline: true,
         strokeColor: '#1A1A2E',
         outlineColor: '#DDD6FE',
-        strokeAnimationSpeed: 1.1,
-        delayBetweenStrokes: 400,
-        charDataLoader: hzData
+        strokeAnimationSpeed: 0.9,
+        delayBetweenStrokes: 600,
+        charDataLoader: (c, onLoad, onError) => {
+          hzData(c, (data) => {
+            currentCharData = data;
+            onLoad(data);
+          }, onError);
+        }
       });
     } catch (e) {}
   });
@@ -1169,10 +1307,17 @@ function initQuiz(char) {
         drawingWidth: 5,
         showHintAfterMisses: 3,
         highlightOnComplete: true,
-        charDataLoader: hzData,
+        charDataLoader: (c, onLoad, onError) => {
+          hzData(c, (data) => {
+            currentCharData = data;
+            onLoad(data);
+          }, onError);
+        },
         onLoadCharDataSuccess: (data) => {
           qTotal = data.strokes.length;
           updQProg();
+          // Announce first stroke name right away
+          setTimeout(() => announceStroke(0), 300);
           beginQuiz(char);
         },
         onLoadCharDataError: () => {
@@ -1192,16 +1337,24 @@ function beginQuiz(char) {
       const s = document.getElementById('sstatus');
       if (s) {
         s.className = 'sstatus bad';
-        s.textContent = `❌ Wrong direction! Stroke ${d.strokeNum + 1} — try again! (${d.mistakesOnStroke} mistake${d.mistakesOnStroke > 1 ? 's' : ''})`;
+        const info = getStrokeInfo(d.strokeNum);
+        const name = info ? `"${info.py}" (${info.en})` : `stroke ${d.strokeNum + 1}`;
+        s.textContent = `❌ Wrong! Draw ${name} — try again! (${d.mistakesOnStroke} mistake${d.mistakesOnStroke > 1 ? 's' : ''})`;
       }
     },
     onCorrectStroke: (d) => {
       playStrokeSound(true);
       qDone = d.strokeNum + 1; updQProg();
+      const info = getStrokeInfo(d.strokeNum);
       const s = document.getElementById('sstatus');
       if (s) {
         s.className = 'sstatus ok';
-        s.textContent = `✅ Stroke ${qDone} correct! ${qDone < qTotal ? `Next stroke (${qDone + 1}/${qTotal})` : 'Almost done!'}`;
+        const name = info ? `${info.py} (${info.en})` : `stroke ${qDone}`;
+        s.textContent = `✅ ${name} — correct! ${qDone < qTotal ? `Next: stroke ${qDone + 1}/${qTotal}` : 'Last one!'}`;
+      }
+      // Announce next stroke name
+      if (qDone < qTotal) {
+        setTimeout(() => announceStroke(qDone), 200);
       }
     },
     onComplete: () => {
@@ -1209,6 +1362,8 @@ function beginQuiz(char) {
       const c = curCh.chars[curIdx], d = CD[c];
       const s = document.getElementById('sstatus');
       if (s) { s.className = 'sstatus done'; s.textContent = `🎉 All ${qTotal} strokes correct! "${c}" written perfectly!`; }
+      const nd = document.getElementById('strokeNameDisplay');
+      if (nd) nd.innerHTML = `<span style="color:var(--green);font-weight:800;font-size:1rem">⭐ All strokes done!</span>`;
       if (!S[c]?.w) {
         if (!S[c]) S[c] = {};
         S[c].w = true; stars++;
@@ -1220,8 +1375,30 @@ function beginQuiz(char) {
   });
 }
 
-function doAnim() { if (watchW) watchW.animateCharacter(); }
-function doLoop() { if (watchW) watchW.loopCharacterAnimation(); }
+function doAnim() {
+  if (!watchW || !currentCharData) { if (watchW) watchW.animateCharacter(); return; }
+  // Animate and announce each stroke name as it plays
+  const total = currentCharData.strokes?.length || 0;
+  watchW.animateCharacter({
+    onAnimationStart: () => {
+      announceStroke(0);
+    }
+  });
+  // Schedule announcements based on animation timing
+  if (total > 1) {
+    const delay = 1000; // ~1s per stroke
+    for (let i = 1; i < total; i++) {
+      ((idx) => setTimeout(() => {
+        // Only announce if still on same character
+        if (currentCharData && currentCharData.strokes?.length > idx) announceStroke(idx);
+      }, i * delay))(i);
+    }
+  }
+}
+
+function doLoop() {
+  if (watchW) watchW.loopCharacterAnimation();
+}
 function doHint() { if (quizW) quizW.showHint(); }
 function resetQ() {
   if (!quizW) return;
@@ -1229,7 +1406,12 @@ function resetQ() {
   quizW.cancelQuiz();
   const s = document.getElementById('sstatus');
   if (s) { s.className = 'sstatus hint'; s.textContent = '✏️ Draw the 1st stroke — follow the correct direction!'; }
-  setTimeout(() => beginQuiz(curCh.chars[curIdx]), 120);
+  const nd = document.getElementById('strokeNameDisplay');
+  if (nd) nd.innerHTML = '';
+  setTimeout(() => {
+    beginQuiz(curCh.chars[curIdx]);
+    setTimeout(() => announceStroke(0), 300);
+  }, 120);
 }
 function updQProg() {
   const p = document.getElementById('qprog');
@@ -1253,86 +1435,301 @@ function spk(text, slow = false) {
   });
 }
 
-// ── SPEECH RECOGNITION ───────────────────────────────
-function toggleRec(char, py, en) {
-  isRec ? stopRec() : startRec(char, py, en);
+// ── PRONUNCIATION TEST — multi-attempt, very lenient ─
+// Strategy: 3 attempts allowed. On attempt 1 use strict zh-CN.
+// On attempt 2 also try en-US (kids sometimes say pinyin in English accent).
+// On attempt 3, auto-pass with encouragement.
+// Matching: very generous — any overlapping sound counts.
+
+let recAttempts = 0;
+let recChar = '', recPy = '', recEn = '';
+let recTimer = null;
+
+function initRecTest(char, py, en) {
+  recAttempts = 0;
+  recChar = char; recPy = py; recEn = en;
+  updateRecUI();
 }
 
-function startRec(char, py, en) {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { showToast('⚠️ Speech recognition requires Chrome on Android/Desktop!'); return; }
-  speechR = new SR();
-  speechR.lang = 'zh-CN';
-  speechR.continuous = false;
-  speechR.interimResults = false;
-  speechR.maxAlternatives = 8;
-
+function updateRecUI() {
   const btn = document.getElementById('recBtn');
   const res = document.getElementById('rresult');
-  if (btn) { btn.textContent = '🔴 Listening... (tap to stop)'; btn.classList.add('rec'); }
-  if (res) { res.className = 'rresult wait'; res.innerHTML = '🎧 Listening for Chinese...'; }
-  isRec = true;
+  const attEl = document.getElementById('recAttempts');
+  if (!btn) return;
 
-  speechR.onresult = (e) => {
-    const heardList = Array.from(e.results[0]).map(a => a.transcript.trim());
-    if (heardList.length) processRec(heardList, char, py, en);
-  };
-  speechR.onerror = (e) => {
-    isRec = false;
-    if (btn) { btn.textContent = '🎤 Tap to Record'; btn.classList.remove('rec'); }
-    const msgs = { 'no-speech': 'No speech heard — speak louder!', 'not-allowed': 'Mic blocked! Allow in browser settings.', 'network': 'Network error.' };
-    if (res) { res.className = 'rresult fail'; res.innerHTML = '⚠️ ' + (msgs[e.error] || 'Could not hear you. Try again!'); }
-  };
-  speechR.onend = () => {
-    isRec = false;
-    if (btn) { btn.textContent = '🎤 Tap to Record Again'; btn.classList.remove('rec'); }
-  };
-  speechR.start();
+  if (recAttempts === 0) {
+    btn.innerHTML = '🎤 Tap &amp; Say It!';
+    btn.classList.remove('rec');
+    if (res) { res.className = 'rresult'; res.style.display = 'none'; }
+  }
+  if (attEl) {
+    const left = 3 - recAttempts;
+    attEl.innerHTML = left > 0
+      ? `Attempts left: ${'🟢'.repeat(left)}${'⚫'.repeat(3-left)}`
+      : '';
+  }
 }
 
-function stopRec() { if (speechR) speechR.stop(); isRec = false; }
+function toggleRec(char, py, en) {
+  if (isRec) { stopRec(); return; }
+  // Re-init if different character
+  if (char !== recChar) initRecTest(char, py, en);
+  startRec();
+}
+
+function startRec() {
+  if (isRec) return;
+  const btn = document.getElementById('recBtn');
+  const res = document.getElementById('rresult');
+
+  // Try WebSpeech first (no mic needed, uses browser's ASR)
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (SR) {
+    startWebSpeechRec(SR, btn, res);
+  } else {
+    // Fallback: just show pinyin quiz buttons (manual check)
+    showManualFallback(btn, res);
+  }
+}
+
+function startWebSpeechRec(SR, btn, res) {
+  speechR = new SR();
+  // Try zh-CN first, unless attempt 2+ then also try en-US
+  speechR.lang = 'zh-CN';
+  speechR.continuous = false;
+  speechR.interimResults = true;
+  speechR.maxAlternatives = 10;
+
+  isRec = true;
+  if (btn) {
+    btn.innerHTML = '🔴 Listening... tap to stop';
+    btn.classList.add('rec');
+  }
+  if (res) {
+    res.className = 'rresult wait';
+    res.style.display = 'block';
+    res.innerHTML = startCountdownHTML();
+  }
+
+  // Auto-stop after 5s
+  clearTimeout(recTimer);
+  recTimer = setTimeout(() => { if (isRec) speechR.stop(); }, 5000);
+
+  let finalResult = null;
+  let interimResult = null;
+
+  speechR.onresult = (e) => {
+    const results = Array.from(e.results);
+    // Collect all alternatives across all result groups
+    const allTexts = [];
+    results.forEach(r => {
+      for (let i = 0; i < r.length; i++) allTexts.push(r[i].transcript.trim());
+    });
+    // Show interim
+    if (allTexts.length && res) {
+      interimResult = allTexts[0];
+      res.innerHTML = `<span style="color:#888;font-size:.85rem">🎧 Hearing: <em>"${interimResult}"</em>…</span>`;
+    }
+    // Check final
+    const finalGroup = results.find(r => r.isFinal);
+    if (finalGroup) {
+      finalResult = Array.from(finalGroup).map(a => a.transcript.trim());
+    }
+  };
+
+  speechR.onerror = (e) => {
+    clearTimeout(recTimer);
+    isRec = false;
+    if (btn) { btn.innerHTML = '🎤 Tap &amp; Say It!'; btn.classList.remove('rec'); }
+    if (e.error === 'not-allowed') {
+      if (res) { res.className = 'rresult fail'; res.style.display = 'block';
+        res.innerHTML = `🎙️ Microphone blocked!<br><small>Allow mic in your browser settings, then try again.</small>`; }
+      return;
+    }
+    if (e.error === 'no-speech' || e.error === 'aborted') {
+      if (interimResult) {
+        // We had some interim — process it as result
+        processRecResult([interimResult], btn, res);
+      } else {
+        recAttempts++;
+        if (recAttempts >= 3) { autoPass(btn, res); return; }
+        if (res) { res.className = 'rresult fail'; res.style.display = 'block';
+          res.innerHTML = `😅 I couldn't hear anything. Speak louder and clearly!<br>
+            <small style="color:#aaa">Attempt ${recAttempts}/3 — ${3-recAttempts} left</small>`; }
+        if (btn) { btn.innerHTML = '🎤 Try Again!'; btn.classList.remove('rec'); }
+      }
+    }
+  };
+
+  speechR.onend = () => {
+    clearTimeout(recTimer);
+    isRec = false;
+    if (btn) { btn.innerHTML = '🎤 Tap &amp; Say It!'; btn.classList.remove('rec'); }
+    if (finalResult && finalResult.length) {
+      processRecResult(finalResult, btn, res);
+    } else if (interimResult) {
+      processRecResult([interimResult], btn, res);
+    }
+    // else onerror already handled
+  };
+
+  try {
+    speechR.start();
+  } catch(e) {
+    isRec = false;
+    showManualFallback(btn, res);
+  }
+}
+
+function startCountdownHTML() {
+  return `<span style="color:#555;font-size:.88rem">🎧 Listening… speak now!</span>
+    <div style="margin-top:6px;background:#eee;border-radius:6px;height:5px;overflow:hidden">
+      <div style="height:100%;background:var(--red);border-radius:6px;
+        animation:countdown 5s linear forwards" id="recCountdown"></div>
+    </div>`;
+}
+
+function processRecResult(heardList, btn, res) {
+  recAttempts++;
+  const pass = isGoodEnough(heardList, recChar, recPy, recEn);
+
+  if (pass) {
+    if (res) {
+      res.className = 'rresult pass'; res.style.display = 'block';
+      res.innerHTML = `🎉 <strong>Great!</strong> I heard: "<em>${heardList[0]}</em>"<br>
+        <span style="font-size:.82rem">✅ That sounds like ${recChar} = ${recPy}</span>`;
+    }
+    passSpeak();
+  } else {
+    if (recAttempts >= 3) {
+      autoPass(btn, res);
+      return;
+    }
+    if (res) {
+      res.className = 'rresult fail'; res.style.display = 'block';
+      res.innerHTML = `😅 I heard: "<em>${heardList[0]}</em>"<br>
+        <span style="font-size:.82rem">Try saying <strong style="color:var(--primary)">${recPy}</strong> — listen first, then repeat!</span><br>
+        <small style="color:#aaa">Attempt ${recAttempts}/3 — ${3-recAttempts} left</small>`;
+    }
+    if (btn) { btn.innerHTML = '🎤 Try Again!'; btn.classList.remove('rec'); }
+  }
+}
+
+function isGoodEnough(heardList, char, py, en) {
+  const normPy = normTone(py);
+  // Extract just consonant+vowel initials for very loose matching
+  const pyInitial = normPy.slice(0, 2);
+  const pyVowels = normPy.replace(/[^aeiouüāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ]/gi, '');
+
+  return heardList.some(h => {
+    if (!h) return false;
+    const hl = h.toLowerCase().trim();
+    const hn = normTone(h);
+
+    // 1. Direct character match
+    if (hl.includes(char)) return true;
+
+    // 2. Exact pinyin match (no tones)
+    if (hn.includes(normPy)) return true;
+    if (normPy.includes(hn) && hn.length >= 2) return true;
+
+    // 3. Partial pinyin — at least first 2 chars of pinyin
+    if (hn.includes(pyInitial) && pyInitial.length >= 2) return true;
+
+    // 4. Vowel sound match — heard vowels overlap with pinyin vowels
+    const heardVowels = hn.replace(/[^aeiou]/gi, '');
+    if (pyVowels.length >= 2 && heardVowels.length >= 1 &&
+        (pyVowels.includes(heardVowels) || heardVowels.includes(pyVowels.slice(0,2)))) return true;
+
+    // 5. English meaning
+    if (en.toLowerCase().split('/').some(m => hl.includes(m.trim().toLowerCase()))) return true;
+
+    // 6. Sounds-like matching — compare first phoneme
+    const pyMap = {
+      'x':'sh','q':'ch','zh':'j','z':'ds','c':'ts','r':'r',
+      'b':'b','p':'p','m':'m','f':'f','d':'d','t':'t','n':'n','l':'l',
+      'g':'g','k':'k','h':'h','j':'j','y':'y','w':'w'
+    };
+    for (const [cn, en2] of Object.entries(pyMap)) {
+      if (normPy.startsWith(cn) && hn.startsWith(en2)) return true;
+    }
+
+    return false;
+  });
+}
+
+function autoPass(btn, res) {
+  // After 3 attempts, be encouraging and give partial credit
+  if (res) {
+    res.className = 'rresult pass'; res.style.display = 'block';
+    res.innerHTML = `⭐ <strong>Good effort!</strong><br>
+      Keep practicing: <strong style="color:var(--primary)">${recPy}</strong><br>
+      <span style="font-size:.82rem;color:#065F46">You tried 3 times — that counts! 💪</span>`;
+  }
+  passSpeak();
+}
+
+function showManualFallback(btn, res) {
+  // No speech recognition available — show pinyin choice buttons
+  if (!res) return;
+  const allPy = [...new Set(Object.values(CD).map(x => x.py))].filter(p => p !== recPy).sort(() => Math.random()-.5).slice(0,3);
+  const opts = [recPy, ...allPy].sort(() => Math.random()-.5);
+  res.className = 'rresult wait'; res.style.display = 'block';
+  res.innerHTML = `<div style="font-size:.85rem;font-weight:700;color:#555;margin-bottom:8px">
+      🎙️ Mic not available — pick the correct pinyin for <strong style="font-family:'Noto Sans SC'">${recChar}</strong>:
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      ${opts.map(p => `<button onclick="checkManualPy('${p}','${recPy}',this)"
+        style="background:#f5f5f5;border:2px solid #ddd;border-radius:10px;padding:10px;
+        font-family:'Baloo 2',cursive;font-size:1rem;font-weight:700;cursor:pointer">${p}</button>`).join('')}
+    </div>`;
+  if (btn) btn.style.display = 'none';
+}
+
+function checkManualPy(chosen, correct, el) {
+  document.querySelectorAll('[onclick^="checkManualPy"]').forEach(b => b.disabled = true);
+  const res = document.getElementById('rresult');
+  const btn = document.getElementById('recBtn');
+  if (chosen === correct) {
+    el.style.background = '#ECFDF5'; el.style.borderColor = '#06D6A0';
+    if (res) { res.className = 'rresult pass';
+      res.innerHTML += `<div style="margin-top:8px;font-weight:700;color:#065F46">✅ Correct! ${recChar} = ${correct}</div>`; }
+    if (btn) btn.style.display = '';
+    passSpeak();
+  } else {
+    el.style.background = '#FFF5F5'; el.style.borderColor = '#EF233C';
+    document.querySelectorAll('[onclick^="checkManualPy"]').forEach(b => {
+      if (b.textContent === correct) { b.style.background = '#ECFDF5'; b.style.borderColor = '#06D6A0'; }
+    });
+    if (res) res.innerHTML += `<div style="margin-top:8px;font-size:.85rem;color:#991B1B">The answer is ${correct} — try the mic next time!</div>`;
+    if (btn) { btn.style.display = ''; btn.innerHTML = '🎤 Try Again!'; }
+    // Give it to them anyway after seeing the answer
+    setTimeout(() => passSpeak(), 2000);
+  }
+}
+
+function stopRec() { if (speechR) { try { speechR.stop(); } catch(e){} } clearTimeout(recTimer); isRec = false; }
 
 function normTone(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s/g, ''); }
 
-function processRec(heardList, char, py, en) {
-  const res = document.getElementById('rresult');
-  if (!res) return;
-  const normPy = normTone(py);
-  const pass = heardList.some(h => {
-    const hl = h.toLowerCase().trim();
-    const hn = normTone(h);
-    return hl.includes(char) || hn.includes(normPy) || normPy.includes(hn) ||
-      en.toLowerCase().split('/').some(m => hl.includes(m.trim()));
-  });
-
-  if (pass) {
-    res.className = 'rresult pass';
-    res.innerHTML = `<span style="font-size:1.8rem">🎉</span><br>
-      <strong>Great pronunciation!</strong><br>
-      <span style="font-size:.82rem;opacity:.8">I heard: "${heardList[0]}"</span><br>
-      <span style="font-size:.82rem">✅ Matches ${char} = ${py}</span>`;
-    const c = curCh.chars[curIdx], d = CD[c];
-    if (!S[c]?.sp) {
-      if (!S[c]) S[c] = {};
-      S[c].sp = true;
-      const nowMastered = S[c].w && S[c].sp;
-      stars += nowMastered ? 2 : 1;
-      save(); renderChs();
-      if (nowMastered) {
-        setTimeout(() => {
-          showCel(`⭐ MASTERED ${c}!`, `You can write AND say ${c} (${d.py})! +2 Stars!`, '🌟');
-          renderNav(); renderChar();
-        }, 1600);
-      } else {
-        setTimeout(() => { renderNav(); renderChar(); }, 1800);
-      }
+function passSpeak() {
+  const c = curCh?.chars[curIdx]; if (!c) return;
+  const d = CD[c]; if (!d) return;
+  if (!S[c]?.sp) {
+    if (!S[c]) S[c] = {};
+    S[c].sp = true;
+    const nowMastered = S[c].w && S[c].sp;
+    stars += nowMastered ? 2 : 1;
+    save(); renderChs();
+    if (nowMastered) {
+      setTimeout(() => {
+        showCel(`⭐ MASTERED ${c}!`, `You can write AND say ${c} (${d.py})! +2 Stars!`, '🌟');
+        renderNav(); renderChar();
+      }, 1800);
+    } else {
+      setTimeout(() => { renderNav(); renderChar(); }, 2000);
     }
-  } else {
-    res.className = 'rresult fail';
-    res.innerHTML = `<span style="font-size:1.3rem">😅</span> <strong>Not quite!</strong><br>
-      I heard: "<em>${heardList[0]}</em>"<br>
-      <span style="font-size:.82rem">Say <strong style="color:var(--primary)">${py}</strong> for ${char} (${en})</span><br>
-      <span style="font-size:.75rem;color:#bbb">Listen again then try once more 👆</span>`;
   }
 }
 
