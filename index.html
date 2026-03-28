@@ -329,7 +329,7 @@ header h1{font-size:clamp(1.5rem,5vw,2.4rem);color:#7B2D00;text-shadow:2px 2px 0
 
 <header>
   <h1>
-    🐼 HanziHero!
+    🐼 ZiZi!
     <button class="pwa-install-btn" id="installBtn" onclick="installApp()">📲 Install App</button>
   </h1>
   <div class="hdr-stats">
@@ -714,15 +714,22 @@ const STROKE_ORDER = {
   '大': ['h', 'p', 'n'],
   '小': ['sg', 'p', 'n'],
   '来': ['h', 'd', 'p', 'h', 's', 'p', 'n'],
-  '一': ['h'],
-  '十': ['h', 's'],
-  '': ['s', 'p', 'n'],
-  '人': ['p', 'n'],
-  '口': ['h', 's', 's', 'h'],
-  '火': ['p', 'p', 'd', 'd'],
-  '月': ['h', 's', 'h', 's', 'h'],
-  '水': ['p', 's', 'p', 'n'],
-  // Add more characters as needed
+  '开': ['h', 'h', 'p', 's'],
+  '火': ['d', 'p', 'p', 'n'],
+  '关': ['d', 'p', 'h', 'h', 'p', 'n'],
+  '两': ['h', 's', 'hzg', 'p', 'd', 'p', 'd'],
+  '长': ['p', 'h', 'st', 'n'],
+  '广': ['d', 'h', 'p'],
+  '多': ['p', 'hp', 'd', 'p', 'hp' 'd'],
+  '少': ['s', 'p', 'd', 'p'],
+   
+
+
+
+
+
+
+
 };
 
 // Fallback names
@@ -737,7 +744,9 @@ const STROKE_NAMES = {
   'g':  { zh: '钩', py: 'Gōu',   en: 'Hook' },
   'hz': { zh: '横折', py: 'Héng Zhé', en: 'Horizontal Bend' },
   'hg': { zh: '横钩', py: 'Héng Gōu', en: 'Horizontal Hook' },
+  'hp': { zh: '横撇', py: 'Héng Piě', en: 'Horizontal Left-falling' },
   'sg': { zh: '竖钩', py: 'Shù Gōu', en: 'Vertical Hook' },
+  'st': { zh: '竖提', py: 'Shù Tí', en: 'Vertical Tick' },
   'hzg': { zh: '横折钩', py: 'Héng Zhé Gōu', en: 'Horizontal bend with hook'},
    
   'unknown': { zh: '笔画', py: 'Bǐ Huà', en: 'Stroke' }
