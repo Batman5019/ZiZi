@@ -703,7 +703,7 @@ function updateHdr() {
   document.getElementById('hSpeak').textContent = all.filter(c => S[c]?.sp).length;
 }
 
-// ── IMPROVED STROKE NAMES ─────────────────────────────
+// ── FINAL FIXED STROKE NAME SYSTEM ─────────────────────────────
 const STROKE_NAMES = {
   'h':   { zh: '横', py: 'Héng', en: 'Horizontal' },
   's':   { zh: '竖', py: 'Shù',   en: 'Vertical' },
@@ -713,15 +713,12 @@ const STROKE_NAMES = {
   't':   { zh: '提', py: 'Tí',    en: 'Rising' },
   'z':   { zh: '折', py: 'Zhé',   en: 'Bend' },
   'g':   { zh: '钩', py: 'Gōu',   en: 'Hook' },
-  // Common compounds
   'hz':  { zh: '横折', py: 'Héng Zhé', en: 'Horizontal Bend' },
   'hg':  { zh: '横钩', py: 'Héng Gōu', en: 'Horizontal Hook' },
   'sg':  { zh: '竖钩', py: 'Shù Gōu', en: 'Vertical Hook' },
-  'swg': { zh: '竖弯钩', py: 'Shù Wān Gōu', en: 'Vertical Curve Hook' },
   'unknown': { zh: '笔画', py: 'Bǐ Huà', en: 'Stroke' }
 };
 
-// Much better classification — less likely to call a straight 横 "折"
 function classifyStrokeByPath(medians) {
   if (!medians || medians.length < 2) return STROKE_NAMES['d'];
 
@@ -732,52 +729,50 @@ function classifyStrokeByPath(medians) {
   const adx = Math.abs(dx);
   const ady = Math.abs(dy);
 
-  // Very short stroke → dot
-  if (adx < 12 && ady < 12) return STROKE_NAMES['d'];
+  // Tiny stroke = dot
+  if (adx < 18 && ady < 18) return STROKE_NAMES['d'];
 
-  // Mostly horizontal (héng) — stricter threshold
-  if (ady < adx * 0.25) {
-    // Check for small hook at the end (common in 横钩)
-    const secondLast = medians[medians.length - 2] || last;
-    if (Math.abs(last[1] - secondLast[1]) > 18 && Math.abs(last[0] - secondLast[0]) < 25) {
-      return STROKE_NAMES['hg'] || STROKE_NAMES['h'];
+  // === VERY STRICT HORIZONTAL DETECTION (this was the main issue) ===
+  if (ady < adx * 0.18 && adx > 30) {                    // ← much stricter
+    // Only call it a hook if there's a clear downward movement at the very end
+    if (medians.length >= 4) {
+      const prev = medians[medians.length - 2];
+      if (Math.abs(last[1] - prev[1]) > 25 && Math.abs(last[0] - prev[0]) < 25) {
+        return STROKE_NAMES['hg'];
+      }
     }
-    return STROKE_NAMES['h'];
+    return STROKE_NAMES['h'];   // Most horizontals should land here now
   }
 
-  // Mostly vertical (shù)
-  if (adx < ady * 0.28) {
-    const secondLast = medians[medians.length - 2] || last;
-    // Small rightward hook at bottom → 竖钩
-    if (dy > 0 && Math.abs(last[0] - secondLast[0]) > 15) {
-      return STROKE_NAMES['sg'] || STROKE_NAMES['s'];
+  // Vertical
+  if (adx < ady * 0.22 && ady > 35) {
+    if (medians.length >= 3) {
+      const prev = medians[medians.length - 2];
+      if (Math.abs(last[0] - prev[0]) > 20) {
+        return STROKE_NAMES['sg'];
+      }
     }
     return STROKE_NAMES['s'];
   }
 
-  // Left-falling (piě)
-  if (dx < -15 && dy > 10) return STROKE_NAMES['p'];
+  // Left-falling
+  if (dx < -20 && dy > 18) return STROKE_NAMES['p'];
 
-  // Right-falling (nà)
-  if (dx > 12 && dy > 18) return STROKE_NAMES['n'];
+  // Right-falling
+  if (dx > 18 && dy > 25) return STROKE_NAMES['n'];
 
-  // Rising stroke (tí) — goes up to the right
-  if (dx > 10 && dy < -8) return STROKE_NAMES['t'];
+  // Rising (tí)
+  if (dx > 15 && dy < -12) return STROKE_NAMES['t'];
 
-  // Everything else with clear direction change is a bend (zhé)
-  // But we only reach here if it's not mostly horizontal/vertical
+  // Only if it really changes direction significantly → 折
   return STROKE_NAMES['z'];
 }
 
 function getStrokeInfo(strokeIndex) {
-  if (!currentCharData || !currentCharData.medians) {
+  if (!currentCharData?.medians?.[strokeIndex]) {
     return STROKE_NAMES['unknown'];
   }
-
-  const medians = currentCharData.medians[strokeIndex];
-  if (!medians) return STROKE_NAMES['unknown'];
-
-  return classifyStrokeByPath(medians) || STROKE_NAMES['unknown'];
+  return classifyStrokeByPath(currentCharData.medians[strokeIndex]);
 }
 
 function announceStroke(strokeIndex) {
@@ -787,14 +782,13 @@ function announceStroke(strokeIndex) {
   const el = document.getElementById('strokeNameDisplay');
   if (el) {
     el.innerHTML = `
-      <span style="font-family:'Noto Sans SC',sans-serif;font-size:1.45rem;font-weight:900;color:#845EC2">${info.zh}</span>
-      <span style="font-size:1.05rem;font-weight:800;color:var(--primary)">${info.py}</span>
-      <span style="font-size:0.85rem;color:#555">${info.en}</span>
+      <span style="font-family:'Noto Sans SC',sans-serif;font-size:1.5rem;font-weight:900;color:#845EC2">${info.zh}</span>
+      <span style="font-size:1.12rem;font-weight:800;color:var(--primary);margin:0 8px">${info.py}</span>
+      <span style="font-size:0.9rem;color:#444">${info.en}</span>
     `;
-    // Trigger animation
     el.style.animation = 'none';
     void el.offsetHeight;
-    el.style.animation = 'strokeNamePop .45s ease';
+    el.style.animation = 'strokeNamePop .5s ease';
   }
 
   speakStrokeName(info.zh);
