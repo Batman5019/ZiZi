@@ -706,100 +706,104 @@ function updateHdr() {
 // ── STROKE NAME DATABASE ──────────────────────────────
 // Maps hanzi-writer stroke type keys → display info
 const STROKE_NAMES = {
-  // Hanzi writer uses these internal type names
-  's':    { zh:'横', py:'Héng',   en:'Horizontal', desc:'Left → Right flat stroke' },
-  'h':    { zh:'横', py:'Héng',   en:'Horizontal', desc:'Left → Right flat stroke' },
-  'hz':   { zh:'横折', py:'Héng Zhé', en:'Horizontal-Bend', desc:'Go right, then turn down' },
-  'hzw':  { zh:'横折弯', py:'Héng Zhé Wān', en:'H-Bend-Curve', desc:'Right, down, then curve' },
-  'hzwg': { zh:'横折弯钩', py:'Héng Zhé Wān Gōu', en:'H-Bend-Curve-Hook', desc:'Right, down, curve, hook' },
-  'hg':   { zh:'横钩', py:'Héng Gōu', en:'Horizontal-Hook', desc:'Go right then hook down' },
-  'hxg':  { zh:'横斜钩', py:'Héng Xié Gōu', en:'Curved Hook', desc:'Sweeping hook to upper right' },
-  'hp':   { zh:'横撇', py:'Héng Piě', en:'H-Left-Falling', desc:'Right then fall left' },
-  'hzg':  { zh:'横折钩', py:'Héng Zhé Gōu', en:'H-Bend-Hook', desc:'Right, bend down, then hook' },
-  'hzzp': { zh:'横折折撇', py:'Héng Zhé Zhé Piě', en:'H-Bend-Bend-Left', desc:'Multiple bends with left fall' },
-  'hzzg': { zh:'横折折折钩', py:'Héng Zhé Zhé Zhé Gōu', en:'H-Multi-Bend-Hook', desc:'Multiple bends ending in hook' },
-  'p':    { zh:'撇', py:'Piě',    en:'Left-Falling', desc:'Sweep down to the left' },
-  'pz':   { zh:'撇折', py:'Piě Zhé', en:'Left-Falling-Bend', desc:'Fall left then bend right' },
-  'pvz':  { zh:'撇竖折', py:'Piě Shù Zhé', en:'Left-V-Bend', desc:'Left fall, down, then right' },
-  'pd':   { zh:'撇点', py:'Piě Diǎn', en:'Left-Dot', desc:'Short left fall ending in dot' },
-  'n':    { zh:'捺', py:'Nà',     en:'Right-Falling', desc:'Sweep down to the right' },
-  'na':   { zh:'捺', py:'Nà',     en:'Right-Falling', desc:'Sweep down to the right' },
-  'd':    { zh:'点', py:'Diǎn',   en:'Dot', desc:'A small downward dot' },
-  'sg':   { zh:'竖钩', py:'Shù Gōu', en:'Vertical-Hook', desc:'Go straight down then hook' },
-  'sz':   { zh:'竖折', py:'Shù Zhé', en:'Vertical-Bend', desc:'Go down then bend right' },
-  'szs':  { zh:'竖折撇', py:'Shù Zhé Piě', en:'V-Bend-Left', desc:'Down, right, then fall left' },
-  'swz':  { zh:'竖弯折', py:'Shù Wān Zhé', en:'V-Curve-Bend', desc:'Down, curve, then right' },
-  'swzg': { zh:'竖弯折钩', py:'Shù Wān Zhé Gōu', en:'V-Curve-Hook', desc:'Down, curve, bend, hook' },
-  'sw':   { zh:'竖弯', py:'Shù Wān', en:'Vertical-Curve', desc:'Go down then curve right' },
-  'swg':  { zh:'竖弯钩', py:'Shù Wān Gōu', en:'V-Curve-Hook', desc:'Down, curve, end in hook' },
-  's2':   { zh:'竖', py:'Shù',    en:'Vertical', desc:'Straight down stroke' },
-  'g':    { zh:'钩', py:'Gōu',    en:'Hook', desc:'A stroke ending with a hook' },
-  't':    { zh:'提', py:'Tí',     en:'Rising', desc:'Short upward diagonal stroke' },
-  'w':    { zh:'弯', py:'Wān',    en:'Curve', desc:'A curved stroke' },
-  'wg':   { zh:'弯钩', py:'Wān Gōu', en:'Curve-Hook', desc:'Curve ending in hook' },
-  'z':    { zh:'折', py:'Zhé',    en:'Bend/Turn', desc:'A stroke that changes direction' },
-  'zg':   { zh:'折钩', py:'Zhé Gōu', en:'Bend-Hook', desc:'A bend ending in a hook' },
-  // catch-all vertical
-  'vs':   { zh:'竖', py:'Shù',    en:'Vertical', desc:'Straight down stroke' },
-};
+  'h':  { zh: '横', py: 'Héng', en: 'Horizontal' },
+  's':  { zh: '竖', py: 'Shù',   en: 'Vertical' },
+  'p':  { zh: '撇', py: 'Piě',   en: 'Left-falling' },
+  'n':  { zh: '捺', py: 'Nà',    en: 'Right-falling' },
+  'd':  { zh: '点', py: 'Diǎn',  en: 'Dot' },
+  't':  { zh: '提', py: 'Tí',    en: 'Rising' },
+  'z':  { zh: '折', py: 'Zhé',   en: 'Bend/Turn' },
+  'g':  { zh: '钩', py: 'Gōu',   en: 'Hook' },
+  // Common compounds (add more as needed)
+  'hz': { zh: '横折', py: 'Héng Zhé', en: 'Horizontal Bend' },
+  'hg': { zh: '横钩', py: 'Héng Gōu', en: 'Horizontal Hook' },
+  'sg': { zh: '竖钩', py: 'Shù Gōu', en: 'Vertical Hook' },
+  'swg':{ zh: '竖弯钩', py: 'Shù Wān Gōu', en: 'Vertical Curve Hook' },
+  // fallback
+  'unknown': { zh: '笔画', py: 'Bǐ Huà', en: 'Stroke' }
+};;
 
 // Classify a stroke from its median path (fallback when type unknown)
-function classifyStrokeByPath(medians) {
+function classifyStrokeByPath(medians, path = '') {
   if (!medians || medians.length < 2) return STROKE_NAMES['d'];
-  const first = medians[0], last = medians[medians.length - 1];
-  const dx = last[0] - first[0], dy = last[1] - first[1];
-  const adx = Math.abs(dx), ady = Math.abs(dy);
-  if (ady < adx * 0.4) return STROKE_NAMES['h'];       // mostly horizontal → héng
-  if (adx < ady * 0.4 && dy > 0) return STROKE_NAMES['s2'];  // mostly down → shù
-  if (dx < 0 && dy > 0) return STROKE_NAMES['p'];      // left-down → piě
-  if (dx > 0 && dy > 0) return STROKE_NAMES['n'];      // right-down → nà
-  if (ady < 6 && adx < 6) return STROKE_NAMES['d'];    // tiny → diǎn
-  return STROKE_NAMES['t'];                              // upward → tí
-}
 
-// Get stroke info for stroke index from loaded char data
-let currentCharData = null;  // store loaded hanzi data
+  const points = medians.flat();
+  if (points.length < 4) return STROKE_NAMES['d'];
 
-function getStrokeInfo(strokeIndex) {
-  if (!currentCharData) return null;
-  const strokes = currentCharData.strokes;
-  const radStrokes = currentCharData.radStrokes;
-  if (!strokes || strokeIndex >= strokes.length) return null;
+  const first = medians[0];
+  const last = medians[medians.length - 1];
+  const dx = last[0] - first[0];
+  const dy = last[1] - first[1];
+  const adx = Math.abs(dx);
+  const ady = Math.abs(dy);
 
-  // Try to match via the stroke path key
-  const medians = currentCharData.medians?.[strokeIndex];
-  const path = strokes[strokeIndex];
+  // Very short → dot
+  if (adx < 8 && ady < 8) return STROKE_NAMES['d'];
 
-  // Extract stroke type from SVG path command heuristic
-  // Hanzi writer paths start with commands that indicate type
-  let type = null;
-  if (path) {
-    const m = path.match(/^[MLCQl]*([-\d.]+)/);
-    // Use path shape classification
+  // Mostly horizontal
+  if (ady < adx * 0.35) {
+    // Check if it ends with a hook (small downward at end)
+    if (medians.length > 3 && Math.abs(last[1] - medians[medians.length-2][1]) > 12) {
+      return STROKE_NAMES['hg'] || STROKE_NAMES['h'];
+    }
+    return STROKE_NAMES['h'];
   }
 
-  return classifyStrokeByPath(medians);
+  // Mostly vertical
+  if (adx < ady * 0.35) {
+    // Check for hook at bottom
+    if (dy > 0 && medians.length > 3 && Math.abs(last[0] - medians[medians.length-2][0]) > 10) {
+      return STROKE_NAMES['sg'] || STROKE_NAMES['s'];
+    }
+    return STROKE_NAMES['s'];
+  }
+
+  // Left-falling (piě)
+  if (dx < -10 && dy > 10) return STROKE_NAMES['p'];
+
+  // Right-falling (nà)
+  if (dx > 10 && dy > 15) return STROKE_NAMES['n'];
+
+  // Rising (tí)
+  if (dx > 8 && dy < -5) return STROKE_NAMES['t'];
+
+  // Bend / turn (zhe) — direction change
+  return STROKE_NAMES['z'];
 }
 
-// Announce stroke name via speech synthesis
+function getStrokeInfo(strokeIndex) {
+  if (!currentCharData) return STROKE_NAMES['unknown'];
+
+  const medians = currentCharData.medians?.[strokeIndex];
+  const strokes = currentCharData.strokes?.[strokeIndex];
+
+  let info = classifyStrokeByPath(medians, strokes);
+
+  // Try to detect common compounds from path string (optional enhancement)
+  if (strokes && strokes.includes('C') && strokes.includes('Q')) { // has curves
+    if (info === STROKE_NAMES['h']) info = STROKE_NAMES['hz'] || info;
+    if (info === STROKE_NAMES['s']) info = STROKE_NAMES['sg'] || info;
+  }
+
+  return info || STROKE_NAMES['unknown'];
+}
+
 function announceStroke(strokeIndex) {
   const info = getStrokeInfo(strokeIndex);
   if (!info) return;
 
-  // Update the stroke name display
   const el = document.getElementById('strokeNameDisplay');
   if (el) {
     el.innerHTML = `
-      <span style="font-family:'Noto Sans SC',sans-serif;font-size:1.4rem;font-weight:900;color:#845EC2">${info.zh}</span>
-      <span style="font-size:1rem;font-weight:800;color:var(--primary);margin:0 6px">${info.py}</span>
-      <span style="font-size:.82rem;color:#666">${info.en}</span>
+      <span style="font-family:'Noto Sans SC',sans-serif;font-size:1.45rem;font-weight:900;color:#845EC2">${info.zh}</span>
+      <span style="font-size:1.05rem;font-weight:800;color:var(--primary);margin:0 8px">${info.py}</span>
+      <span style="font-size:.85rem;color:#555">${info.en}</span>
     `;
     el.style.animation = 'none';
-    el.offsetHeight; // reflow
-    el.style.animation = 'strokeNamePop .4s ease';
+    void el.offsetHeight;
+    el.style.animation = 'strokeNamePop .45s ease';
   }
 
-  // Speak the stroke name in Chinese
   speakStrokeName(info.zh);
 }
 
